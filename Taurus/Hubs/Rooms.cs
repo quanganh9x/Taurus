@@ -7,17 +7,32 @@ using Taurus.Models;
 
 namespace Taurus.Hubs
 {
-    public class RoomHub: Hub
+    public class RoomPlayer
     {
-        private List<Room> Rooms = new List<Room>(); // rtc rooms
-        private List<Room> RoomsSocket = new List<Room>();
+        public string UserName { get; set; } 
+        public string Identifier { get; set; } = Guid.NewGuid().ToString();
+        public bool isUsingRTC { get; set; } = true;
+    }
 
-        public enum RoomEvent
-        {
-            ROOM_CREATE = 1,
-            ROOM_JOIN = 2,
-            ROOM_FIND = 3
-        }
+    public enum RoomEvent
+    {
+        ROOM_CREATE = 1,
+        ROOM_JOIN = 2,
+        ROOM_FIND = 3
+    }
+
+    public class RoomConfiguration
+    {
+        public int ExperienceDiffMax = 1000; // max diff exp between 2 players
+        public int ExperienceDiffMin = 0; // min diff exp between 2 players
+    }
+
+    public class Rooms: Hub
+    {
+        private List<RoomPlayer> Players = new List<RoomPlayer>(); // rtc-compatible players
+        private List<RoomPlayer> LegacyPlayers = new List<RoomPlayer>();
+
+        
         public async Task SendRoomEvent(string user, RoomEvent roomEvent, bool isUsingRTC, string Name)
         {
             switch (roomEvent)

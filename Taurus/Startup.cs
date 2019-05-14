@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Mail;
 using System.Net;
+using Taurus.Hubs;
 
 namespace Taurus
 {
@@ -36,6 +37,13 @@ namespace Taurus
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddCors(options => options.AddPolicy("quanganh9x",
+            builder =>
+            {
+                builder.WithOrigins("http://localhost:63343").AllowAnyMethod().AllowAnyHeader()
+                       .AllowCredentials();
+            }));
 
             /* email */
             services.AddTransient<SmtpClient>((serviceProvider) =>
@@ -83,10 +91,11 @@ namespace Taurus
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+            app.UseCors("quanganh9x");
 
             app.UseSignalR(routes =>
             {
-                
+                routes.MapHub<TestRoom>("/testroom");
             });
 
             app.UseMvc(routes =>
