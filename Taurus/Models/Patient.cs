@@ -8,27 +8,22 @@ using Taurus.Areas.Identity.Models;
 
 namespace Taurus.Models
 {
-    public class Transaction
+    public class Patient
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
-        public int ItemId { get; set; }
-        [ForeignKey("ItemId")]
-        public ShopItem Item { get; set; }
-        /* transaction info */
-        public int Quantity { get; set; }
-        public float Total { get; set; }
-        /* tracking */
-        public DateTime CreatedAt { get; set; }
+        /* one patient has many cases & appointments */
+        public List<Case> Cases { get; set; }
+        public List<Appointment> Appointments { get; set; }
+        /* status */
+        public Status Status { get; set; } = Status.Active;
+        /* datetime */
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
-
-        public Transaction() {
-            this.Total = this.Item.Price * this.Quantity;
-            this.CreatedAt = DateTime.Now;
-        }
     }
 }

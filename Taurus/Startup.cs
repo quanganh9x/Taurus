@@ -15,7 +15,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Mail;
 using System.Net;
-using Taurus.Hubs;
 
 namespace Taurus
 {
@@ -41,7 +40,7 @@ namespace Taurus
             services.AddCors(options => options.AddPolicy("quanganh9x",
             builder =>
             {
-                builder.WithOrigins("http://localhost:63343").AllowAnyMethod().AllowAnyHeader()
+                builder.WithOrigins("http://localhost:63342").AllowAnyMethod().AllowAnyHeader()
                        .AllowCredentials();
             }));
 
@@ -66,9 +65,6 @@ namespace Taurus
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-            // signalr
-            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,10 +89,6 @@ namespace Taurus
             app.UseAuthentication();
             app.UseCors("quanganh9x");
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<TestRoom>("/testroom");
-            });
 
             app.UseMvc(routes =>
             {
