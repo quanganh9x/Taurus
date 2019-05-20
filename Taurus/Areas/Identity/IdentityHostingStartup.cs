@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 
@@ -14,9 +15,11 @@ namespace Taurus.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup
     {
+
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices((context, services) => {
+            builder.ConfigureServices((context, services) =>
+            {
                 services.AddIdentity<User, Role>(config =>
                 {
                     config.SignIn.RequireConfirmedEmail = false;

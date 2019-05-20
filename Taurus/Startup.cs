@@ -15,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Taurus
 {
@@ -40,7 +42,7 @@ namespace Taurus
             services.AddCors(options => options.AddPolicy("quanganh9x",
             builder =>
             {
-                builder.WithOrigins("http://localhost:63342").AllowAnyMethod().AllowAnyHeader()
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
                        .AllowCredentials();
             }));
 
@@ -59,6 +61,24 @@ namespace Taurus
                     EnableSsl = true
                 };
             });
+
+            /* token */
+            services.AddAuthentication()
+                .AddJwtBearer(cfg =>
+                {
+                    cfg.RequireHttpsMetadata = false;
+                    cfg.SaveToken = true;
+
+                    cfg.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidIssuer = Configuration["Tokens:Issuer"],
+                        ValidAudience = Configuration["Tokens:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                    };
+                });
+
+            /* configuration */
+            services.AddSingleton(Configuration);
 
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(
@@ -87,8 +107,8 @@ namespace Taurus
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-            app.UseCors("quanganh9x");
 
+            app.UseCors("quanganh9x");
 
             app.UseMvc(routes =>
             {

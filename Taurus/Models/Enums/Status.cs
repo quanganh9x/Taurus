@@ -8,6 +8,8 @@ namespace Taurus.Models
     public enum Status
     {
         Active = 1,
-        Inactive = 2
+        Inactive = 0,
+        Done = 2,
+        Progressing = 3
     }
 }

@@ -14,10 +14,10 @@ namespace Taurus.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public int UserId { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
         /* one patient has many cases & appointments */
-        public List<Case> Cases { get; set; }
-        public List<Appointment> Appointments { get; set; }
+        public virtual List<Case> Cases { get; set; }
+        public virtual List<Appointment> Appointments { get; set; }
         /* status */
         public Status Status { get; set; } = Status.Active;
         /* datetime */
