@@ -11,20 +11,20 @@ namespace Taurus.Models
     {
         [Key]
         public int Id { get; set; }
-        public int StaffId { get; set; }
+        public string StaffId { get; set; }
         [ForeignKey("StaffId")]
-        public Staff Staff { get; set; }
-        public int PatientId { get; set; }
+        public virtual Staff Staff { get; set; }
+        public string PatientId { get; set; }
         [ForeignKey("PatientId")]
-        public Patient Patient { get; set; }
+        public virtual Patient Patient { get; set; }
         public int SpecialistId { get; set; }
         [ForeignKey("SpecialistId")]
-        public Specialist Specialist { get; set; }
+        public virtual Specialist Specialist { get; set; }
         /* status */
         public Status Status { get; set; } = Status.Active;
         /* a case has many bills and appointments */
-        public List<Bill> Bills { get; set; }
-        public List<Appointment> Appointments { get; set; }
+        public virtual List<Bill> Bills { get; set; }
+        public virtual List<Appointment> Appointments { get; set; }
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

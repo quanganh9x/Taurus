@@ -13,9 +13,10 @@ namespace Taurus.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public int CaseId { get; set; }
         [ForeignKey("CaseId")]
-        public Case Case { get; set; }
+        public virtual Case Case { get; set; }
         public string Diagnosis { get; set; }
         public string Note { get; set; }
+        public string Medicines { get; set; }
         /* status */
         public Status Status { get; set; } = Status.Active;
         /* datetime */
