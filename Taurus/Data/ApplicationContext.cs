@@ -18,6 +18,30 @@ namespace Taurus.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.Entity<Staff>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Staff>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Patient>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Patient>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Case>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Case>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Bill>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Bill>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("getdate()");
         }
     }
 }

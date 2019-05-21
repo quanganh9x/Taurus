@@ -17,6 +17,8 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Taurus.Seeders;
+using Taurus.Areas.Identity.Models;
 
 namespace Taurus
 {
@@ -88,8 +90,9 @@ namespace Taurus
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext context, UserManager<User> userManager)
         {
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -107,8 +110,11 @@ namespace Taurus
             app.UseCookiePolicy();
 
             app.UseAuthentication();
-
             app.UseCors("quanganh9x");
+
+            UserSeeder.SeedUser(userManager);
+            DbSeeder.createSeed(context);
+
 
             app.UseMvc(routes =>
             {
