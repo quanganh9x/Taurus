@@ -62,7 +62,7 @@ namespace Taurus.Controllers
             returnUrl = returnUrl ?? Url.Content("~/");
             ReturnUrl = returnUrl;
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-            return View();
+            return View("~/Views/Identity/Login.cshtml");
         }
 
         // POST: Login
@@ -86,11 +86,11 @@ namespace Taurus.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View();
+                    return View("~/Views/Identity/Login.cshtml");
                 }
             }
 
-            return View();
+            return View("~/Views/Identity/Login.cshtml");
         }
 
         // POST: Login
