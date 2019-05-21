@@ -9,7 +9,7 @@ using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Models;
 
-namespace Taurus.Seeders
+namespace Taurus.Data
 {
     public class UserSeeder
     {
@@ -27,11 +27,7 @@ namespace Taurus.Seeders
                 Country = "Việt Nam",
                 Avatar = "http://bizweb.dktcdn.net/100/080/957/files/ap-trung-chim-cong.jpg?v=1486438253113"
             };
-            var result = userManager.CreateAsync(user, "Abc/123456").Result;
-            if (result.Succeeded)
-            {
-                Thread.Sleep(9999);
-            }
+            userManager.CreateAsync(user, "Abc/123456");
         }
 
     }

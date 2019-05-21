@@ -17,7 +17,6 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Taurus.Seeders;
 using Taurus.Areas.Identity.Models;
 
 namespace Taurus
@@ -113,8 +112,7 @@ namespace Taurus
             app.UseCors("quanganh9x");
 
             UserSeeder.SeedUser(userManager);
-            DbSeeder.createSeed(context);
-
+            DbSeeder.Seed(context);
 
             app.UseMvc(routes =>
             {

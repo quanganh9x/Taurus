@@ -8,32 +8,22 @@ using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Models;
 
-namespace Taurus.Seeders
+namespace Taurus.Data
 {
     public class DbSeeder
     {
-        public static void createSeed(ApplicationContext context)
+        public static void Seed(ApplicationContext context)
         {
-            
             SeedSpecialist(context);
-            Thread.Sleep(1000);
             SeedFacility(context);
-            Thread.Sleep(1000);
             SeedStaff(context);
-            Thread.Sleep(1000);
             SeedPatient(context);
-            Thread.Sleep(1000);
-            //SeedCase(context);
-            Thread.Sleep(1000);
             SeedAppointment(context);
-            Thread.Sleep(1000);
             SeedBill(context);
-            Thread.Sleep(1000);
+        }
 
-        }   
         public static void SeedBill(ApplicationContext context)
         {
-            context.Database.EnsureCreated();
             context.Bills.Add(new Bill()
             {
                 Diagnosis = "Đau đầu",
@@ -42,39 +32,27 @@ namespace Taurus.Seeders
             });
             context.SaveChanges();
         }
+
         public static void SeedAppointment(ApplicationContext context)
         {
-            context.Database.EnsureCreated();
             context.Appointments.Add(new Appointment()
             {
                 
             });
             context.SaveChanges();
         }
-        public static void SeedCase(ApplicationContext context)
-        {
-            context.Database.EnsureCreated();
-            context.Cases.Add(new Case()
-            {
-                StaffId = "",
-                PatientId = "",
-                SpecialistId = 1,
 
-            });
-            context.SaveChanges();
-        }
         public static void SeedSpecialist(ApplicationContext context)
         {
-            context.Database.EnsureCreated();
             context.Specialists.Add(new Specialist()
             {
                 Name = "Nha Khoa"
             });
             context.SaveChanges();
         }
+
         public static void SeedFacility(ApplicationContext context)
         {
-            context.Database.EnsureCreated();
             context.Facilities.Add(
                 new Facility()
                 {
@@ -86,7 +64,6 @@ namespace Taurus.Seeders
 
         public static void SeedStaff(ApplicationContext context)
         {
-            context.Database.EnsureCreated();
             context.Staffs.Add(new Staff()
             {
                 UserId = 1,
@@ -95,9 +72,9 @@ namespace Taurus.Seeders
             });
             context.SaveChanges();
         }
+
         public static void SeedPatient(ApplicationContext context)
         {
-            context.Database.EnsureCreated();
             context.Patients.Add(new Patient()
             {
                 UserId = 1,
