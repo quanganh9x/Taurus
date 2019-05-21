@@ -11,7 +11,7 @@ namespace Taurus.Models
     public class Patient
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }

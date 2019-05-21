@@ -89,7 +89,7 @@ namespace Taurus
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext context, UserManager<User> userManager)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationContext context, UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             
             if (env.IsDevelopment())
@@ -111,7 +111,8 @@ namespace Taurus
             app.UseAuthentication();
             app.UseCors("quanganh9x");
 
-            UserSeeder.SeedUser(userManager);
+            /* seeders */
+            IdentitySeeder.Seed(userManager, roleManager);
             DbSeeder.Seed(context);
 
             app.UseMvc(routes =>

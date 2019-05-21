@@ -13,9 +13,7 @@ namespace Taurus.Data
     {
         private readonly IConfiguration _configuration;
 
-
-        public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration)
-            : base(options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options, IConfiguration configuration) : base(options)
         {
             _configuration = configuration;
         }
@@ -53,6 +51,24 @@ namespace Taurus.Data
             .Property(b => b.UpdatedAt)
             .HasDefaultValueSql("getdate()");
             builder.Entity<Bill>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Facility>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Facility>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Specialist>()
+            .Property(b => b.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Specialist>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Appointment>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("getdate()");
+            builder.Entity<Appointment>()
             .Property(b => b.CreatedAt)
             .HasDefaultValueSql("getdate()");
         }

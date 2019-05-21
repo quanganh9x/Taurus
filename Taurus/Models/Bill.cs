@@ -10,7 +10,7 @@ namespace Taurus.Models
     public class Bill
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } = Guid.NewGuid().ToString().Replace("-","").ToUpper();
         public int CaseId { get; set; }
         [ForeignKey("CaseId")]
         public virtual Case Case { get; set; }

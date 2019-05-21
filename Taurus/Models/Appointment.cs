@@ -20,9 +20,13 @@ namespace Taurus.Models
         public string PatientId { get; set; }
         [ForeignKey("PatientId")]
         public virtual Patient Patient { get; set; }
+        public DateTime Time { get; set; }
         /* status */
         public Status Status { get; set; } = Status.Active;
+        /* datetime */
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime Time { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; set; }
     }
 }
