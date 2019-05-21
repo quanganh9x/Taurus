@@ -13,11 +13,9 @@ namespace Taurus.Areas.Identity.Models
     {
         /* general information */
         [PersonalData, Required]
-        public string FirstName { get; set; }
-        [PersonalData, Required]
-        public string LastName { get; set; }
+        public string FullName { get; set; }
         [PersonalData]
-        public int Age { get; set; }
+        public DateTime DateOfBirth { get; set; }
         [PersonalData]
         public string Address { get; set; }
         [PersonalData]

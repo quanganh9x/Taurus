@@ -14,18 +14,18 @@ namespace Taurus.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public int UserId { get; set; }
         [ForeignKey("UserId")]
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public int SpecialistId { get; set; }
         [ForeignKey("SpecialistId")]
-        public Specialist Specialist { get; set; }
+        public virtual Specialist Specialist { get; set; }
         public int FacilityId { get; set; }
         [ForeignKey("FacilityId")]
-        public Facility Facility { get; set; }
+        public virtual Facility Facility { get; set; }
         /* status */
         public Status Status { get; set; } = Status.Active;
         /* one staff has many cases & appointments */
-        public List<Case> Cases { get; set; }
-        public List<Appointment> Appointments { get; set; }
+        public virtual List<Case> Cases { get; set; }
+        public virtual List<Appointment> Appointments { get; set; }
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
