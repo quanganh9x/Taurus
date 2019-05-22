@@ -112,8 +112,14 @@ namespace Taurus
             app.UseCors("quanganh9x");
 
             /* seeders */
-            IdentitySeeder.Seed(userManager, roleManager);
-            DbSeeder.Seed(context);
+            Task.Run(async () =>
+            {
+                await IdentitySeeder.Seed(userManager, roleManager);
+            }).Wait();
+            Task.Run(async () =>
+            {
+                await DbSeeder.Seed(context);
+            }).Wait();
 
             app.UseMvc(routes =>
             {

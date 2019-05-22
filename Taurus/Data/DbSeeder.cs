@@ -14,26 +14,20 @@ namespace Taurus.Data
     {
         private static string StaffId = null;
         private static string PatientId = null;
-        public static void Seed(ApplicationContext context)
+        public static async Task Seed(ApplicationContext context)
         {
-            SeedSpecialist(context);
-            Thread.Sleep(5000);
-            SeedFacility(context);
-            Thread.Sleep(5000);
-            SeedStaff(context);
-            Thread.Sleep(5000);
-            SeedPatient(context);
-            Thread.Sleep(5000);
-            SeedCase(context);
-            Thread.Sleep(5000);
-            SeedAppointment(context);
-            Thread.Sleep(5000);
-            SeedBill(context);
-            Thread.Sleep(5000);
+            await context.Database.EnsureCreatedAsync();
+            await SeedSpecialist(context);
+            await SeedFacility(context);
+            await SeedStaff(context);
+            await SeedPatient(context);
+            await SeedCase(context);
+            await SeedAppointment(context);
+            await SeedBill(context);
         }
 
 
-        public static void SeedBill(ApplicationContext context)
+        public static async Task SeedBill(ApplicationContext context)
         {
             context.Bills.Add(new Bill()
             {
@@ -49,10 +43,10 @@ namespace Taurus.Data
                 Note = "Luyện tập hàng ngày là vô cùng cần thiết!",
                 Medicines = "{'name':'ahihidongok','note':'3 lần 1 ngày sau cơm','quantity':100}",
             });
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public static void SeedCase(ApplicationContext context)
+        public static async Task SeedCase(ApplicationContext context)
         {
             context.Cases.Add(new Case()
             {
@@ -60,10 +54,10 @@ namespace Taurus.Data
                 PatientId = PatientId,
                 SpecialistId = 1
             });
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public static void SeedAppointment(ApplicationContext context)
+        public static async Task SeedAppointment(ApplicationContext context)
         {
             context.Appointments.Add(new Appointment()
             {
@@ -80,10 +74,10 @@ namespace Taurus.Data
                 Time = DateTime.Parse("2019/05/20"),
                 Status = Status.Done
             });
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public static void SeedSpecialist(ApplicationContext context)
+        public static async Task SeedSpecialist(ApplicationContext context)
         {
             context.Specialists.Add(new Specialist()
             {
@@ -101,10 +95,10 @@ namespace Taurus.Data
             {
                 Name = "Ngoại Khoa"
             });
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public static void SeedFacility(ApplicationContext context)
+        public static async Task SeedFacility(ApplicationContext context)
         {
             context.Facilities.Add(new Facility()
             {
@@ -126,10 +120,10 @@ namespace Taurus.Data
                 Name = "Bệnh viện Ronaldo",
                 Address = "7 Juv, Torino, Italy"
             });
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public static void SeedStaff(ApplicationContext context)
+        public static async Task SeedStaff(ApplicationContext context)
         {
             var staff = new Staff()
             {
@@ -138,19 +132,19 @@ namespace Taurus.Data
                 SpecialistId = 1
             };
             context.Staffs.Add(staff);
-            context.SaveChanges();
-            StaffId = staff.Id;
+            StaffId = staff.Id; // safer
+            await context.SaveChangesAsync();
         }
 
-        public static void SeedPatient(ApplicationContext context)
+        public static async Task SeedPatient(ApplicationContext context)
         {
             var patient = new Patient()
             {
                 UserId = 2
             };
             context.Patients.Add(patient);
-            context.SaveChanges();
-            PatientId = patient.Id;
+            PatientId = patient.Id; // this is safer
+            await context.SaveChangesAsync();
         }
     }
 }

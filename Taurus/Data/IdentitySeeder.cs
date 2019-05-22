@@ -13,15 +13,13 @@ namespace Taurus.Data
 {
     public class IdentitySeeder
     {
-        public static void Seed(UserManager<User> userManager, RoleManager<Role> roleManager)
+        public static async Task Seed(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
-            SeedRole(roleManager);
-            Thread.Sleep(5000);
-            SeedUser(userManager);
-            Thread.Sleep(5000);
+            await SeedRole(roleManager);
+            await SeedUser(userManager);
         }
 
-        public static void SeedUser(UserManager<User> userManager)
+        public static async Task SeedUser(UserManager<User> userManager)
         {
             var user = new User
             {
@@ -35,9 +33,8 @@ namespace Taurus.Data
                 Country = "Việt Nam",
                 Avatar = "http://google.com"
             };
-            userManager.CreateAsync(user, "Abc/123456");
-            userManager.AddToRoleAsync(user, "Staff");
-            Thread.Sleep(5000);
+            await userManager.CreateAsync(user, "Abc/123456");
+            await userManager.AddToRoleAsync(user, "Staff");
             user = new User
             {
                 UserName = "PatientTest",
@@ -50,16 +47,14 @@ namespace Taurus.Data
                 Country = "Việt Nam",
                 Avatar = "http://google.com"
             };
-            userManager.CreateAsync(user, "Abc/123456");
-            userManager.AddToRoleAsync(user, "Patient");
+            await userManager.CreateAsync(user, "Abc/123456");
+            await userManager.AddToRoleAsync(user, "Patient");
         }
 
-        public static void SeedRole(RoleManager<Role> roleManager)
+        public static async Task SeedRole(RoleManager<Role> roleManager)
         {
-            roleManager.CreateAsync(new Role("Staff"));
-            Thread.Sleep(5000);
-            roleManager.CreateAsync(new Role("Patient"));
-            Thread.Sleep(5000);
+            await roleManager.CreateAsync(new Role("Staff"));
+            await roleManager.CreateAsync(new Role("Patient"));
         }
     }
 }
