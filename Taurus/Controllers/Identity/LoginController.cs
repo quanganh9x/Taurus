@@ -52,7 +52,7 @@ namespace Taurus.Controllers
             public string Password { get; set; }
 
             [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
+            public bool RememberMe { get; set; } = true;
         }
 
         // GET: Login
@@ -74,7 +74,7 @@ namespace Taurus.Controllers
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, true, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     return LocalRedirect(returnUrl);
@@ -93,9 +93,25 @@ namespace Taurus.Controllers
             return View("~/Views/Identity/Login.cshtml");
         }
 
+        [HttpGet("/Logout")]
+        [HttpPost("/Logout")]
+        public async Task<IActionResult> GetLogout(string returnUrl = null)
+        {
+            await _signInManager.SignOutAsync();
+            if (returnUrl != null)
+            {
+                return LocalRedirect(returnUrl);
+            }
+            else
+            {
+                return LocalRedirect("/");
+            }
+        }
+
+
         // POST: Login
         [HttpPost("/api/Login")]
-        public async Task<IActionResult> GenerateToken()
+        public async Task<IActionResult> APILogin()
         {
             if (ModelState.IsValid)
             {
@@ -126,8 +142,16 @@ namespace Taurus.Controllers
                     }
                 }
             }
-
             return Ok(new APIResponse { Status = APIStatus.Failed, Data = null });
+        }
+
+
+        // API: Logout
+        [HttpPost("/api/Logout")]
+        public async Task<IActionResult> APILogout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
     }
 }

@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Taurus.Models;
+using Taurus.Models.Enums;
 
 namespace Taurus.Areas.Identity.Models
 {
@@ -24,5 +25,7 @@ namespace Taurus.Areas.Identity.Models
         public string Country { get; set; }
         [PersonalData, Url]
         public string Avatar { get; set; }
+        [PersonalData]
+        public Gender Gender { get; set; }
     }
 }

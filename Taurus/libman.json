@@ -8,6 +8,31 @@
       "files": [
         "dist/browser/signalr.min.js"
       ]
+    },
+    {
+      "library": "jquery@3.4.1",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "dist/jquery.min.js",
+        "dist/jquery.min.map"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "popper.js@1.15.0",
+      "destination": "wwwroot/lib/popper.js/",
+      "files": [
+        "popper.min.js",
+        "popper.min.js.map"
+      ]
+    },
+    {
+      "library": "bootstrap@4.3.1",
+      "destination": "wwwroot/lib/bootstrap/",
+      "files": [
+        "dist/js/bootstrap.bundle.min.js",
+        "dist/js/bootstrap.bundle.min.js.map"
+      ]
     }
   ]
 }

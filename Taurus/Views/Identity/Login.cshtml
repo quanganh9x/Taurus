@@ -11,13 +11,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="~/css/bootstrap.min.css">
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
 
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-	<!-- Swiper CSS -->
-	<link rel="stylesheet" href="~/css/swiper.min.css">
 
 	<!-- Styles -->
 	<link rel="stylesheet" href="~/css/style.css">
@@ -25,22 +22,22 @@
 </head>
 <body>
 	<div class="container align-items-center">
-		<div class="d-flex justify-content-center h-100">
-			<div class="card">
+		<div class="d-flex justify-content-center row h-100">
+			<div class="card col-lg-6 col-md-9 col-sm-12">
 				<div class="card-header gradient-bg p-4">
 					<div class="d-flex justify-content-center">
 						<h3>Login</h3>
 					</div>
 				</div>
 				<div class="card-body">
-					<form>
+					<form method="post" action="/Login">
 						<div class="input-group form-group p-2">
 							<div class="input-group-prepend">
 								<span class="gradient-bg input-group-text">
 									<i class="fa fa-user-circle" aria-hidden="true"></i>
 								</span>
 							</div>
-							<input type="text" class="form-control" placeholder="Username">
+							<input type="text" class="form-control" name="UserName" placeholder="Username">
 
 						</div>
 						<div class="input-group form-group p-2">
@@ -49,13 +46,13 @@
 									<i class="fa fa-key" aria-hidden="true"></i>
 								</span>
 							</div>
-							<input type="password" class="form-control" placeholder="Password">
+							<input type="password" class="form-control" name="Password" placeholder="Password">
 						</div>
 						<div class="input-group form-group p-2 remember">
-							<input type="checkbox"><span>Remember Me</span>
+							<input type="checkbox" name="RememberMe" value="true" checked><span>Remember Me</span>
 						</div>
 						<div class="form-group my-3">
-							<input type="submit" value="Login" class="button float-right gradient-bg" style="margin-right: 0">
+							<input type="submit" value="Login" class="button float-right gradient-bg m-0">
 						</div>
 					</form>
 				</div>

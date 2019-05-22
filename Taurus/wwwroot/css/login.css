@@ -1,0 +1,57 @@
+html, body{
+	height: 100%;
+}
+
+.container {
+	height: 100%;
+}
+
+.card{
+	height: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	width: 400px;
+    padding: 0;
+}
+
+.card-header h3{
+	margin: auto;
+}
+
+.input-group-prepend span {
+	border:0 !important;
+}
+
+
+input:focus{
+	outline: 0 0 0 0  !important;
+	box-shadow: 0 0 0 0 !important;
+}
+
+.remember input
+{
+	width: 15px;
+	height: 15px;
+	margin-right: 5px;
+	margin-top: 5px;
+}
+
+.gradient-bg {
+		border-color: transparent;
+		background: -moz-linear-gradient(180deg, rgba(50,200,250,1) 0%, rgba(88,125,228,1) 100%); /* ff3.6+ */
+		background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(50,200,250,1)), color-stop(100%, rgba(88,125,228,1))); /* safari4+,chrome */
+		background: -webkit-linear-gradient(180deg, rgba(50,200,250,1) 0%, rgba(88,125,228,1) 100%); /* safari5.1+,chrome10+ */
+		background: -o-linear-gradient(180deg, rgba(50,200,250,1) 0%, rgba(88,125,228,1) 100%); /* opera 11.10+ */
+		background: -ms-linear-gradient(180deg, rgba(50,200,250,1) 0%, rgba(88,125,228,1) 100%); /* ie10+ */
+		background: linear-gradient(270deg, rgba(50,200,250,1) 0%, rgba(88,125,228,1) 100%); /* w3c */
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#18a3eb', endColorstr='#587de4',GradientType=1 ); /* ie6-9 */
+		color: #fff;
+		cursor: pointer;
+}
+
+.links{
+}
+
+.links a{
+	margin-left: 4px;
+}

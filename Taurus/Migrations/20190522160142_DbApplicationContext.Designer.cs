@@ -10,8 +10,8 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190521172746_Database2205")]
-    partial class Database2205
+    [Migration("20190522160142_DbApplicationContext")]
+    partial class DbApplicationContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -157,6 +157,8 @@ namespace Taurus.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired();
+
+                    b.Property<int>("Gender");
 
                     b.Property<bool>("LockoutEnabled");
 

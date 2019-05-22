@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Taurus.Areas.Identity.Models
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Hello World</title>
@@ -8,7 +13,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <script src='~/lib/jquery/dist/jquery.min.js'></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src='~/js/jquery.collapsible.min.js'></script>
+    <script src='~/js/swiper.min.js'></script>
+    <script src='~/js/jquery.countdown.min.js'></script>
+    <script src='~/js/circle-progress.min.js'></script>
+    <script src='~/js/jquery.countTo.min.js'></script>
+    <script src='~/js/jquery.barfiller.js'></script>
+    <script src='~/js/custom.js'></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -37,7 +51,11 @@
                                 <li><a href="/Contact">Contact</a></li>
 
                                 <li class="call-btn button gradient-bg mt-3 mt-md-0">
-                                    <a class="d-flex justify-content-center align-items-center" href="/Login">Login</a>
+                                    @if (SignInManager.IsSignedIn(User)) {
+                                    <a class="d-flex justify-content-center" href="#">@User.Identity.Name</a>
+                                    } else {
+                                    <a class="d-flex justify-content-center" href="/Login">Login</a>
+                                    } 
                                 </li>
                             </ul>
                         </nav><!-- .site-navigation -->
@@ -193,14 +211,5 @@
             </div><!-- .container -->
         </div><!-- .footer-widgets -->
     </footer><!-- .site-footer -->
-
-    <script src='~/js/jquery.js'></script>
-    <script src='~/js/jquery.collapsible.min.js'></script>
-    <script src='~/js/swiper.min.js'></script>
-    <script src='~/js/jquery.countdown.min.js'></script>
-    <script src='~/js/circle-progress.min.js'></script>
-    <script src='~/js/jquery.countTo.min.js'></script>
-    <script src='~/js/jquery.barfiller.js'></script>
-    <script src='~/js/custom.js'></script>
 </body>
 </html>

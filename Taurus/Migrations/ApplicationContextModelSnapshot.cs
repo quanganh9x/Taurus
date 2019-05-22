@@ -156,6 +156,8 @@ namespace Taurus.Migrations
                     b.Property<string>("FullName")
                         .IsRequired();
 
+                    b.Property<int>("Gender");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");

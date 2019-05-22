@@ -17,6 +17,10 @@ namespace Taurus.Data
         public static async Task Seed(ApplicationContext context)
         {
             await context.Database.EnsureCreatedAsync();
+            if (context.Staffs.Any())
+            {
+                return;   // DB has been seeded
+            }
             await SeedSpecialist(context);
             await SeedFacility(context);
             await SeedStaff(context);

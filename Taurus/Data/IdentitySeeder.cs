@@ -15,6 +15,10 @@ namespace Taurus.Data
     {
         public static async Task Seed(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
+            if (await userManager.FindByNameAsync("Administrator") != null)
+            {
+                return;
+            }
             await SeedRole(roleManager);
             await SeedUser(userManager);
         }
@@ -31,7 +35,8 @@ namespace Taurus.Data
                 Address = "Admin",
                 City = "Hà Nội",
                 Country = "Việt Nam",
-                Avatar = "http://google.com"
+                Avatar = "http://google.com",
+                Gender = Models.Enums.Gender.Male
             };
             await userManager.CreateAsync(user, "Abc/123456");
             await userManager.AddToRoleAsync(user, "Staff");
@@ -45,7 +50,8 @@ namespace Taurus.Data
                 Address = "nimdA",
                 City = "Hà Nội",
                 Country = "Việt Nam",
-                Avatar = "http://google.com"
+                Avatar = "http://google.com",
+                Gender = Models.Enums.Gender.Male
             };
             await userManager.CreateAsync(user, "Abc/123456");
             await userManager.AddToRoleAsync(user, "Patient");

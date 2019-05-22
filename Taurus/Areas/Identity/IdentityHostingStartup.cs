@@ -38,9 +38,9 @@ namespace Taurus.Areas.Identity
                 {
                     options.AccessDeniedPath = "/";
                     options.Cookie.Name = "quanganh9x";
-                    options.ExpireTimeSpan = TimeSpan.MaxValue;
-                    options.LoginPath = "/";
-                    options.LogoutPath = "/Users/Logout";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                    options.LoginPath = "/Login";
+                    options.LogoutPath = "/Logout";
                     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                     options.SlidingExpiration = true;
                 });
