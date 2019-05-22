@@ -2,7 +2,7 @@ using System;
 
 namespace Taurus.Models
 {
-    public class ErrorViewModel
+    public class ViewError
     {
         public string RequestId { get; set; }
 
