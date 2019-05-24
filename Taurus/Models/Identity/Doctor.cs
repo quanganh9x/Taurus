@@ -8,10 +8,10 @@ using Taurus.Areas.Identity.Models;
 
 namespace Taurus.Models
 {
-    public class Staff
+    public class Doctor
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
+        public int Id { get; set; }
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
@@ -21,15 +21,22 @@ namespace Taurus.Models
         public int FacilityId { get; set; }
         [ForeignKey("FacilityId")]
         public virtual Facility Facility { get; set; }
-        /* status */
-        public Status Status { get; set; } = Status.Active;
-        /* one staff has many cases & appointments */
-        public virtual List<Case> Cases { get; set; }
-        public virtual List<Appointment> Appointments { get; set; }
+        /* lists */
+        public virtual List<Room> Rooms { get; set; }
+        public virtual List<Session> Sessions { get; set; }
+        public virtual List<Answer> Answers { get; set; }
+        /* analytics */
+        public virtual List<Vote> Votes { get; set; }
+        public virtual List<Flag> Flags { get; set; }
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
+
+        public int GetPoints()
+        {
+            return this.Votes.Count - this.Flags.Count;
+        }
     }
 }

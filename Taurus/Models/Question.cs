@@ -7,22 +7,20 @@ using System.Threading.Tasks;
 
 namespace Taurus.Models
 {
-    public class Appointment
+    public class Question
     {
         [Key]
         public int Id { get; set; }
-        public int CaseId { get; set; }
-        [ForeignKey("CaseId")]
-        public virtual Case Case { get; set; }
-        public string StaffId { get; set; }
-        [ForeignKey("StaffId")]
-        public virtual Staff Staff { get; set; }
-        public string PatientId { get; set; }
-        [ForeignKey("PatientId")]
-        public virtual Patient Patient { get; set; }
-        public DateTime Time { get; set; }
+        public int DoctorId { get; set; }
+        [ForeignKey("DoctorId")]
+        public virtual Doctor Doctor { get; set; }
+        public int CustomerId { get; set; }
+        [ForeignKey("CustomerId")]
+        public virtual Customer Customer { get; set; }
+        [Required]
+        public string Text { get; set; }
         /* status */
-        public Status Status { get; set; } = Status.Active;
+        public Status Status { get; set; } = Status.Processing;
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

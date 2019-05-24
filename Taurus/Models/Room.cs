@@ -2,21 +2,25 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Taurus.Models
 {
-    public class Bill
+    public class Room
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString().Replace("-","").ToUpper();
-        public int CaseId { get; set; }
-        [ForeignKey("CaseId")]
-        public virtual Case Case { get; set; }
-        public string Diagnosis { get; set; }
-        public string Note { get; set; }
-        public string Medicines { get; set; }
+        public int Id { get; set; }
+        public int DoctorId { get; set; }
+        [ForeignKey("DoctorId")]
+        public virtual Doctor Doctor { get; set; }
+        public DateTime EstimateTimeStart { get; set; }
+        public DateTime EstimateTimeEnd { get; set; }
+        /* lists */
+        public virtual List<Session> Sessions { get; set; }
+        // infos
+        [Required]
+        public string Title { get; set; }
+        [Required]
+        public int Price { get; set; } // per min
         /* status */
         public Status Status { get; set; } = Status.Active;
         /* datetime */

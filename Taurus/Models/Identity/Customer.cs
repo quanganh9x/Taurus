@@ -8,18 +8,16 @@ using Taurus.Areas.Identity.Models;
 
 namespace Taurus.Models
 {
-    public class Patient
+    public class Customer
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString().Replace("-", "").ToUpper();
+        public int Id { get; set; }
         public int UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
-        /* one patient has many cases & appointments */
-        public virtual List<Case> Cases { get; set; }
-        public virtual List<Appointment> Appointments { get; set; }
-        /* status */
-        public Status Status { get; set; } = Status.Active;
+        // lists
+        public virtual List<Session> Sessions { get; set; }
+        public virtual List<Question> Questions { get; set; }
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

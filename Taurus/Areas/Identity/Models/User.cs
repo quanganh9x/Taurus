@@ -27,5 +27,12 @@ namespace Taurus.Areas.Identity.Models
         public string Avatar { get; set; }
         [PersonalData]
         public Gender Gender { get; set; }
+        // currencies
+        public float Coins { get; set; } = 0;
+
+        public int GetAge()
+        {
+            return (DateTime.Now.Year - DateOfBirth.Year);
+        }
     }
 }
