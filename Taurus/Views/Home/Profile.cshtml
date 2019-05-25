@@ -1,0 +1,71 @@
+﻿<div class="container-fluid">
+    <div class="row">
+        <div class="col-3">
+            <div class="card" style="width: auto;">
+                <img src="https://www.w3schools.com/w3images/avatar2.png" class="card-img-top" alt="fuck">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Cras justo odio</li>
+                    <li class="list-group-item">Dapibus ac facilisis in</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="card-link">Card link</a>
+                    <a href="#" class="card-link">Another link</a>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                Launch demo modal
+            </button>
+        </div>
+        <div class="col-9">
+            <div class="appointment-box">
+                <h3 class="d-flex align-items-center">Make an Appointment</h3>
+
+                <form class="d-flex flex-wrap justify-content-between">
+                    <select class="select-department">
+                        <option value="value1">Select Department</option>
+                        <option value="value2">Select Department 1</option>
+                        <option value="value3">Select Department 2</option>
+                    </select>
+
+                    <select class="select-doctor">
+                        <option>Select Doctor</option>
+                        <option>Select Doctor 1</option>
+                        <option>Select Doctor 2</option>
+                    </select>
+
+                    <input type="text" placeholder="Name">
+
+                    <input type="number" placeholder="Phone No">
+
+                    <input class="button gradient-bg" type="submit" value="Boom Appoitnment">
+                </form>
+            </div>
+            <div class="appointment-box">
+                <h3 class="d-flex align-items-center">Book an Appointment</h3>
+                <div id="calendar" class="p-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="~/lib/fullcalendar/main.min.css">
+<script src='~/lib/fullcalendar/main.min.js'></script>
+<link rel="stylesheet" href="~/lib/fullcalendar/daygrid/main.min.css">
+<script src='~/lib/fullcalendar/daygrid/main.min.js'></script>
+<script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: ['dayGrid']
+            });
+
+            calendar.render();
+        });
+
+</script>
