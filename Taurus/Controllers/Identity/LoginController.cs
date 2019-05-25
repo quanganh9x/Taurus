@@ -124,8 +124,7 @@ namespace Taurus.Controllers
                         var claims = new[]
                         {
                             new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                            new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
-                            new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString())
+                            new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString())
                         };
 
                         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_cfg["Tokens:Key"]));
