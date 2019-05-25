@@ -65,7 +65,7 @@ namespace Taurus.Controllers.Identity
             [Required]
             public Gender Gender { get; set; }
 
-            [Required]
+            
             public string Avatar { get; set; }
         }
 
@@ -83,7 +83,7 @@ namespace Taurus.Controllers.Identity
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber, FullName = Input.FullName, DateOfBirth = DateTime.Parse(Input.DateOfBirth), Address = Input.Address, City = Input.City, Country = Input.Country, Gender = Input.Gender };
+                var user = new User { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber, FullName = Input.FullName, DateOfBirth = DateTime.Parse(Input.DateOfBirth), Address = Input.Address, City = Input.City, Country = Input.Country, Gender = Input.Gender, Avatar = Input.Avatar };
                 var result = await _userManager.CreateAsync(user, "Abc/123456");
                 if (result.Succeeded)
                 {
