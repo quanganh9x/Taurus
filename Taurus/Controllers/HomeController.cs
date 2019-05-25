@@ -46,6 +46,18 @@ namespace Taurus.Controllers
             return View();
         }
 
+        [Route("/Panel")]
+        public IActionResult Panel()
+        {
+            return View();
+        }
+
+        [Route("/Profile")]
+        public IActionResult Profile()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
