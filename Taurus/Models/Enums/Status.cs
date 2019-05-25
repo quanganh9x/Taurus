@@ -7,7 +7,7 @@ namespace Taurus.Models
 {
     public enum Status
     {
-        Active = 1,
-        Done = 3
+        ACTIVE = 1,
+        DONE = 3
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Models;
+using Taurus.Models.Enums;
 
 namespace Taurus.Data
 {
@@ -23,6 +24,7 @@ namespace Taurus.Data
             await SeedFacility(context);
             await SeedDoctor(context);
             await SeedCustomer(context);
+            await SeedRoom(context);
         }
 
         public static async Task SeedSpecialist(ApplicationContext context)
@@ -81,15 +83,65 @@ namespace Taurus.Data
             };
             context.Doctors.Add(doctor);
             await context.SaveChangesAsync();
+
+            doctor = new Doctor()
+            {
+                UserId = 2,
+                FacilityId = 2,
+                SpecialistId = 2
+            };
+            context.Doctors.Add(doctor);
+            await context.SaveChangesAsync();
         }
 
         public static async Task SeedCustomer(ApplicationContext context)
         {
             var customer = new Customer()
             {
-                UserId = 2
+                UserId = 3
             };
             context.Customers.Add(customer);
+            await context.SaveChangesAsync();
+
+            customer = new Customer()
+            {
+                UserId = 4
+            };
+            context.Customers.Add(customer);
+            await context.SaveChangesAsync();
+
+            customer = new Customer()
+            {
+                UserId = 5
+            };
+            context.Customers.Add(customer);
+            await context.SaveChangesAsync();
+        }
+
+        public static async Task SeedRoom(ApplicationContext context)
+        {
+            var room = new Room()
+            {
+                DoctorId = 1,
+                EstimateTimeStart = DateTime.Parse("05/26/2019 18:00:00"),
+                EstimateTimeEnd = DateTime.Parse("05/26/2019 19:00:00"),
+                Title = "Tâm sự tuổi hồng với Bác sĩ Hoa Súng",
+                Price = 3,
+                Status = RoomStatus.ACTIVE,
+            };
+            context.Rooms.Add(room);
+            await context.SaveChangesAsync();
+
+            room = new Room()
+            {
+                DoctorId = 2,
+                EstimateTimeStart = DateTime.Parse("05/26/2019 19:00:00"),
+                EstimateTimeEnd = DateTime.Parse("05/26/2019 20:00:00"),
+                Title = "Bệnh nhân nam với các điều khó nói",
+                Price = 5,
+                Status = RoomStatus.ACTIVE,
+            };
+            context.Rooms.Add(room);
             await context.SaveChangesAsync();
         }
     }

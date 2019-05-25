@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,17 +20,25 @@ namespace Taurus.Controllers
     {
         private readonly ApplicationContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProfileController(ApplicationContext context, UserManager<User> userManager)
+        public ProfileController(ApplicationContext context, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // GET: /<controller>/
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            if (!User.IsInRole("Doctor"))
+            {
+                return View("../Home/Index");
+            }
+            
+            Doctor doctor = await _context.Doctors.Where(d => d.UserId == Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)).SingleAsync();
+            return View("../Home/Profile", doctor);
         }
 
         public async Task<IActionResult> GetProfile()

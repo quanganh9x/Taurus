@@ -341,32 +341,6 @@ namespace Taurus.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bills",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DoctorId = table.Column<int>(nullable: false),
-                    EstimateTimeStart = table.Column<DateTime>(nullable: false),
-                    EstimateTimeEnd = table.Column<DateTime>(nullable: false),
-                    Title = table.Column<string>(nullable: false),
-                    Price = table.Column<int>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
-                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bills", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Bills_Doctors_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "Doctors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DoctorFlags",
                 columns: table => new
                 {
@@ -416,6 +390,32 @@ namespace Taurus.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_DoctorVotes_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rooms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DoctorId = table.Column<int>(nullable: false),
+                    EstimateTimeStart = table.Column<DateTime>(nullable: false),
+                    EstimateTimeEnd = table.Column<DateTime>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
+                    Price = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Rooms_Doctors_DoctorId",
                         column: x => x.DoctorId,
                         principalTable: "Doctors",
                         principalColumn: "Id",
@@ -473,9 +473,9 @@ namespace Taurus.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Sessions_Bills_RoomId",
+                        name: "FK_Sessions_Rooms_RoomId",
                         column: x => x.RoomId,
-                        principalTable: "Bills",
+                        principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -528,11 +528,6 @@ namespace Taurus.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bills_DoctorId",
-                table: "Bills",
-                column: "DoctorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CustomerFlags_CustomerId",
@@ -595,6 +590,11 @@ namespace Taurus.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Rooms_DoctorId",
+                table: "Rooms",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sessions_CustomerId",
                 table: "Sessions",
                 column: "CustomerId");
@@ -650,7 +650,7 @@ namespace Taurus.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Bills");
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "Customers");

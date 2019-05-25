@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Taurus.Models.Enums;
 
 namespace Taurus.Models
 {
@@ -22,7 +23,7 @@ namespace Taurus.Models
         [Required]
         public int Price { get; set; } // per min
         /* status */
-        public Status Status { get; set; } = Status.Active;
+        public RoomStatus Status { get; set; } = RoomStatus.ACTIVE;
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

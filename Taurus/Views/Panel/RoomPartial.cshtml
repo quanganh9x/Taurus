@@ -1,0 +1,26 @@
+﻿@model List<Room>
+
+@foreach (Room r in Model)
+{
+    <div class="card mb-3">
+        <div class="card-header gradient-bg">
+            Featured
+        </div>
+        <div class="card-body">
+            <div class="row no-gutters">
+                <div class="col-2">
+                    <img class="card-image" src="@r.Doctor.User.Avatar" style="width: inherit;" alt="avatar" />
+                </div>
+                <div class="col-8">
+                    <h2>@r.Title</h2>
+                    <h5>@r.Doctor.User.FullName</h5>
+                    <p>Start time: @r.EstimateTimeStart.ToString("ddd dd/MM HH:mm") </p>
+                    <p>End time: @r.EstimateTimeEnd.ToString("ddd dd/MM HH:mm") </p>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                    <h1>$@r.Price</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+}

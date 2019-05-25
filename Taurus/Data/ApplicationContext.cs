@@ -19,7 +19,7 @@ namespace Taurus.Data
         }
 
         public DbSet<Notification> Notifications { get; set; }
-        public DbSet<Room> Bills { get; set; }
+        public DbSet<Room> Rooms { get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }

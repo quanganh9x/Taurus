@@ -10,7 +10,7 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190525101322_DbApplication")]
+    [Migration("20190525115246_DbApplication")]
     partial class DbApplication
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -494,7 +494,7 @@ namespace Taurus.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Bills");
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("Taurus.Models.Session", b =>

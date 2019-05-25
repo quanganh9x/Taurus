@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Taurus.Models.Enums
 {
-    public enum Gender
+    public enum RoomStatus
     {
-        MALE = 1,
-        FEMALE = 2,
-        UNDEFINED = 0
+        ACTIVE = 1,
+        CLOSED = -1,
+        PENDING = 0
     }
 }

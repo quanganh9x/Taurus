@@ -492,7 +492,7 @@ namespace Taurus.Migrations
 
                     b.HasIndex("DoctorId");
 
-                    b.ToTable("Bills");
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("Taurus.Models.Session", b =>

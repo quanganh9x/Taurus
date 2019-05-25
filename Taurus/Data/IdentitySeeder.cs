@@ -37,7 +37,7 @@ namespace Taurus.Data
                     City = "Hà Nội",
                     Country = "Việt Nam",
                     Avatar = "https://previews.123rf.com/images/anwarsikumbang/anwarsikumbang1502/anwarsikumbang150200445/36649700-man-avatar-user-picture-cartoon-character-vector-illustration.jpg",
-                    Gender = Gender.Male,
+                    Gender = Gender.MALE,
                     Coins = 999999
                 };
                 await userManager.CreateAsync(user, "Abc/123456");
@@ -57,7 +57,7 @@ namespace Taurus.Data
                     City = "Thành phố Hồ Chí Minh",
                     Country = "Việt Nam",
                     Avatar = "https://previews.123rf.com/images/anwarsikumbang/anwarsikumbang1502/anwarsikumbang150200445/36649700-man-avatar-user-picture-cartoon-character-vector-illustration.jpg",
-                    Gender = Gender.Male,
+                    Gender = Gender.MALE,
                     Coins = 1000030
                 };
                 await userManager.CreateAsync(user, "Abc/123456");
@@ -77,7 +77,7 @@ namespace Taurus.Data
                     City = "Hà Nội",
                     Country = "Việt Nam",
                     Avatar = "https://banner2.kisspng.com/20180626/fhs/kisspng-avatar-user-computer-icons-software-developer-5b327cc98b5780.5684824215300354015708.jpg",
-                    Gender = Gender.Male,
+                    Gender = Gender.MALE,
                     Coins = 99999
                 };
                 await userManager.CreateAsync(user, "Abc/123456");
@@ -97,7 +97,7 @@ namespace Taurus.Data
                     City = "Hà Nội",
                     Country = "Việt Nam",
                     Avatar = "https://banner2.kisspng.com/20180626/fhs/kisspng-avatar-user-computer-icons-software-developer-5b327cc98b5780.5684824215300354015708.jpg",
-                    Gender = Gender.Male,
+                    Gender = Gender.MALE,
                     Coins = 99999
                 };
                 await userManager.CreateAsync(user, "Abc/123456");
@@ -117,7 +117,7 @@ namespace Taurus.Data
                     City = "Hà Nội",
                     Country = "Việt Nam",
                     Avatar = "https://banner2.kisspng.com/20180406/gaq/kisspng-computer-icons-avatar-user-profile-people-icon-5ac7ab59364412.4012676915230349692223.jpg",
-                    Gender = Gender.Male,
+                    Gender = Gender.MALE,
                     Coins = 99999
                 };
                 await userManager.CreateAsync(user, "Abc/123456");
@@ -137,7 +137,7 @@ namespace Taurus.Data
                     City = "Hà Nội",
                     Country = "Việt Nam",
                     Avatar = "https://banner2.kisspng.com/20180403/pde/kisspng-child-computer-icons-avatar-user-avatar-5ac3a1f1da5b25.5067805715227704178944.jpg",
-                    Gender = Gender.Female,
+                    Gender = Gender.FEMALE,
                     Coins = 999992
                 };
                 await userManager.CreateAsync(user, "Abc/123456");
