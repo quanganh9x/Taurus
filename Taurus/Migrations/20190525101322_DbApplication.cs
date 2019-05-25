@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Taurus.Migrations
 {
-    public partial class DbApplicationContext : Migration
+    public partial class DbApplication : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,7 +49,8 @@ namespace Taurus.Migrations
                     City = table.Column<string>(nullable: true),
                     Country = table.Column<string>(nullable: true),
                     Avatar = table.Column<string>(nullable: true),
-                    Gender = table.Column<int>(nullable: false)
+                    Gender = table.Column<int>(nullable: false),
+                    Coins = table.Column<float>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -194,20 +195,20 @@ namespace Taurus.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Patients",
+                name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Patients_AspNetUsers_UserId",
+                        name: "FK_Customers_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -215,85 +216,14 @@ namespace Taurus.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Staffs",
+                name: "Notifications",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(nullable: false),
-                    SpecialistId = table.Column<int>(nullable: false),
-                    FacilityId = table.Column<int>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
-                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Staffs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Staffs_Facilities_FacilityId",
-                        column: x => x.FacilityId,
-                        principalTable: "Facilities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Staffs_Specialists_SpecialistId",
-                        column: x => x.SpecialistId,
-                        principalTable: "Specialists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Staffs_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Cases",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    StaffId = table.Column<string>(nullable: true),
-                    PatientId = table.Column<string>(nullable: true),
-                    SpecialistId = table.Column<int>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
-                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cases", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cases_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Cases_Specialists_SpecialistId",
-                        column: x => x.SpecialistId,
-                        principalTable: "Specialists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Cases_Staffs_StaffId",
-                        column: x => x.StaffId,
-                        principalTable: "Staffs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Appointments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CaseId = table.Column<int>(nullable: false),
-                    StaffId = table.Column<string>(nullable: true),
-                    PatientId = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     Time = table.Column<DateTime>(nullable: false),
                     Status = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
@@ -301,36 +231,126 @@ namespace Taurus.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Appointments", x => x.Id);
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Appointments_Cases_CaseId",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
+                        name: "FK_Notifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Doctors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<int>(nullable: false),
+                    SpecialistId = table.Column<int>(nullable: false),
+                    FacilityId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Doctors_Facilities_FacilityId",
+                        column: x => x.FacilityId,
+                        principalTable: "Facilities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Appointments_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
+                        name: "FK_Doctors_Specialists_SpecialistId",
+                        column: x => x.SpecialistId,
+                        principalTable: "Specialists",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Appointments_Staffs_StaffId",
-                        column: x => x.StaffId,
-                        principalTable: "Staffs",
+                        name: "FK_Doctors_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerFlags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CustomerId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerFlags", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerFlags_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerVotes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CustomerId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerVotes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerVotes_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Questions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CustomerId = table.Column<int>(nullable: false),
+                    Text = table.Column<string>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Questions_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Bills",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    CaseId = table.Column<int>(nullable: false),
-                    Diagnosis = table.Column<string>(nullable: true),
-                    Note = table.Column<string>(nullable: true),
-                    Medicines = table.Column<string>(nullable: true),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DoctorId = table.Column<int>(nullable: false),
+                    EstimateTimeStart = table.Column<DateTime>(nullable: false),
+                    EstimateTimeEnd = table.Column<DateTime>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
+                    Price = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
@@ -339,27 +359,136 @@ namespace Taurus.Migrations
                 {
                     table.PrimaryKey("PK_Bills", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bills_Cases_CaseId",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
+                        name: "FK_Bills_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Appointments_CaseId",
-                table: "Appointments",
-                column: "CaseId");
+            migrationBuilder.CreateTable(
+                name: "DoctorFlags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DoctorId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CustomerId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorFlags", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DoctorFlags_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DoctorFlags_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DoctorVotes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DoctorId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CustomerId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorVotes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DoctorVotes_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DoctorVotes_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Answers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    QuestionId = table.Column<int>(nullable: false),
+                    DoctorId = table.Column<int>(nullable: false),
+                    Text = table.Column<string>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Answers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Answers_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Answers_Questions_QuestionId",
+                        column: x => x.QuestionId,
+                        principalTable: "Questions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sessions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    RoomId = table.Column<int>(nullable: false),
+                    CustomerId = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sessions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sessions_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Sessions_Bills_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Bills",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_PatientId",
-                table: "Appointments",
-                column: "PatientId");
+                name: "IX_Answers_DoctorId",
+                table: "Answers",
+                column: "DoctorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Appointments_StaffId",
-                table: "Appointments",
-                column: "StaffId");
+                name: "IX_Answers_QuestionId",
+                table: "Answers",
+                column: "QuestionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -401,50 +530,85 @@ namespace Taurus.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bills_CaseId",
+                name: "IX_Bills_DoctorId",
                 table: "Bills",
-                column: "CaseId");
+                column: "DoctorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cases_PatientId",
-                table: "Cases",
-                column: "PatientId");
+                name: "IX_CustomerFlags_CustomerId",
+                table: "CustomerFlags",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cases_SpecialistId",
-                table: "Cases",
-                column: "SpecialistId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cases_StaffId",
-                table: "Cases",
-                column: "StaffId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Patients_UserId",
-                table: "Patients",
+                name: "IX_Customers_UserId",
+                table: "Customers",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Staffs_FacilityId",
-                table: "Staffs",
+                name: "IX_CustomerVotes_CustomerId",
+                table: "CustomerVotes",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorFlags_CustomerId",
+                table: "DoctorFlags",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorFlags_DoctorId",
+                table: "DoctorFlags",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctors_FacilityId",
+                table: "Doctors",
                 column: "FacilityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Staffs_SpecialistId",
-                table: "Staffs",
+                name: "IX_Doctors_SpecialistId",
+                table: "Doctors",
                 column: "SpecialistId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Staffs_UserId",
-                table: "Staffs",
+                name: "IX_Doctors_UserId",
+                table: "Doctors",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorVotes_CustomerId",
+                table: "DoctorVotes",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorVotes_DoctorId",
+                table: "DoctorVotes",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserId",
+                table: "Notifications",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_CustomerId",
+                table: "Questions",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sessions_CustomerId",
+                table: "Sessions",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sessions_RoomId",
+                table: "Sessions",
+                column: "RoomId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Appointments");
+                name: "Answers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -462,19 +626,37 @@ namespace Taurus.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Bills");
+                name: "CustomerFlags");
+
+            migrationBuilder.DropTable(
+                name: "CustomerVotes");
+
+            migrationBuilder.DropTable(
+                name: "DoctorFlags");
+
+            migrationBuilder.DropTable(
+                name: "DoctorVotes");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "Sessions");
+
+            migrationBuilder.DropTable(
+                name: "Questions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Cases");
+                name: "Bills");
 
             migrationBuilder.DropTable(
-                name: "Patients");
+                name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "Staffs");
+                name: "Doctors");
 
             migrationBuilder.DropTable(
                 name: "Facilities");

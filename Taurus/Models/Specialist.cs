@@ -12,6 +12,8 @@ namespace Taurus.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        /* lists */
+        public virtual List<Doctor> Doctors { get; set; }
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

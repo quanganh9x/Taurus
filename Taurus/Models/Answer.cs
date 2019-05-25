@@ -16,8 +16,13 @@ namespace Taurus.Models
         public virtual Question Question { get; set; }
         public int DoctorId { get; set; }
         [ForeignKey("DoctorId")]
-        public Doctor Doctor { get; set; }
+        public virtual Doctor Doctor { get; set; }
         [Required]
         public string Text { get; set; }
+        /* datetime */
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime UpdatedAt { get; set; }
     }
 }

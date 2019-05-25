@@ -10,8 +10,8 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190522160142_DbApplicationContext")]
-    partial class DbApplicationContext
+    [Migration("20190525101322_DbApplication")]
+    partial class DbApplication
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -143,6 +143,8 @@ namespace Taurus.Migrations
 
                     b.Property<string>("City");
 
+                    b.Property<float>("Coins");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -196,25 +198,22 @@ namespace Taurus.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Taurus.Models.Appointment", b =>
+            modelBuilder.Entity("Taurus.Models.Answer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CaseId");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<string>("PatientId");
+                    b.Property<int>("DoctorId");
 
-                    b.Property<string>("StaffId");
+                    b.Property<int>("QuestionId");
 
-                    b.Property<int>("Status");
-
-                    b.Property<DateTime>("Time");
+                    b.Property<string>("Text")
+                        .IsRequired();
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -222,33 +221,46 @@ namespace Taurus.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CaseId");
+                    b.HasIndex("DoctorId");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("QuestionId");
 
-                    b.HasIndex("StaffId");
-
-                    b.ToTable("Appointments");
+                    b.ToTable("Answers");
                 });
 
-            modelBuilder.Entity("Taurus.Models.Bill", b =>
+            modelBuilder.Entity("Taurus.Models.Customer", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("Taurus.Models.CustomerFlag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("CaseId");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<string>("Diagnosis");
-
-                    b.Property<string>("Medicines");
-
-                    b.Property<string>("Note");
-
-                    b.Property<int>("Status");
+                    b.Property<int>("CustomerId");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -256,12 +268,12 @@ namespace Taurus.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CaseId");
+                    b.HasIndex("CustomerId");
 
-                    b.ToTable("Bills");
+                    b.ToTable("CustomerFlags");
                 });
 
-            modelBuilder.Entity("Taurus.Models.Case", b =>
+            modelBuilder.Entity("Taurus.Models.CustomerVote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -271,13 +283,63 @@ namespace Taurus.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
-                    b.Property<string>("PatientId");
+                    b.Property<int>("CustomerId");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("CustomerVotes");
+                });
+
+            modelBuilder.Entity("Taurus.Models.Doctor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("FacilityId");
 
                     b.Property<int>("SpecialistId");
 
-                    b.Property<string>("StaffId");
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
 
-                    b.Property<int>("Status");
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FacilityId");
+
+                    b.HasIndex("SpecialistId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Doctors");
+                });
+
+            modelBuilder.Entity("Taurus.Models.DoctorFlag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<int?>("CustomerId");
+
+                    b.Property<int>("DoctorId");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -285,13 +347,38 @@ namespace Taurus.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PatientId");
+                    b.HasIndex("CustomerId");
 
-                    b.HasIndex("SpecialistId");
+                    b.HasIndex("DoctorId");
 
-                    b.HasIndex("StaffId");
+                    b.ToTable("DoctorFlags");
+                });
 
-                    b.ToTable("Cases");
+            modelBuilder.Entity("Taurus.Models.DoctorVote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<int?>("CustomerId");
+
+                    b.Property<int>("DoctorId");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("DoctorVotes");
                 });
 
             modelBuilder.Entity("Taurus.Models.Facility", b =>
@@ -317,16 +404,23 @@ namespace Taurus.Migrations
                     b.ToTable("Facilities");
                 });
 
-            modelBuilder.Entity("Taurus.Models.Patient", b =>
+            modelBuilder.Entity("Taurus.Models.Notification", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
+                    b.Property<string>("Description");
+
                     b.Property<int>("Status");
+
+                    b.Property<DateTime>("Time");
+
+                    b.Property<string>("Title");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -338,7 +432,98 @@ namespace Taurus.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("Taurus.Models.Question", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("CustomerId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Text")
+                        .IsRequired();
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("Taurus.Models.Room", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("DoctorId");
+
+                    b.Property<DateTime>("EstimateTimeEnd");
+
+                    b.Property<DateTime>("EstimateTimeStart");
+
+                    b.Property<int>("Price");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("Taurus.Models.Session", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("CustomerId");
+
+                    b.Property<int>("RoomId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("getdate()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("Sessions");
                 });
 
             modelBuilder.Entity("Taurus.Models.Specialist", b =>
@@ -360,38 +545,6 @@ namespace Taurus.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialists");
-                });
-
-            modelBuilder.Entity("Taurus.Models.Staff", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<int>("FacilityId");
-
-                    b.Property<int>("SpecialistId");
-
-                    b.Property<int>("Status");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("getdate()");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FacilityId");
-
-                    b.HasIndex("SpecialistId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Staffs");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -439,47 +592,20 @@ namespace Taurus.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Taurus.Models.Appointment", b =>
+            modelBuilder.Entity("Taurus.Models.Answer", b =>
                 {
-                    b.HasOne("Taurus.Models.Case", "Case")
-                        .WithMany("Appointments")
-                        .HasForeignKey("CaseId")
+                    b.HasOne("Taurus.Models.Doctor", "Doctor")
+                        .WithMany("Answers")
+                        .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Taurus.Models.Patient", "Patient")
-                        .WithMany("Appointments")
-                        .HasForeignKey("PatientId");
-
-                    b.HasOne("Taurus.Models.Staff", "Staff")
-                        .WithMany("Appointments")
-                        .HasForeignKey("StaffId");
+                    b.HasOne("Taurus.Models.Question", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("Taurus.Models.Bill", b =>
-                {
-                    b.HasOne("Taurus.Models.Case", "Case")
-                        .WithMany("Bills")
-                        .HasForeignKey("CaseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Taurus.Models.Case", b =>
-                {
-                    b.HasOne("Taurus.Models.Patient", "Patient")
-                        .WithMany("Cases")
-                        .HasForeignKey("PatientId");
-
-                    b.HasOne("Taurus.Models.Specialist", "Specialist")
-                        .WithMany()
-                        .HasForeignKey("SpecialistId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Taurus.Models.Staff", "Staff")
-                        .WithMany("Cases")
-                        .HasForeignKey("StaffId");
-                });
-
-            modelBuilder.Entity("Taurus.Models.Patient", b =>
+            modelBuilder.Entity("Taurus.Models.Customer", b =>
                 {
                     b.HasOne("Taurus.Areas.Identity.Models.User", "User")
                         .WithMany()
@@ -487,15 +613,31 @@ namespace Taurus.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Taurus.Models.Staff", b =>
+            modelBuilder.Entity("Taurus.Models.CustomerFlag", b =>
+                {
+                    b.HasOne("Taurus.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Taurus.Models.CustomerVote", b =>
+                {
+                    b.HasOne("Taurus.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Taurus.Models.Doctor", b =>
                 {
                     b.HasOne("Taurus.Models.Facility", "Facility")
-                        .WithMany()
+                        .WithMany("Doctors")
                         .HasForeignKey("FacilityId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Taurus.Models.Specialist", "Specialist")
-                        .WithMany()
+                        .WithMany("Doctors")
                         .HasForeignKey("SpecialistId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -503,6 +645,67 @@ namespace Taurus.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Taurus.Models.DoctorFlag", b =>
+                {
+                    b.HasOne("Taurus.Models.Customer")
+                        .WithMany("DoctorFlags")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("Taurus.Models.Doctor", "Doctor")
+                        .WithMany("Flags")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Taurus.Models.DoctorVote", b =>
+                {
+                    b.HasOne("Taurus.Models.Customer")
+                        .WithMany("DoctorVotes")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("Taurus.Models.Doctor", "Doctor")
+                        .WithMany("Votes")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Taurus.Models.Notification", b =>
+                {
+                    b.HasOne("Taurus.Areas.Identity.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Taurus.Models.Question", b =>
+                {
+                    b.HasOne("Taurus.Models.Customer", "Customer")
+                        .WithMany("Questions")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Taurus.Models.Room", b =>
+                {
+                    b.HasOne("Taurus.Models.Doctor", "Doctor")
+                        .WithMany("Rooms")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Taurus.Models.Session", b =>
+                {
+                    b.HasOne("Taurus.Models.Customer", "Customer")
+                        .WithMany("Sessions")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Taurus.Models.Room", "Room")
+                        .WithMany("Sessions")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

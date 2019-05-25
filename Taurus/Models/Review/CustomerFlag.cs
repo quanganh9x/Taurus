@@ -7,19 +7,14 @@ using System.Threading.Tasks;
 
 namespace Taurus.Models
 {
-    public class Question
+    public class CustomerFlag
     {
+
         [Key]
         public int Id { get; set; }
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
-        [Required]
-        public string Text { get; set; }
-        /* lists */
-        public virtual List<Answer> Answers { get; set; }
-        /* status */
-        public Status Status { get; set; } = Status.Active;
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

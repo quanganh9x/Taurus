@@ -4,21 +4,20 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Taurus.Areas.Identity.Models;
 
 namespace Taurus.Models
 {
-    public class Question
+    public class Notification
     {
         [Key]
         public int Id { get; set; }
-        public int CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
-        public virtual Customer Customer { get; set; }
+        public int UserId { get; set; }
+        public virtual User User { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         [Required]
-        public string Text { get; set; }
-        /* lists */
-        public virtual List<Answer> Answers { get; set; }
-        /* status */
+        public DateTime Time { get; set; }
         public Status Status { get; set; } = Status.Active;
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

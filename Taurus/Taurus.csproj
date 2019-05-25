@@ -22,9 +22,4 @@
     <Folder Include="Hubs\" />
   </ItemGroup>
 
-
-  <ItemGroup>
-    <None Include="wwwroot\js\site.js" />
-  </ItemGroup>
-
 </Project>

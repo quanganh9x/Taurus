@@ -23,20 +23,14 @@ namespace Taurus.Models
         public virtual Facility Facility { get; set; }
         /* lists */
         public virtual List<Room> Rooms { get; set; }
-        public virtual List<Session> Sessions { get; set; }
         public virtual List<Answer> Answers { get; set; }
         /* analytics */
-        public virtual List<Vote> Votes { get; set; }
-        public virtual List<Flag> Flags { get; set; }
+        public virtual List<DoctorVote> Votes { get; set; }
+        public virtual List<DoctorFlag> Flags { get; set; }
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
-
-        public int GetPoints()
-        {
-            return this.Votes.Count - this.Flags.Count;
-        }
     }
 }

@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace Taurus.Models
 {
-    public class Flag
+    public class DoctorFlag
     {
         [Key]
         public int Id { get; set; }
         public int DoctorId { get; set; }
         [ForeignKey("DoctorId")]
         public virtual Doctor Doctor { get; set; }
-        public int CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
-        public virtual Customer Customer { get; set; }
+        /* datetime */
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime UpdatedAt { get; set; }
     }
 }

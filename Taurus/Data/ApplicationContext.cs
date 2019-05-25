@@ -18,60 +18,27 @@ namespace Taurus.Data
             _configuration = configuration;
         }
 
-        public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Bill> Bills { get; set; }
-        public DbSet<Case> Cases { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Room> Bills { get; set; }
+        public DbSet<Session> Sessions { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Answer> Answers { get; set; }
         public DbSet<Facility> Facilities { get; set; }
-        public DbSet<Patient> Patients { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Specialist> Specialists { get; set; }
-        public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<DoctorVote> DoctorVotes { get; set; }
+        public DbSet<DoctorFlag> DoctorFlags { get; set; }
+        public DbSet<CustomerVote> CustomerVotes { get; set; }
+        public DbSet<CustomerFlag> CustomerFlags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<Staff>()
-            .Property(b => b.CreatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Staff>()
-            .Property(b => b.UpdatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Patient>()
-            .Property(b => b.CreatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Patient>()
-            .Property(b => b.UpdatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Case>()
-            .Property(b => b.CreatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Case>()
-            .Property(b => b.UpdatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Bill>()
-            .Property(b => b.UpdatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Bill>()
-            .Property(b => b.CreatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Facility>()
-            .Property(b => b.CreatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Facility>()
-            .Property(b => b.UpdatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Specialist>()
-            .Property(b => b.CreatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Specialist>()
-            .Property(b => b.UpdatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Appointment>()
-            .Property(b => b.UpdatedAt)
-            .HasDefaultValueSql("getdate()");
-            builder.Entity<Appointment>()
-            .Property(b => b.CreatedAt)
-            .HasDefaultValueSql("getdate()");
+            DbInitialize.DbDefaultValue(builder);
+            DbInitialize.DbDisableCascadeForSomeModels(builder);
         }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -14,13 +14,10 @@ namespace Taurus.Models
         public int RoomId { get; set; }
         [ForeignKey("RoomId")]
         public virtual Room Room { get; set; }
-        public int DoctorId { get; set; }
-        [ForeignKey("DoctorId")]
-        public virtual Doctor Doctor { get; set; }
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
-        public Status Status { get; set; } = Status.Processing;
+        public Status Status { get; set; } = Status.Active;
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;

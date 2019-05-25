@@ -12,73 +12,17 @@ namespace Taurus.Data
 {
     public class DbSeeder
     {
-        private static string StaffId = null;
-        private static string PatientId = null;
         public static async Task Seed(ApplicationContext context)
         {
             await context.Database.EnsureCreatedAsync();
-            if (context.Staffs.Any())
+            if (context.Doctors.Any())
             {
                 return;   // DB has been seeded
             }
             await SeedSpecialist(context);
             await SeedFacility(context);
-            await SeedStaff(context);
-            await SeedPatient(context);
-            await SeedCase(context);
-            await SeedAppointment(context);
-            await SeedBill(context);
-        }
-
-
-        public static async Task SeedBill(ApplicationContext context)
-        {
-            context.Bills.Add(new Bill()
-            {
-                CaseId = 1,
-                Diagnosis = "Xuất tinh sớm. 5 phút ggwp",
-                Note = "Luyện tập hàng ngày là cần thiết!",
-                Medicines = "{'name':'ahihidongok','note':'2 lần 1 ngày sau cơm','quantity':10}",
-            });
-            context.Bills.Add(new Bill()
-            {
-                CaseId = 1,
-                Diagnosis = "Xuất tinh siêu sớm. 3 phút ggwp",
-                Note = "Luyện tập hàng ngày là vô cùng cần thiết!",
-                Medicines = "{'name':'ahihidongok','note':'3 lần 1 ngày sau cơm','quantity':100}",
-            });
-            await context.SaveChangesAsync();
-        }
-
-        public static async Task SeedCase(ApplicationContext context)
-        {
-            context.Cases.Add(new Case()
-            {
-                StaffId = StaffId,
-                PatientId = PatientId,
-                SpecialistId = 1
-            });
-            await context.SaveChangesAsync();
-        }
-
-        public static async Task SeedAppointment(ApplicationContext context)
-        {
-            context.Appointments.Add(new Appointment()
-            {
-                CaseId = 1,
-                StaffId = StaffId,
-                PatientId = PatientId,
-                Time = DateTime.Parse("2019/05/22")
-            });
-            context.Appointments.Add(new Appointment()
-            {
-                CaseId = 1,
-                StaffId = StaffId,
-                PatientId = PatientId,
-                Time = DateTime.Parse("2019/05/20"),
-                Status = Status.Done
-            });
-            await context.SaveChangesAsync();
+            await SeedDoctor(context);
+            await SeedCustomer(context);
         }
 
         public static async Task SeedSpecialist(ApplicationContext context)
@@ -127,27 +71,25 @@ namespace Taurus.Data
             await context.SaveChangesAsync();
         }
 
-        public static async Task SeedStaff(ApplicationContext context)
+        public static async Task SeedDoctor(ApplicationContext context)
         {
-            var staff = new Staff()
+            var doctor = new Doctor()
             {
                 UserId = 1,
                 FacilityId = 1,
                 SpecialistId = 1
             };
-            context.Staffs.Add(staff);
-            StaffId = staff.Id; // safer
+            context.Doctors.Add(doctor);
             await context.SaveChangesAsync();
         }
 
-        public static async Task SeedPatient(ApplicationContext context)
+        public static async Task SeedCustomer(ApplicationContext context)
         {
-            var patient = new Patient()
+            var customer = new Customer()
             {
                 UserId = 2
             };
-            context.Patients.Add(patient);
-            PatientId = patient.Id; // this is safer
+            context.Customers.Add(customer);
             await context.SaveChangesAsync();
         }
     }
