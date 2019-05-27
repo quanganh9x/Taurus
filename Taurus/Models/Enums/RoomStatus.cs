@@ -9,6 +9,7 @@ namespace Taurus.Models.Enums
     {
         ACTIVE = 1,
         CLOSED = -1,
-        PENDING = 0
+        PENDING = 0,
+        BUSY = 2
     }
 }

@@ -1,65 +1,81 @@
-﻿
-<div class="homepage-boxes">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-3">
-                <div class="accordion" id="accordionExample">
-                    <div class="card">
-                        <div class="card-header" id="headingOne">
-                            <h2 class="mb-0">
-                                <button class="btn btn-link" type="button" data-toggle="collapse"
-                                        data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    Specialist
-                                </button>
-                            </h2>
-                        </div>
+﻿<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-lg-3">
+            <div class="sidebar">
+                <div class="search-widget">
+                    <form class="flex flex-wrap align-items-center">
+                        <input type="search" placeholder="Search...">
+                        <button type="submit" class="flex justify-content-center align-items-center">Search</button>
+                    </form><!-- .flex -->
+                </div><!-- .search-widget -->
 
-                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
-                             data-parent="#accordionExample">
+                <div class="sidebar-cats">
+                    <h2 class="widget-title">Categories</h2>
 
-                            <ul class="list-group list-group-flush">
-                                @foreach (Specialist s in (List<Specialist>) ViewData["Specialists"]) {
-                                    <li class="list-group-item">@s.Name</li>                                   
-                                }
-                                
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingTwo">
-                            <h2 class="mb-0">
-                                <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
-                                        data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <ul class="accordion m-0 p-0" id="accordionExample">
+                        <li>
+                            <h5 class="text-primary" data-toggle="collapse"
+                                data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" id="headingOne">
+                                Specialist
+                            </h5>                            
+
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                 data-parent="#accordionExample">
+
+                                <ul class="p-0 m-0">
+                                    @foreach (Specialist s in (List<Specialist>)ViewData["Specialists"])
+                                    {
+                                        <li style="cursor:pointer;" class="category-item" onclick="getRoomByCategory(@s.Id)">@s.Name</li>
+                                    }
+                                </ul>
+                            </div>
+                            </li>
+                            <li>
+                                <h5 class="text-primary" data-toggle="collapse"
+                                    data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" id="headingTwo">
                                     Facilities
-                                </button>
-                            </h2>
-                        </div>
-                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
-                             data-parent="#accordionExample">
-                            <ul class="list-group list-group-flush">
-                                @foreach (Facility f in (List<Facility>)ViewData["Facilities"])
-                                {
-                                    <li class="list-group-item">@f.Name</li>
-                                }
-                            </ul>
-                        </div>
-                    </div>                    
+                                </h5>
+
+                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                     data-parent="#accordionExample">
+
+                                    <ul class="p-0 m-0">
+                                        @foreach (Facility f in (List<Facility>)ViewData["Facilities"])
+                                        {
+                                            <li>@f.Name</li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+
                 </div>
-
             </div>
-            <div id="list-room" class="col-9">
-
+        </div>
+        <div class="col-12 col-lg-9">
+            <div class="the-news">
+                <div class="row" id="list-room">
+                    
+                </div>
             </div>
         </div>
     </div>
- </div>
+</div>
 
 <script>
     $(document).ready(function () {
-        $("#list-room").load('@Url.Action("GetListActiveRoom", "Panel")');
+        var loadUrl = '@Url.Action("GetListActiveRoom", "Panel")';
+        $("#list-room").load(loadUrl);
         setInterval(function () {
-            $("#list-room").load('@Url.Action("GetListActiveRoom", "Panel")');
+            $("#list-room").load(loadUrl);
         }, 30000);
+
+        
     })
+
+    function getRoomByCategory(categoryId) {        
+        loadUrl = "Panel/GetRoomByCategory/" + categoryId;
+        $("#list-room").load(loadUrl);
+    }
 </script>
 

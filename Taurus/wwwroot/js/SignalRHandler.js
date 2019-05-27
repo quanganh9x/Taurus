@@ -4,14 +4,13 @@
     }
 
     var channelName = connection.channel;
-
     connection.socket = {
         send: function (data) {
             hub.invoke("Send", channelName, JSON.stringify(data));
         }
     };
 
-    var hub = new signalR.HubConnectionBuilder().withUrl("/Room").build();
+    var hub = new signalR.HubConnectionBuilder().withUrl("https://localhost:44375/Room").build();
 
     hub.on("Receive", function (chName, message) {
         if (chName !== channelName) return;
@@ -37,9 +36,7 @@
 
     // start the hub
     hub.start().then(() => {
-        // event ?
-    }).catch(() => {
-
+        console.log("ok");
     });
 
     setTimeout(function () {

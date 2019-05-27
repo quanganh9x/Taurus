@@ -34,11 +34,19 @@ namespace Taurus.Controllers
         }
 
         [HttpGet("GetListActiveRoom")]
-        public async Task<IActionResult> GetListActiveRoom()
-        {            
+        public async Task<IActionResult> GetListActiveRoom(string category)
+        {
             List<Room> rooms = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE).ToListAsync();
             return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
         }
-        
+
+        [HttpGet("GetRoomByCategory/{categoryId}")]
+        public async Task<IActionResult> GetRoomByCategory(int categoryId)
+        {
+            List<Room> rooms = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE &&
+            r.Doctor.Specialist.Id == categoryId).ToListAsync();
+            return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
+        }
+
     }
 }

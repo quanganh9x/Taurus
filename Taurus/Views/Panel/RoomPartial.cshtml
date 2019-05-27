@@ -2,25 +2,47 @@
 
 @foreach (Room r in Model)
 {
-    <div class="card mb-3">
-        <div class="card-header gradient-bg">
-            Featured
-        </div>
-        <div class="card-body">
-            <div class="row no-gutters">
-                <div class="col-2">
-                    <img class="card-image" src="@r.Doctor.User.Avatar" style="width: inherit;" alt="avatar" />
-                </div>
-                <div class="col-8">
-                    <h2>@r.Title</h2>
-                    <h5>@r.Doctor.User.FullName</h5>
-                    <p>Start time: @r.EstimateTimeStart.ToString("ddd dd/MM HH:mm") </p>
-                    <p>End time: @r.EstimateTimeEnd.ToString("ddd dd/MM HH:mm") </p>
-                </div>
-                <div class="col-2 d-flex justify-content-center">
-                    <h1>$@r.Price</h1>
+    
+        <div class="col-12 room-item" onclick="enterRoom(@r.Id)" style="cursor: pointer;">
+            <div class="the-news-wrap rooms-border">
+                <div class="row">
+                    <div class="col-12 col-md-2" style="margin: auto;">
+                        <img src="@r.Doctor.User.Avatar" alt="" style="height: 100px; width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <header class="entry-header">
+                            <h4>@r.Title</h4>
+
+                            <div class="post-metas d-flex flex-wrap align-items-center">
+                                <div class="posted-date"><label>Date: </label><a href="#">@r.EstimateTimeStart.ToString("ddd dd/MM HH:mm")</a></div>
+
+                                <div class="posted-by"><label>By: </label><a href="#">@r.Doctor.User.FullName</a></div>
+
+                                @*<div class="post-comments"><a href="#">2 Comments</a></div>*@
+                            </div>
+                        </header>
+                    </div>
+                    <div class="col-12 col-md-2 d-flex justify-content-center border-left" style="margin: auto;">
+                        <footer class="entry-footer">
+                            <p style="font-size: 3rem;">@r.Price C</p>
+                        </footer>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    
 }
+
+@*<div class="col-12">
+    <ul class="pagination d-flex flex-wrap align-items-center p-0">
+        <li class="active"><a href="#">01</a></li>
+        <li><a href="#">02</a></li>
+        <li><a href="#">03</a></li>
+    </ul>
+</div>*@
+
+<script>
+    function enterRoom(roomId) {       
+        window.location.href = '/Video/' + roomId;
+    }
+</script>

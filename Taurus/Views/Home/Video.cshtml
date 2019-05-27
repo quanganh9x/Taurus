@@ -1,4 +1,8 @@
-﻿<!-- Demo version: 2018.12.11 -->
+﻿@{ 
+    Layout = null;
+}
+
+<!-- Demo version: 2018.12.11 -->
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
@@ -19,7 +23,7 @@
     <link rel="stylesheet" href="~/css/swiper.min.css">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="~/css/style.css">
+    @*<link rel="stylesheet" href="~/css/style.css">*@
 
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -32,10 +36,11 @@
     <script src='~/js/custom.js'></script>
 
     <script src="~/lib/webrtc-adapter/adapter.min.js"></script>
-    <script src="~/lib/rtcmulticonnection/dist/RTCMultiConnection.min.js"></script>
+    <script src="https://rawgit.com/muaz-khan/RTCMultiConnection/master/dist/RTCMultiConnection.min.js"></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/js/SignalRHandler.js"></script>
     <script src="~/js/FileBufferReader.min.js"></script>
+
+    <script src="~/js/SignalRHandler.js"></script>
 
     <script src="~/lib/emojionearea/emojionearea.min.js"></script>
 
@@ -72,7 +77,7 @@
         }
 
             #other-videos video {
-                width: 45%;
+                width: 100%;
                 margin: 5px;
                 border: 1px solid black;
                 padding: 1px;
@@ -113,9 +118,7 @@
             width: 100%;
             margin-top: -9px;
             border-bottom: 1px solid #121010;
-            display: none;
             padding-bottom: 1px;
-            display: none;
         }
 
         hr {
@@ -131,61 +134,51 @@
             display: none;
         }
 
-        #btn-share-screen {
-            width: 25px;
-            vertical-align: middle;
-            cursor: pointer;
-            display: none;
-        }
-
         .checkmark {
             display: none;
             width: 15px;
             vertical-align: middle;
         }
 
-        #screen-viewer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999999999999;
-            display: none;
-        }
     </style>
 
     <div class="container-fluid">
 
-        <div id="widget-container"></div>
-        
+        <div class="row">
 
-        <div class="col-12 col-md-3">
-            <hr>
-            <div style="padding: 5px 10px;">
-                <div id="onUserStatusChanged"></div>
-            </div>
-
-            <div style="margin-top: 20px;position: absolute;bottom: 0;background: white; padding-bottom: 20px; width: 94%">
-                <div id="conversation-panel"></div>
-                <div id="key-press" style="text-align: right; display: none; font-size: 11px;">
-                    <span style="vertical-align: middle;"></span>
-                    <img src="https://webrtcweb.com/key-press.gif" style="height: 12px; vertical-align: middle;">
+            <div class="col-3 col-md-3">
+                <hr>
+                <div>
+                    <div id="onUserStatusChanged"></div>
                 </div>
-                <textarea id="txt-chat-message"></textarea>
-                <button class="btn btn-primary" id="btn-chat-message" disabled>Send</button>
-                <img id="btn-attach-file" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAgVBMVEX///8BAQEAAAD39/eioqLFxcWqqqrCwsLR0dHMzMx9fX21tbX5+flJSUnJycliYmJXV1d3d3eFhYVQUFCLi4ubm5uVlZVcXFzo6Ojx8fGcnJwLCwvZ2dlkZGTg4OAbGxs3NzeysrJvb29BQUErKysiIiIWFhZEREQ6OjowMDASEhIwBKE3AAAMkklEQVR4nO1di3LiOBAMcsIrJISEJZAQyAOSwP9/4JqnbU23LGFbcqrcVVe3e+eHGskz06ORdHXVoEGDBg0aNGjQoEGDBg0aNKgHBotur3fb6/W6i0HotpSPWXcy/NqqI76/hpPuNHSbSkTUG22O3Foxjn9cf7ZnoVtWDmbj1YlbGnuW/fvQrSuO7htgl2L5cxu6hcXQfTLwO3Jc34Ru5eWYjnL4HTm+/VGjE40t+B05/gvd2NhczLvdeeRyx/27Hb8Dx7fAZnX6+LuzfL8T63ZE5wF6oqlahr8qtQz6Nd5+75q792Fduzu6K/sOPHFsV0vChHbSWqXmlnc4Etw9ul81EYZJurVKWXyMD+789s/+rJ4Mwijb3Pxfuvt6Eb/dsx98ENLxqfWHUjk3fFzWgYdnP3nhlEakE4ybYTZ648sJ7il61lXTp6MaOLVg98+16Y5hYmOAe1ApyP+7v+Br4YvcDosv0CHqhd8Q3RmjbNW6+/zXm89fPn+R2jhctbSy1iURXKNGGPzW7N3I7+kjaXy3zxyKUpY+tzgWsAlK0TB5zo1oTKet3TcdUYqeROOcDKMvdsM9HaEKBywLOlI7FfI644a9nX0mt4xgzIMYp4G01Mc7PMjia/buEbmhzQm+cfM4CUaRvpkFVoxgHKx/mF5E4oPKKfY1d3X2VmNyw54gdIB5+n2e8bjne5Xqlc4qBfp5MClOe8JCvGOTbbLZxUGkATdxZIgqO601JXf/lMkpgyfWXjZuKMEvu7QHo1iRmJrCQMbkJl4YwYn1O8kTKnGL8/IIOmQlFlscPlUQhfeWhOCKvYwRXDvZwgV8rxqWQCmLm1dg8Y2aZvcNSrmk1MrREh6jfP29ZSfgOmzAPbD2YiOj1K9z+nPxDZ6kNk4p2lyQ0Dn22uwORvDuAqWOzA2NaC8DCZ0V/xoYweeL3g8pLkvMapAECw9FSXTOg/M8AIplCimiRw15WmxFiwwsMIrU6uKnaXhzdtvlE0SSxjLJno9nRpC2lw3RYqbhTTK0joyMSELRjD9Uimo7LJcK277pSmnNUN/FnngAShq2jFkvZkUL/+Bd/cFlqKgpJUg/gcoIonFaeNYNBhMtY9xbIUEpiAs/VQyL/NFRhRVNoHdi0dkaEorGEWEggvEA0R78XSisYUlOdReKYBzZ6E8uwvAWzwEZxASVS+WFyJofspp1ZqCx9oj+bMzIlFgQs9I78XKGnCC9pUoreoI+gXU5Q5oi4zkuHwTL60OqlngPsli03Jot4RAvZNhnBB/pLWVZUbNtnJVkS2ning+4cgh2HtbL9WbCg03hD18vYkjlIG9uKXKpe3esU3hlczxXjzpDOiVrQqquNe0PDWqpHLnUSfwvS29F+yvS/pD+FhwDOjPBkyKlWNF0DMws2ofQFobaD4LBnbOYKJ9gixUkPAiG7hOJX85iogqCRDSI+ojcKjOBwcadYClWVOSbYdufRRe6iqeI1CardcUEQW0HSJL05M/gKPEpwfeqCYJqImDYnmSuzW0GZLAhcunH/A0Wlkv3LfBe2Ye32lXKda57QKqv1R3/oUqRS2LwHZ6hXzYTs4iOVScLXFin1BOPbSuxoseHCBsCilnXTgRxUk2pO35PlQSFP5TGyO1bIJWDylRcXYpcgkMUTPnMgLVdO9iZOSwGMKqlivzg6YfVJcMvsLYOb5rjEgRex1UWwZsWfshQ//YfQRdu7Ltwyr5BA8FS5BLyg3tloRMEX7yTt18hn2YmWIpcuocyDfRgtoDv6KXtywEGzE3kEQS3lGJFn3WCqKTcYXJ08FMzgsIRwhJ4h3VQItgLTFD6X6RY1db6RWJGLr+11boJcSXqAoeiNpwXNXrtquTS/iFDYT5QGYjRT2fx4d7ayuQSdBPIEcYXWlcd3UC5ZGxtdXIJEhzrybX9v5e2s/dT8kvmEES3lBKLCj+IPyKHokToJy4iWIoVFbEoI2g9Xj6du8Ozm8DfoH1lnMiu5hKsVC7JrBmeHrJPr8Gfsno3wfygtI64WtA+NRPBUKhyR28tl/AQbalXa8mEHWlt5BINRazj7Y7mkA6CxBDN+pVLWT+YrKyy9xNTlLVQd2GyalIu0R60rwlGjsI0xP3KJUrQPj2K4l7vs0unh1j6QSeCA0iQL5L2LJeIm3ApW+8jghUXIdjLJeLoXQii4WIwo3WQS24ED1mBrCFW79TK1EIuuc3BoHUL7iXNPuWS4yQTCNcMydU6yCXXWTS9qmj3BOe1S7V1E1cwg8/niushlxxXN4Gn0CfUQy45EpzKWSaauKqHXHJdn4ZWR5FojX2DnuWS6wK8tfBLzI7e1kMuue6AITPA6hdfyaIsz3LJeYsPMU3FRgGYNi+PYBVy6Qhp10jmCs8p1tsP7jGyNTNwRqrOcumISHYhzq5CM1pnuZQ03K4L4aYwtZZLJzzowoR04QMw8bWWSycI+0g2lUHrgWotl86QgxSX8kOCdZZLZ4gUIl5egORV/d3EDmCQwutQCqDWcumMuehCmH26Bl1oXRewg2+5lEAsqIFPGsgiQFMNrYR3uZRALIOGgxQEdiuXcnH/cumM0zZdZ8+D10oeAruUE3N7pX+5lEAPVHDLZ1J9uGykHUAuJeiIQYpypGDRhsMYDSCXUtAnK/DuNeIqFzsayg8eoS/7wklSvUzOpQtDyKU0BEO4ta2eTXXowiByKYXpSjc0aIGfvvzNYV/iMHIphYW2YR4zNJmLWmpj+/wwcikN0Ttwwd1EH6S2BUiB5FIaYo0mVE7ClFpqilByKQ39R8brmfRUleUO6IHdxAE9ve2QoS4h7RYSB5NLWiu0p8Iv7FM3pTYMw8mlDOwYiu/QYpQGlEsZ2DH8525pAsqlLHqau8LfofCHud4ipFzKQngLyFB4ze+cqvigcsncFPWOln7pU8TGilMDQT9yKQvRO0u4rsZNWzA34dUPnqDvNU4q9fR0FZ1B3QFvWOdPLmn40RlC1SAnZbh+YhP9vuSSDqEPoSOIxN4mimwBE+F9Wz3KJR2jrCNgC+3Heq6NpPRv8RYTPuWSDn0BCdmQAMwdxgZVH3e9B3zOjVe5lNd0Jt/F/M3u0t9MjXxniPl5lks6RDUUicjIBPDd8QDi6ONxy4+bCuImztA36FFLfB2pUtidUbnapg5FA9f4lUsCY6uUMD0x48iSsGsFkEsCIm5jwuGyI/z8yyUBsYMN3SgL7LJhQdC7XJLop13d3kWRz32ONpEw/zXXD1YglyRuRbjCdtehp6TxHpSxnT83kUDOK7GMtiNFdEZCCIJyrQyX8E7WBtksn34wwUJG1XQ9Hzk9DrZ6K4WYXzeRQO4HxvfpIUccglY/y2d4dfRpCEVnKgXqbS044gMoPfvBNJTSLL5q8YW1s7e8E9BjDEGqypdcQpALDIz5ws7aFKfF/+8L9UoQK3qCjDnNJWuzySsVSrGmgm0OSnCX1JYUjZvZzF5agOOO3wjPaYRxE6kGy02lcvdx7UySs6RPfxrekkqwUG4iwQuQ8PRcsTMW7cnD8sBt+zO+5tYJH0ztk+BVJPfRzUtsHzEYRDEGpl3SIryPtFeCZAmp8cxaa0zxPtKeCZ6yFBkXV87ZV4uNfLI3P5hpCKrj3hY/8hKfNOnRiiZAQbVpt2c70KO6/RO8ukKbdqul88GSGUhHG5AgzqapVhGK9LwIz0bmBLxmZHvxQJ3+1IwgPsFCXfwtdpe1I5jaMDOtcdT6Iot6fdp6IvPEEG4iDTIBv3X3iwPyCQbtwR3YDLXraXtshAYnyGWcS2k+PVTImOTyBjBRuG+Zw4nLvVdO0K6qsVqw/XVtf/0pOYG1dbHNKh30AM6RRTdG1zSHoy47o6gKUIrrPCsRtclZES08UxoM50NJsu4x7p0nU5H+rP2uRGIykUv5OQN/WOhH0SX9oB7usZwfLPpLQ5LRaZWNB0zxfuUHjquJDACmk5+cue6QgQyEYcJ3V5ww/kjMfqc9apnn8i3rpj2DHNJ14rjPr602y3NC0cjvqZjKrAjD3HZbkDtcWCcbkwYNvZygykrZVYEkDLcuTRB/jd18HQI1hnvuv617sF/gZF4PmOV9jHn8WtbL+ILBfuIeEbSJZINjwbRsPr9l/TvwgImNS5D81KTQ+eZesfh05Rhf3y+aLfeLzpcLx/ja5zq7CIjBx3sqfjE7wFh/1DAKzUeWo6H7tqMy5uTCoPeWQ3GnOv79re9Px7S9YdH2/r+P/+Tw1BC1H1VaVpz/8maoVPhziD4mo6/vM8/35/F1PdKEpWIQzY6I/o5nb9CgQYMGDRo0aNAgBP4DywSuECKDKWEAAAAASUVORK5CYII=" title="Attach a File">
-                
-            </div>
-        </div>
 
-        <div class="col-12 col-md-9" style="height: 100%;">
-            <video id="main-video" controls playsinline autoplay style="height: 50%;"></video>
-            <div id="other-videos" style="height: 50%;"></div>
+                <div>
+                    <div id="conversation-panel"></div>
+                    <div id="key-press" style="text-align: right; display: none; font-size: 11px;">
+                        <span style="vertical-align: middle;"></span>
+                        <img src="https://webrtcweb.com/key-press.gif" style="height: 12px; vertical-align: middle;">
+                    </div>
+                    <textarea id="txt-chat-message"></textarea>
+                    <button class="btn btn-primary" id="btn-chat-message" disabled>Send</button>
+                    <img id="btn-attach-file" src="data:image/png;base64,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" title="Attach a File">
+
+                </div>
+            </div>
+
+            <div class="col-9 col-md-9" style="height: 100%;">
+                <video id="main-video" controls playsinline autoplay style="height: 50%;"></video>
+                <div id="other-videos" style="height: 50%;"></div>
+            </div>
+
         </div>
     </div>
 
     <script>
+        $(document).ready(function () {
+            connection.openOrJoin(connection.socketMessageEvent, function () {
+            });
+        });
+        window.adapter = true;
         (function () {
             var params = {},
                 r = /([^&=]+)=?([^&]*)/g;
@@ -200,8 +193,10 @@
         })();
 
         var connection = new RTCMultiConnection();
+        console.log(connection);
+        
         connection.setCustomSocketHandler(SignalRHandler);
-
+        
         // connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
         connection.extra.userFullName = params.userFullName;
@@ -209,16 +204,16 @@
         connection.socketMessageEvent = params.roomId;
 
         // keep room opened even if owner leaves
-        connection.autoCloseEntireSession = true;
+        //connection.autoCloseEntireSession = true;
 
         // https://www.rtcmulticonnection.org/docs/maxParticipantsAllowed/
-        connection.maxParticipantsAllowed = 2;
+        connection.maxParticipantsAllowed = 99;
         // set value 2 for one-to-one connection
         // connection.maxParticipantsAllowed = 2;
 
         // here goes RTCMultiConnection
-        connection.chunkSize = 16000;
-        connection.enableFileSharing = true;
+        //connection.chunkSize = 16000;
+        //connection.enableFileSharing = true;
 
         connection.session = {
             audio: true,
@@ -534,67 +529,9 @@
             label.innerHTML = position + '%';
         }
 
-        if (!!params.password) {
-            connection.password = params.password;
-        }
+        
 
-        designer.appendTo(document.getElementById('widget-container'), function () {
-            if (params.open === true || params.open === 'true') {
-                var tempStreamCanvas = document.getElementById('temp-stream-canvas');
-                var tempStream = tempStreamCanvas.captureStream();
-                tempStream.isScreen = true;
-                tempStream.streamid = tempStream.id;
-                tempStream.type = 'local';
-                connection.attachStreams.push(tempStream);
-                window.tempStream = tempStream;
-
-                connection.extra.roomOwner = true;
-                connection.open(params.sessionid, function (isRoomOpened, roomid, error) {
-                    if (error) {
-                        if (error === connection.errors.ROOM_NOT_AVAILABLE) {
-                            alert('Someone already created this room. Please either join or create a separate room.');
-                            return;
-                        }
-                        alert(error);
-                    }
-
-                    connection.socket.on('disconnect', function () {
-                        location.reload();
-                    });
-                });
-            } else {
-                connection.join(params.sessionid, function (isRoomJoined, roomid, error) {
-                    if (error) {
-                        if (error === connection.errors.ROOM_NOT_AVAILABLE) {
-                            alert('This room does not exist. Please either create it or wait for moderator to enter in the room.');
-                            return;
-                        }
-                        if (error === connection.errors.ROOM_FULL) {
-                            alert('Room is full.');
-                            return;
-                        }
-                        if (error === connection.errors.INVALID_PASSWORD) {
-                            connection.password = prompt('Please enter room password.') || '';
-                            if (!connection.password.length) {
-                                alert('Invalid password.');
-                                return;
-                            }
-                            connection.join(params.sessionid, function (isRoomJoined, roomid, error) {
-                                if (error) {
-                                    alert(error);
-                                }
-                            });
-                            return;
-                        }
-                        alert(error);
-                    }
-
-                    connection.socket.on('disconnect', function () {
-                        location.reload();
-                    });
-                });
-            }
-        });
+        
 
         function addStreamStopListener(stream, callback) {
             stream.addEventListener('ended', function () {

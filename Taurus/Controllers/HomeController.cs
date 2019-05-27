@@ -46,11 +46,7 @@ namespace Taurus.Controllers
             return View();
         }
 
-        [Route("/Video")]
-        public IActionResult Video()
-        {
-            return View();
-        }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

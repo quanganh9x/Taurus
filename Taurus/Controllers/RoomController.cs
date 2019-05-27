@@ -38,8 +38,14 @@ namespace Taurus.Controllers
         }
 
         public async Task<IActionResult> GetRoomById(int id) {
-
             var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
+            return Ok(room);
+        }
+
+        public async Task<IActionResult> UpdateRoomStatus(int id, RoomStatus status)
+        {
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
+            room.Status = status;
             return Ok(room);
         }
     }
