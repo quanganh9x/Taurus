@@ -42,6 +42,39 @@
         "main.min.css",
         "main.min.js"
       ]
+    },
+    {
+      "library": "rtcmulticonnection@3.6.8",
+      "destination": "wwwroot/lib/rtcmulticonnection/",
+      "files": [
+        "dist/RTCMultiConnection.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "webrtc-adapter@6.4.0",
+      "destination": "wwwroot/lib/webrtc-adapter/",
+      "files": [
+        "adapter.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "socket.io@2.2.0",
+      "destination": "wwwroot/lib/socket.io/",
+      "files": [
+        "socket.io.js",
+        "socket.io.js.map"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "emojionearea@3.4.1",
+      "destination": "wwwroot/lib/emojionearea/",
+      "files": [
+        "emojionearea.min.js",
+        "emojionearea.min.css"
+      ]
     }
   ]
 }

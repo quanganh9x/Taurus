@@ -123,8 +123,8 @@ namespace Taurus.Data
             var room = new Room()
             {
                 DoctorId = 1,
-                EstimateTimeStart = DateTime.Parse("05/26/2019 18:00:00"),
-                EstimateTimeEnd = DateTime.Parse("05/26/2019 19:00:00"),
+                EstimateTimeStart = DateTime.Parse("2019/5/26 18:00:00"),
+                EstimateTimeEnd = DateTime.Parse("2019/5/26 19:00:00"),
                 Title = "Tâm sự tuổi hồng với Bác sĩ Hoa Súng",
                 Price = 3,
                 Status = RoomStatus.ACTIVE,
@@ -135,8 +135,8 @@ namespace Taurus.Data
             room = new Room()
             {
                 DoctorId = 2,
-                EstimateTimeStart = DateTime.Parse("05/26/2019 19:00:00"),
-                EstimateTimeEnd = DateTime.Parse("05/26/2019 20:00:00"),
+                EstimateTimeStart = DateTime.Parse("2019/5/27 18:00:00"),
+                EstimateTimeEnd = DateTime.Parse("2019/5/27 19:00:00"),
                 Title = "Bệnh nhân nam với các điều khó nói",
                 Price = 5,
                 Status = RoomStatus.ACTIVE,

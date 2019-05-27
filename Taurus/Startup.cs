@@ -18,6 +18,7 @@ using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Taurus.Areas.Identity.Models;
+using Taurus.Hubs;
 
 namespace Taurus
 {
@@ -43,7 +44,7 @@ namespace Taurus
             services.AddCors(options => options.AddPolicy("quanganh9x",
             builder =>
             {
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+                builder.WithOrigins("http://localhost:63342").AllowAnyMethod().AllowAnyHeader()
                        .AllowCredentials();
             }));
 
@@ -85,6 +86,7 @@ namespace Taurus
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -121,6 +123,10 @@ namespace Taurus
                 await DbSeeder.Seed(context);
             }).Wait();
 
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<VideoRoomHub>("/Room");
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
