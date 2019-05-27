@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Taurus.Data;
 using Taurus.Models;
 using Taurus.Models.Enums;
@@ -34,6 +35,12 @@ namespace Taurus.Controllers
             await _context.SaveChangesAsync();
 
             return View();
+        }
+
+        public async Task<IActionResult> GetRoomById(int id) {
+
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
+            return Ok(room);
         }
     }
 }
