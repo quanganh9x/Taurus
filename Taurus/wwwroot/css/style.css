@@ -680,10 +680,26 @@ ul.tabs-nav .tab-nav.active {
     border-color: #18a3eb;
 }
 
+.rooms-border, .calendar-border {
+    position: relative;
+    padding: 16px;
+    border-radius: 20px;
+    border: 2px solid #dde4ea;
+}
+
+.rooms-border-featured {
+    position: relative;
+    padding: 32px;
+    border-radius: 20px;
+    border: 2px solid #dde4ea;
+    border-color: #18a3eb;
+}
+
 .opening-hours h2,
 .emergency-box h2,
 .appointment-box h2,
-.contact-info h2 {
+.contact-info h2,
+.calendar-border h3 {
     position: absolute;
     top: -24px;
     left: -2px;
@@ -746,24 +762,31 @@ ul.tabs-nav .tab-nav.active {
 }
 
 .appointment-box form select,
-.appointment-box form input[type="text"],
-.appointment-box form input[type="number"] {
+.appointment-box form input[type="text"] {
     display: block;
-    width: calc(50% - 5px);
+    width: calc(80% - 5px);
     padding: 12px 16px ;
     margin-bottom: 10px;
     border: 0;
-
-    font-size: 12px;
-    font-style: italic;
     color: #828282;
     background: #f0f4f8;
     outline: none;
 }
 
-.appointment-box form input[type="submit"] {
-    margin-top: 16px;
-}
+    .appointment-box form input[type="number"] {
+        display: block;
+        width: calc(20% - 5px);
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        border: 0;
+        color: #828282;
+        background: #f0f4f8;
+        outline: none;
+    }
+
+    .appointment-box form input[type="submit"] {
+        margin-top: 16px;
+    }
 
 /*
 # Our Departments
@@ -991,8 +1014,8 @@ ul.tabs-nav .tab-nav.active {
 /*
 # News
 --------------------------------*/
-.the-news {
-    padding: 100px 0 40px;
+.the-news, .the-profile {
+    padding: 100px 0 0 0;
 }
 
 .the-news h2,
@@ -1009,7 +1032,11 @@ ul.tabs-nav .tab-nav.active {
 }
 
 .the-news-wrap {
-    margin-bottom: 60px;
+    margin-bottom: 20px;
+}
+
+.the-profile-wrap {
+    margin-bottom: 40px;
 }
 
 .the-news-wrap figure {

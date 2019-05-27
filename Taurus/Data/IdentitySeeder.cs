@@ -84,26 +84,6 @@ namespace Taurus.Data
                 await userManager.AddToRoleAsync(user, "Customer");
             }
 
-            if (await userManager.FindByNameAsync("Tester") == null)
-            {
-                user = new User
-                {
-                    UserName = "Tester",
-                    Email = "customer@taurus",
-                    PhoneNumber = "0666666666",
-                    FullName = "Admin nimdA",
-                    DateOfBirth = DateTime.Parse("1978/01/01"),
-                    Address = "nimdA Admin nimdA",
-                    City = "Hà Nội",
-                    Country = "Việt Nam",
-                    Avatar = "https://banner2.kisspng.com/20180626/fhs/kisspng-avatar-user-computer-icons-software-developer-5b327cc98b5780.5684824215300354015708.jpg",
-                    Gender = Gender.MALE,
-                    Coins = 99999
-                };
-                await userManager.CreateAsync(user, "Abc/123456");
-                await userManager.AddToRoleAsync(user, "Customer");
-            }
-
             if (await userManager.FindByNameAsync("Customer1") == null)
             {
                 user = new User
@@ -121,7 +101,7 @@ namespace Taurus.Data
                     Coins = 99999
                 };
                 await userManager.CreateAsync(user, "Abc/123456");
-                await userManager.AddToRoleAsync(user, "Customer");
+                await userManager.AddToRoleAsync(user, "VIP");
             }
 
             if (await userManager.FindByNameAsync("Customer2") == null)
