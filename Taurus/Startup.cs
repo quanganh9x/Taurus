@@ -44,7 +44,7 @@ namespace Taurus
             services.AddCors(options => options.AddPolicy("quanganh9x",
             builder =>
             {
-                builder.WithOrigins("https://localhost:44375").AllowAnyMethod().AllowAnyHeader()
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
                        .AllowCredentials();
             }));
 

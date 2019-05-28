@@ -32,24 +32,13 @@ namespace Taurus.Controllers
         // GET: /<controller>/
         public async Task<IActionResult> Index()
         {
-            if (!User.IsInRole("Doctor"))
-            {
-                return View("../Home/Index");
-            }
-            
-            Doctor doctor = await _context.Doctors.Where(d => d.UserId == Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value)).SingleAsync();
-            return View("../Home/Profile", doctor);
-        }
-
-        public async Task<IActionResult> GetProfile()
-        {
             if (User.IsInRole("Doctor"))
             {
-                return View(await _context.Doctors.FirstOrDefaultAsync(p => p.Id == int.Parse(_userManager.GetUserId(User))));
+                return View("../Home/Profile", await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
             }
             else
             {
-                return View(await _context.Customers.FirstOrDefaultAsync(p => p.Id == int.Parse(_userManager.GetUserId(User))));
+                return View("../Home/ProfileUser", await _context.Customers.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
             }
         }
 

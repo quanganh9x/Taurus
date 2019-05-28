@@ -60,20 +60,20 @@
     },
     {
       "provider": "cdnjs",
-      "library": "socket.io@2.2.0",
-      "destination": "wwwroot/lib/socket.io/",
-      "files": [
-        "socket.io.js",
-        "socket.io.js.map"
-      ]
-    },
-    {
-      "provider": "cdnjs",
       "library": "emojionearea@3.4.1",
       "destination": "wwwroot/lib/emojionearea/",
       "files": [
         "emojionearea.min.js",
         "emojionearea.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "socket.io@2.2.0",
+      "destination": "wwwroot/lib/socket.io/",
+      "files": [
+        "socket.io.js",
+        "socket.io.js.map"
       ]
     }
   ]

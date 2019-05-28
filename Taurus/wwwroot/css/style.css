@@ -40,6 +40,8 @@ a:hover, a:active {
 --------------------------------------------------------------*/
 .site-header {
     position: relative;
+    height: 150px;
+    background-color: #FAFAFA;
 }
 
 .nav-bar {
@@ -213,13 +215,12 @@ a:hover, a:active {
 # Hero Section
 --------------------------------------------------------------*/
 .hero-slider {
-    max-height: 950px;
+    height: 300px;
 }
 
 .hero-content-wrap {
-    min-height: 700px;
+    height: 300px;
     position: relative;
-    color: #fff;
 
     background-size: cover;
     background-position: center;
