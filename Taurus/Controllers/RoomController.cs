@@ -17,6 +17,7 @@ using Taurus.Models.Formats;
 
 namespace Taurus.Controllers
 {
+    [Route("room")]
     public class RoomController : Controller
     {
         private readonly ApplicationContext _context;
@@ -42,12 +43,12 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("active")]
-        public async Task<IActionResult> ActiveRoom([FromBody] int id)
+        public async Task<IActionResult> ActiveRoom([FromForm] int id)
         {
             Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
             r.Status = RoomStatus.ACTIVE;
             await _context.SaveChangesAsync();
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = r });
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
         [HttpPost("end")]
@@ -68,7 +69,7 @@ namespace Taurus.Controllers
             return Ok(new APIResponse { Status = APIStatus.Success, Data = r });
         }
 
-        []
+        [HttpGet]
         public async Task<IActionResult> GetRoomById(int id) {
             var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
             return Ok(room);

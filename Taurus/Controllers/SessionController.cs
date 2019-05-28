@@ -17,6 +17,7 @@ using Taurus.Models.Formats;
 
 namespace Taurus.Controllers
 {
+    [Route("session")]
     public class SessionController : Controller
     {
         private readonly ApplicationContext _context;
@@ -34,9 +35,10 @@ namespace Taurus.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateSession([Bind("RoomId")] Session s)
         {
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == s.RoomId);
             s.CustomerId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            int estimatedtime = (int)Math.Ceiling(u.Coins / s.Room.Price);
+            int estimatedtime = (int)Math.Ceiling(u.Coins / r.Price);
             if (estimatedtime <= 0)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Tiền ít đòi hít *** thơm" });
@@ -51,18 +53,19 @@ namespace Taurus.Controllers
         {
             var customerId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.CustomerId == customerId && m.Status == RoomStatus.ACTIVE);
-            if (s != null)
+            if (s == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "T k save" });
             }
-            s.CheckTime = DateTime.Now;
+            //s.CheckTime = DateTime.Now;
+            s.Status = RoomStatus.CLOSED;
             _context.Sessions.Update(s);
             await _context.SaveChangesAsync();
             User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             u.Coins -= s.GetTotalPrice();
             _context.Users.Update(u);
             await _context.SaveChangesAsync(); // holding coins
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = s });
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
         [Route("get/{id}")]

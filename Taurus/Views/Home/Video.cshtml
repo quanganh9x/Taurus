@@ -158,7 +158,8 @@
 
         //connection.setCustomSocketHandler(SignalRHandler);
 
-        connection.socketURL = "http://localhost:9001/";
+        //connection.socketURL = "http://localhost:9001/";
+        connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
         connection.session = {
             audio: true,
@@ -510,7 +511,7 @@
                 if (isRoomExist === true) {
                     connection.join(roomid);
 
-                    $.post("@Url.Action("CreateSession", "Session")", { roomId: "@r.Id"} )
+                    $.post("@Url.Action("CreateSession", "Session")", { RoomId: "@r.Id"} )
                         .done(function (data) {
                             console.log(data);
                         })
@@ -522,7 +523,7 @@
                     connection.open(roomid);
 
 
-                    $.post("@Url.Action("ActiveRoom", "Room")", { roomId: "@r.Id"} )
+                    $.post("@Url.Action("ActiveRoom", "Room")", { id: "@r.Id"} )
                         .done(function (data) {
                             console.log(data);
                         })
@@ -543,13 +544,19 @@
                         console.log(data);
                     });
             } else {
-                $.post("@Url.Action("EndSession", "Session")" )
+                @*$.post("@Url.Action("EndSession", "Session")" )
                     .done(function (data) {
                             console.log(data);
                         })
                         .fail(function (data) {
                             console.log(data);
-                        });
+                    });*@
+
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("EndSession", "Session")',
+                    async: false,                   
+                });
             }
         })
     </script>
