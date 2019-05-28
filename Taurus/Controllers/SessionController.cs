@@ -36,6 +36,13 @@ namespace Taurus.Controllers
         {
             var session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId);
             session.Status = Status.DONE;
+            _context.SaveChanges();
+
+            // Simple calculate cost for video call (update later)
+            var callTime = (session.UpdatedAt - session.CreatedAt).TotalMinutes;
+            var cost = callTime * session.Room.Price;
+            session.Customer.User.Coins -= (float) cost;
+
             return Ok(session.Status);
         }
 
