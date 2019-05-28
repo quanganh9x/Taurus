@@ -18,7 +18,7 @@ namespace Taurus.Models
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
-        public RoomStatus Status { get; set; } = RoomStatus.PENDING;
+        public RoomStatus Status { get; set; } = RoomStatus.ACTIVE;
         public DateTime CheckTime { get; set; }
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
