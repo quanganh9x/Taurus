@@ -509,12 +509,49 @@
             connection.checkPresence(connection.socketMessageEvent, function (isRoomExist, roomid, error) {
                 if (isRoomExist === true) {
                     connection.join(roomid);
+
+                    $.post("@Url.Action("CreateSession", "Session")", { roomId: "@r.Id"} )
+                        .done(function (data) {
+                            console.log(data);
+                        })
+                        .fail(function (data) {
+                            console.log(data);
+                        });
                 } else {
                     connection.extra.roowOwner = true;
                     connection.open(roomid);
+
+
+                    $.post("@Url.Action("ActiveRoom", "Room")", { roomId: "@r.Id"} )
+                        .done(function (data) {
+                            console.log(data);
+                        })
+                        .fail(function (data) {
+                            console.log(data);
+                        });
                 }
             });
         });
+
+        window.addEventListener('beforeunload', function () {
+            if (connection.extra.roowOwner == true) {
+                $.post("@Url.Action("EndRoom", "Room")", { roomId: "@r.Id" })
+                    .done(function (data) {
+                        console.log(data);
+                    })
+                    .fail(function (data) {
+                        console.log(data);
+                    });
+            } else {
+                $.post("@Url.Action("EndSession", "Session")" )
+                    .done(function (data) {
+                            console.log(data);
+                        })
+                        .fail(function (data) {
+                            console.log(data);
+                        });
+            }
+        })
     </script>
 </body>
 </html>

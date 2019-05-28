@@ -18,7 +18,6 @@ using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Taurus.Areas.Identity.Models;
-using Taurus.Hubs;
 
 namespace Taurus
 {
@@ -123,10 +122,6 @@ namespace Taurus
                 await DbSeeder.Seed(context);
             }).Wait();
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<VideoRoomHub>("/Room");
-            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
