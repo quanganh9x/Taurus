@@ -765,7 +765,7 @@ ul.tabs-nav .tab-nav.active {
 .appointment-box form select,
 .appointment-box form input[type="text"] {
     display: block;
-    width: calc(80% - 5px);
+    width: calc(60% - 5px);
     padding: 12px 16px ;
     margin-bottom: 10px;
     border: 0;

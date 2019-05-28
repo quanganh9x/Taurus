@@ -46,6 +46,12 @@ namespace Taurus.Controllers
             return View();
         }
 
+        [Route("/User")]
+        public IActionResult User()
+        {
+            return View("ProfileUser");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

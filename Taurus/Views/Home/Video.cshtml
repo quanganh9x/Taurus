@@ -23,8 +23,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/jquery-ui.min.css" />
     <link rel="stylesheet" href="~/lib/emojionearea/emojionearea.min.css">
-    <link rel="stylesheet" href="~/css/getHTMLMediaElement.css">
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="~/css/style.css">
 
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
+    <script src="~/js/jquery-ui.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src='~/js/jquery.collapsible.min.js'></script>
     <script src='~/js/swiper.min.js'></script>
@@ -53,7 +54,6 @@
 
     <script src="~/js/SignalRHandler.js"></script>
 
-    <script src="~/js/getHTMLMediaElement.js"></script>
     <script src="~/lib/emojionearea/emojionearea.min.js"></script>
 </head>
 <body>
@@ -118,7 +118,7 @@
 
         <div class="row">
 
-            <div class="col-12" style="height: 100%">
+            <div class="col-12" style="position: absolute; bottom: 0; height: 30%;">
 
                     <div id="conversation-panel"></div>
                     <div id="key-press" style="text-align: right; display: none; font-size: 11px;">
@@ -131,14 +131,35 @@
 
             </div>
 
-            <div class="col-12" id="videos-container" style="height: 100%; align-content: center;">
+            <div class="col-12" id="videos-container" style="position: absolute;height: 70%; width: 100%;">
+                <div class="col-6">
+                    <video class="player"></video>
+                </div>
+                <div class="col-6">
+                    <video class="player"></video>
+                </div>
             </div>
 
         </div>
     </div>
 
     <script>
+        $(document).ready(function () {
+            var mediaElements = document.querySelectorAll('video, audio'), total = mediaElements.length;
 
+            for (var i = 0; i < total; i++) {
+                new MediaElementPlayer(mediaElements[i], {
+                    pluginPath: 'https://cdn.jsdelivr.net/npm/mediaelement@4.2.7/build/',
+                    shimScriptAccess: 'always',
+                    success: function () {
+                        var target = document.body.querySelectorAll('.player'), targetTotal = target.length;
+                        for (var j = 0; j < targetTotal; j++) {
+                            target[j].style.visibility = 'visible';
+                        }
+                    }
+                });
+            }
+        })
         window.adapter = true;
 
         (function () {
@@ -240,8 +261,11 @@
             event.mediaElement.removeAttribute('src');
             event.mediaElement.removeAttribute('srcObject');
 
-            var video = document.createElement('video');
-            video.controls = false;
+            var target = document.body.querySelectorAll('.player'), targetTotal = target.length;
+            for (var j = 0; j < targetTotal; j++) {
+                if (target[j].getAttribute("id") != "") {
+                    var video = target[j];
+                    video.controls = false;
             video.setAttribute('data-streamid', event.streamid);
             if (event.type === 'local') {
                 video.muted = true;
@@ -263,6 +287,31 @@
             }, 5000);
 
             mediaElement.id = event.streamid;
+                }
+            }
+            video.controls = false;
+            //video.setAttribute('data-streamid', event.streamid);
+            //if (event.type === 'local') {
+            //    video.muted = true;
+            //    video.volume = 0;
+            //}
+            //video.srcObject = event.stream;
+
+            //var mediaElement = getHTMLMediaElement(video, {
+            //    title: event.userid,
+            //    buttons: ['full-screen'],
+            //    width: "50%",
+            //    showOnMouseEnter: false
+            //});
+
+            //connection.videosContainer.appendChild(mediaElement);
+
+            //setTimeout(function () {
+            //    mediaElement.media.play();
+            //}, 5000);
+
+            //mediaElement.id = event.streamid;
+            
 
             connection.onUserStatusChanged(event, "join");
         };

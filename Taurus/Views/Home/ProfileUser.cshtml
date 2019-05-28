@@ -1,0 +1,52 @@
+﻿@model Customer
+<div class="the-profile">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3" style="text-align:center">
+                <div class="card" style="width: auto;">
+                    <img src="@Model.User.Avatar" class="card-img-top" alt="avatar">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@Model.User.FullName</h5>
+                        <p class="card-text">@Model.User.Address</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">@Model.User.Gender.ToString()</li>
+                        <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
+                        <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
+                    </ul>
+                    <div class="card-body">
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                    Launch demo modal
+                </button>
+            </div>
+            <div class="col-9">
+                <div class="appointment-box the-profile-wrap p-3" id="accordion">
+                    <h2 class="d-flex align-items-center">Stats!</h2>
+                        @foreach (Session s in (List<Session>)ViewData["Sessions"]) {
+                        <div class="card">
+                            <div class="card-header" id="heading_@s.Id">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@s.Id" aria-expanded="true" aria-controls="collapse_@s.Id">
+                                        @s.Id
+                                    </button>
+                                </h5>
+                            </div>
+
+                            <div id="collapse_@s.Id" class="collapse" aria-labelledby="heading_@s.Id" data-parent="#accordion">
+                                <div class="card-body">
+                                    <p><b>Name:</b> @s.Room.Doctor.User.FullName</p>
+                                    <p><b>Charged:</b> @s.GetTotalPrice() Coins</p>
+                                    <p><b>At:</b> @s.CheckTime.ToLocalTime()</p>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

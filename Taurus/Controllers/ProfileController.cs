@@ -16,6 +16,7 @@ using Taurus.Models.Formats;
 
 namespace Taurus.Controllers
 {
+    [Route("profile")]
     public class ProfileController : Controller
     {
         private readonly ApplicationContext _context;
@@ -38,6 +39,7 @@ namespace Taurus.Controllers
             }
             else
             {
+                ViewData["Sessions"] = await _context.Sessions.Where(m => m.CustomerId == int.Parse(_userManager.GetUserId(User))).ToListAsync();
                 return View("../Home/ProfileUser", await _context.Customers.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
             }
         }

@@ -18,8 +18,8 @@ namespace Taurus.Models
         // lists
         public virtual List<Session> Sessions { get; set; }
         public virtual List<Question> Questions { get; set; }
-        public virtual List<DoctorVote> DoctorVotes { get; set; }
-        public virtual List<DoctorFlag> DoctorFlags { get; set; }
+        public virtual List<CustomerVote> Votes { get; set; }
+        public virtual List<CustomerFlag> Flags { get; set; }
         /* datetime */
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;

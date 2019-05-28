@@ -1,63 +1,122 @@
 ﻿@model Doctor
-    <div class="the-profile">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-3">
-                    <div class="card" style="width: auto;">
-                        <img src="@Model.User.Avatar" class="card-img-top" alt="avatar">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">@Model.User.FullName</h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">@Model.User.Gender.ToString()</li>
-                            <li class="list-group-item">Dapibus ac facilisis in</li>
-                            <li class="list-group-item">Vestibulum at eros</li>
-                        </ul>
-                        <div class="card-body">
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
-                        </div>
+<div class="the-profile">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3 text-center">
+                <div class="card" style="width: auto;">
+                    <img src="@Model.User.Avatar" class="card-img-top" alt="avatar">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@Model.User.FullName</h5>
+                        <p class="card-text">@Model.User.Address</p>
                     </div>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                        Launch demo modal
-                    </button>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">@Model.User.Gender.ToString()</li>
+                        <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
+                        <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
+                    </ul>
+                    <div class="card-body">
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
                 </div>
-                <div class="col-9">
-                    <div class="appointment-box the-profile-wrap">
-                        <h2 class="d-flex align-items-center">Make a Live Room!</h2>
+                <button style="display: none;" id="launchBook" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBookRoom">
+                    Launch demo modal
+                </button>
+            </div>
+            <div class="col-9">
+                <div class="appointment-box the-profile-wrap">
+                    <h2 class="d-flex align-items-center">Make a Live Room!</h2>
 
-                        <form method="post" action="/Room/Create" class="d-flex flex-wrap justify-content-between">
+                    <form method="post" action="@Url.Action("CreateNewRoom", "Room")" class="d-flex flex-wrap justify-content-between">
 
-                            <input type="text" placeholder="Title" name="Title">
+                        <input type="text" placeholder="Title" name="Title">
 
-                            <input type="number" placeholder="Price (per min)" name="Price">
+                        <input type="number" placeholder="Price (per min)" name="Price">
 
-                            <input class="button gradient-bg" type="submit" value="Create">
-                        </form>
-                    </div>
-                    <div class="calendar-border the-profile-wrap">
-                        <h3 class="d-flex align-items-center">Reserve a Room</h3>
-                        <div id="calendar" class="p-3"></div>
-                    </div>
+                        <input type="number" placeholder="Quota" name="Quota">
+
+                        <input class="button gradient-bg" type="submit" value="Create">
+                    </form>
+                </div>
+                <div class="calendar-border the-profile-wrap">
+                    <h3 class="d-flex align-items-center">Reserve a Room</h3>
+                    <div id="calendar" class="p-3"></div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 <link rel="stylesheet" href="~/lib/fullcalendar/main.min.css">
 <script src='~/lib/fullcalendar/main.min.js'></script>
 <link rel="stylesheet" href="~/lib/fullcalendar/daygrid/main.min.css">
 <script src='~/lib/fullcalendar/daygrid/main.min.js'></script>
+<link rel="stylesheet" href="~/lib/fullcalendar/daygrid/main.min.css">
+<script src='~/lib/fullcalendar/daygrid/main.min.js'></script>
+<link rel="stylesheet" href="~/lib/fullcalendar/timegrid/main.min.css">
+<script src='~/lib/fullcalendar/timegrid/main.min.js'></script>
+<script src='~/lib/fullcalendar/interaction/main.min.js'></script>
 <script>
 
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
 
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: ['dayGrid']
-            });
-
-            calendar.render();
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['dayGrid', 'interaction', 'timeGrid'],
+            selectable: true,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            dateClick: function (info) {
+                $("#timestart").val(info.dateStr + "T00:00:01");
+                $("#timeend").val(info.dateStr + "T23:59:59");
+                $("#launchBook").click();
+            }
         });
 
+        calendar.render();
+    });
+
 </script>
+
+<div class="modal fade" id="modalBookRoom" tabindex="-1" role="dialog" aria-labelledby="modalBookRoomTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalBookRoomTitle">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="@Url.Action("CreateNewRoom", "Room")" method="post">
+                    <div class="form-group">
+                        <label for="title-text" class="col-form-label">Title</label>
+                        <textarea class="form-control" id="title-text"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="price" class="col-form-label">Price</label>
+                        <input type="number" class="form-control" id="price">
+                    </div>
+                    <div class="form-group">
+                        <label for="quote" class="col-form-label">Quota</label>
+                        <input type="number" class="form-control" id="quota">
+                    </div>
+                    <div class="form-group">
+                        <label for="timestart" class="col-form-label">Estimated Time Start</label>
+                        <input type="datetime-local" class="form-control" id="timestart">
+                    </div>
+                    <div class="form-group">
+                        <label for="timeend" class="col-form-label">Estimated Time End</label>
+                        <input type="datetime-local" class="form-control" id="timeend">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

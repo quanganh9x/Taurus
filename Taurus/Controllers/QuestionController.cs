@@ -32,7 +32,7 @@ namespace Taurus.Controllers
             return Ok(questions);
         }
         
-        public IActionResult CreateNewQuestion([FromBody] string text)
+        public IActionResult CreateNewQuestion([FromForm] string text)
         {
             var question = new Question();
             question.Text = text;

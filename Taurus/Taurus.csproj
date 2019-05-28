@@ -11,6 +11,13 @@
     <Compile Remove="Migrations\20190528102958_DbInitialize.Designer.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\lib\fullcalendar\interaction\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\interaction\main.min.js" />
+    <None Include="wwwroot\lib\fullcalendar\timegrid\main.js" />
+    <None Include="wwwroot\lib\fullcalendar\timegrid\main.min.js" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
