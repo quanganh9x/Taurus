@@ -32,7 +32,7 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateNewRoom([Bind("Title,Price")] Room room )
+        public async Task<IActionResult> CreateNewRoom([Bind("Title,Price,EstimateTimeStart,EstimateTimeEnd")] Room room )
         {           
             room.DoctorId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             room.Status = RoomStatus.PENDING;
@@ -45,17 +45,26 @@ namespace Taurus.Controllers
         [HttpPost("active")]
         public async Task<IActionResult> ActiveRoom([FromForm] int id)
         {
-            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
+            var doctorId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.DoctorId == doctorId);
+            if (r == null || r.Status != RoomStatus.PENDING)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+            }
             r.Status = RoomStatus.ACTIVE;
             await _context.SaveChangesAsync();
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
         [HttpPost("end")]
-        public async Task<IActionResult> EndRoom([FromBody] int id)
+        public async Task<IActionResult> EndRoom([FromForm] int id)
         {
             var doctorId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.DoctorId == doctorId);
+            if (r == null || r.Status != RoomStatus.ACTIVE)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+            }
             r.Status = RoomStatus.CLOSED;
             await _context.SaveChangesAsync();
             User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
@@ -66,13 +75,25 @@ namespace Taurus.Controllers
             }
             _context.Users.Update(u);
             await _context.SaveChangesAsync();
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = r });
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
-        [HttpGet]
+        [HttpGet("get/{id}")]
         public async Task<IActionResult> GetRoomById(int id) {
             var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
             return Ok(room);
+        }
+
+        [HttpGet("getRooms")]
+        public async Task<IActionResult> GetRooms()
+        {
+            if (User.IsInRole("Doctor"))
+            {
+                var doctorId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                List<Room> Rooms = await _context.Rooms.Where(m => m.DoctorId == doctorId && m.Status == RoomStatus.PENDING).ToListAsync();
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(Rooms) });
+            }
+            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Mày không phải Doctor" });
         }
 
         public async Task<IActionResult> UpdateRoomStatus(int id, RoomStatus status)

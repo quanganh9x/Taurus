@@ -48,6 +48,25 @@ namespace Taurus.Controllers
             return Ok(new APIResponse { Status = APIStatus.Success, Data = estimatedtime });
         }
 
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateSession()
+        {
+            var customerId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.CustomerId == customerId && m.Status == RoomStatus.ACTIVE);
+            if (s == null)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "T k save" });
+            }
+            s.CheckTime = DateTime.Now;
+            _context.Sessions.Update(s);
+            await _context.SaveChangesAsync();
+            User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            u.Coins -= s.GetTotalPrice();
+            _context.Users.Update(u);
+            await _context.SaveChangesAsync(); // holding coins
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
+        }
+
         [HttpPost("end")]
         public async Task<IActionResult> EndSession()
         {
@@ -71,8 +90,8 @@ namespace Taurus.Controllers
         [Route("get/{id}")]
         public async Task<IActionResult> GetSessionById(int sessionId)
         {
-            var session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId);            
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = session });
+            var session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId);
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(session) });
         }
     }
 }

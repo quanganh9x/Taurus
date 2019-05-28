@@ -19,7 +19,7 @@ namespace Taurus.Models
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
         public RoomStatus Status { get; set; } = RoomStatus.ACTIVE;
-        //public DateTime CheckTime { get; set; }
+        public DateTime CheckTime { get; set; }
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
