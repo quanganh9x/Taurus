@@ -23,7 +23,7 @@ namespace Taurus.Hubs
             var json = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(message);
 
             switch (json.eventName) {
-                case "open-room":
+                case "open-room":                    
                     break;
                 default:
                     break;

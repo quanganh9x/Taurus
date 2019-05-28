@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +11,12 @@ using Taurus.Models.Enums;
 
 namespace Taurus.Controllers
 {
-    
-    [Route("panel")]
+
+    [Route("Panel")]
     public class PanelController : Controller
     {
         private readonly ApplicationContext _context;
+        private readonly int pageSize = 3;
 
         public PanelController(ApplicationContext context)
         {
@@ -34,17 +34,28 @@ namespace Taurus.Controllers
         }
 
         [HttpGet("GetListActiveRoom")]
-        public async Task<IActionResult> GetListActiveRoom(string category)
-        {
-            List<Room> rooms = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE).ToListAsync();
+        public async Task<IActionResult> GetListActiveRoom(int? pageIndex)
+        {            
+            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE).ToListAsync();
+            var rooms = new PaginatedList<Room>(listRoom, listRoom.Count(), pageIndex ?? 1, pageSize);            
             return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
         }
 
         [HttpGet("GetRoomByCategory/{categoryId}")]
-        public async Task<IActionResult> GetRoomByCategory(int categoryId)
+        public async Task<IActionResult> GetRoomByCategory(int categoryId, int? pageIndex)
         {
-            List<Room> rooms = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE &&
-            r.Doctor.Specialist.Id == categoryId).ToListAsync();
+            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE &&
+            r.Doctor.Specialist.Id == categoryId).ToListAsync();            
+            var rooms = new PaginatedList<Room>(listRoom, listRoom.Count(), pageIndex ?? 1, pageSize);
+            return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
+        }
+
+        [HttpGet("GetRoomByFacility/{facilityId}")]
+        public async Task<IActionResult> GetRoomByFacility(int facilityId, int? pageIndex)
+        {            
+            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE &&
+            r.Doctor.Facility.Id == facilityId).ToListAsync();
+            var rooms = new PaginatedList<Room>(listRoom, listRoom.Count(), pageIndex ?? 1, pageSize);
             return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
         }
 
