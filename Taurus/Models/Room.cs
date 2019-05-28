@@ -23,7 +23,7 @@ namespace Taurus.Models
         [Required]
         public int Price { get; set; } // per min
         /* status */
-        public RoomStatus Status { get; set; } = RoomStatus.ACTIVE;
+        public RoomStatus Status { get; set; } = RoomStatus.PENDING;
         /* datetime */
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
