@@ -16,7 +16,7 @@ namespace Taurus.Models
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
         /* datetime */
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }

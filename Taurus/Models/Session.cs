@@ -21,7 +21,7 @@ namespace Taurus.Models
         public RoomStatus Status { get; set; } = RoomStatus.ACTIVE;
         public DateTime CheckTime { get; set; }
         /* datetime */
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
@@ -33,7 +33,7 @@ namespace Taurus.Models
         
         public int GetTimeSpan()
         {
-            return this.UpdatedAt.Minute - this.CreatedAt.Minute;
+            return this.CheckTime.Minute - this.CreatedAt.Minute;
         }
     }
 }

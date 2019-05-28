@@ -71,7 +71,7 @@ namespace Taurus.Data
                     UserName = "Tester",
                     Email = "customer@taurus",
                     PhoneNumber = "0666666666",
-                    FullName = "Admin nimdA",
+                    FullName = "Im Tester",
                     DateOfBirth = DateTime.Parse("1978/01/01"),
                     Address = "nimdA Admin nimdA",
                     City = "Hà Nội",

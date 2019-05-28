@@ -21,7 +21,7 @@ namespace Taurus.Models
         /* status */
         public Status Status { get; set; } = Status.ACTIVE;
         /* datetime */
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }

@@ -76,7 +76,7 @@ namespace Taurus.Controllers
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "T k save" });
             }
-            //s.CheckTime = DateTime.Now;
+            s.CheckTime = DateTime.Now;
             s.Status = RoomStatus.CLOSED;
             _context.Sessions.Update(s);
             await _context.SaveChangesAsync();

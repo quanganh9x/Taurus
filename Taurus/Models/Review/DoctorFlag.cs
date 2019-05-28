@@ -15,7 +15,7 @@ namespace Taurus.Models
         [ForeignKey("DoctorId")]
         public virtual Doctor Doctor { get; set; }
         /* datetime */
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }

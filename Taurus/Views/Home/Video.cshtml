@@ -286,7 +286,7 @@
             if (event.data) {
                 div.innerHTML = '<b>' + (event.extra.userFullName || event.userid) + ':</b> ' + event.data.chatMessage;
 
-                
+
             } else {
                 div.innerHTML = '<b>You:</b> ' + event;
                 div.style.background = '#cbffcb';
@@ -499,7 +499,7 @@
             });
         }
 
-        
+
 
         connection.DetectRTC.load(function () {
             if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
@@ -534,28 +534,27 @@
             });
         });
 
-        window.addEventListener('beforeunload', function () {
+        window.addEventListener('unload', function () {
             if (connection.extra.roowOwner == true) {
-                $.post("@Url.Action("EndRoom", "Room")", { roomId: "@r.Id" })
+                @*$.post("@Url.Action("EndRoom", "Room")", { roomId: "@r.Id" })
                     .done(function (data) {
                         console.log(data);
                     })
                     .fail(function (data) {
                         console.log(data);
-                    });
-            } else {
-                @*$.post("@Url.Action("EndSession", "Session")" )
-                    .done(function (data) {
-                            console.log(data);
-                        })
-                        .fail(function (data) {
-                            console.log(data);
                     });*@
 
                 $.ajax({
                     type: 'POST',
+                    url: '"@Url.Action("EndRoom", "Room")',
+                    async: false,
+                    data: { roomId: "@r.Id" }
+                });
+            } else {
+                $.ajax({
+                    type: 'POST',
                     url: '@Url.Action("EndSession", "Session")',
-                    async: false,                   
+                    async: false,
                 });
             }
         })

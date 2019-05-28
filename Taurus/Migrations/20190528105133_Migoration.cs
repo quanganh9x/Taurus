@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Taurus.Migrations
 {
-    public partial class DbApplication : Migration
+    public partial class Migoration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -65,7 +65,7 @@ namespace Taurus.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
                     Address = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -80,7 +80,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -201,7 +201,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -226,7 +226,7 @@ namespace Taurus.Migrations
                     Description = table.Column<string>(nullable: true),
                     Time = table.Column<DateTime>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -249,7 +249,7 @@ namespace Taurus.Migrations
                     UserId = table.Column<int>(nullable: false),
                     SpecialistId = table.Column<int>(nullable: false),
                     FacilityId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -303,7 +303,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CustomerId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -326,7 +326,7 @@ namespace Taurus.Migrations
                     CustomerId = table.Column<int>(nullable: false),
                     Text = table.Column<string>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -347,7 +347,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DoctorId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     CustomerId = table.Column<int>(nullable: true)
                 },
@@ -375,7 +375,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DoctorId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
                     CustomerId = table.Column<int>(nullable: true)
                 },
@@ -408,7 +408,7 @@ namespace Taurus.Migrations
                     Title = table.Column<string>(nullable: false),
                     Price = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -431,7 +431,7 @@ namespace Taurus.Migrations
                     QuestionId = table.Column<int>(nullable: false),
                     DoctorId = table.Column<int>(nullable: false),
                     Text = table.Column<string>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
@@ -460,7 +460,8 @@ namespace Taurus.Migrations
                     RoomId = table.Column<int>(nullable: false),
                     CustomerId = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
+                    CheckTime = table.Column<DateTime>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>

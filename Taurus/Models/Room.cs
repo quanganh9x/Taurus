@@ -25,7 +25,7 @@ namespace Taurus.Models
         /* status */
         public RoomStatus Status { get; set; } = RoomStatus.PENDING;
         /* datetime */
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }

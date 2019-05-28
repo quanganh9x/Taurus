@@ -28,7 +28,7 @@ namespace Taurus.Models
         public virtual List<DoctorVote> Votes { get; set; }
         public virtual List<DoctorFlag> Flags { get; set; }
         /* datetime */
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
