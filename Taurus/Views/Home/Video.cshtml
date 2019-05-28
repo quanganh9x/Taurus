@@ -1,5 +1,14 @@
-﻿@{ 
+﻿@{
     Layout = null;
+    dynamic u = null;
+    if (User.IsInRole("Doctor"))
+    {
+        u = ViewData["User"] as Doctor;
+    } else
+    {
+        u = ViewData["User"] as Customer;
+    }
+    Room r = ViewData["Room"] as Room;
 }
 
 <!-- Demo version: 2018.12.11 -->
@@ -15,6 +24,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/lib/emojionearea/emojionearea.min.css">
+    <link rel="stylesheet" href="~/css/getHTMLMediaElement.css">
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -23,7 +33,7 @@
     <link rel="stylesheet" href="~/css/swiper.min.css">
 
     <!-- Styles -->
-    @*<link rel="stylesheet" href="~/css/style.css">*@
+    <link rel="stylesheet" href="~/css/style.css">
 
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -36,33 +46,25 @@
     <script src='~/js/custom.js'></script>
 
     <script src="~/lib/webrtc-adapter/adapter.min.js"></script>
-    <script src="https://rawgit.com/muaz-khan/RTCMultiConnection/master/dist/RTCMultiConnection.min.js"></script>
+    <script src="~/lib/rtcmulticonnection/dist/RTCMultiConnection.min.js"></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/socket.io/socket.io.js"></script>
     <script src="~/js/FileBufferReader.min.js"></script>
 
     <script src="~/js/SignalRHandler.js"></script>
 
+    <script src="~/js/getHTMLMediaElement.js"></script>
     <script src="~/lib/emojionearea/emojionearea.min.js"></script>
-
-    <style type="text/css">
-
-        input[disabled], button[disabled] {
-            background: transparent !important;
-            color: #dcd7d7 !important;
-            border: 1px solid #dcd7d7 !important;
-            cursor: not-allowed !important;
-            text-shadow: none !important;
-            box-shadow: none !important;
-            text-decoration: none !important;
-            outline: none !important;
-        }
-    </style>
 </head>
 <body>
     <style>
-        .extra-controls {
-            position: absolute;
-            right: 21%;
+        html, body {
+            height: 100%;
+        }
+
+        .container-fluid, .row {
+            height: 100%;
+            padding: 0;
         }
 
         #btn-comments {
@@ -71,18 +73,6 @@
             font-size: 24px;
             text-shadow: 1px 1px white;
         }
-
-        #other-videos {
-            margin-top: 5px;
-        }
-
-            #other-videos video {
-                width: 100%;
-                margin: 5px;
-                border: 1px solid black;
-                padding: 1px;
-                border-radius: 3px;
-            }
 
         #txt-chat-message {
             width: 100%;
@@ -99,10 +89,10 @@
         #conversation-panel {
             margin-bottom: 20px;
             text-align: left;
-            max-height: 200px;
+            width: 100%;
+            height: 85%;
             overflow: auto;
             border-top: 1px solid #E5E5E5;
-            width: 106%;
         }
 
             #conversation-panel .message {
@@ -112,32 +102,14 @@
 
                 #conversation-panel .message img, #conversation-panel .message video, #conversation-panel .message iframe {
                     max-width: 100%;
+                    max-height: 100px;
                 }
 
-        #main-video {
-            width: 100%;
-            margin-top: -9px;
-            border-bottom: 1px solid #121010;
-            padding-bottom: 1px;
-        }
-
-        hr {
-            height: 1px;
-            border: 0;
-            background: #E5E5E5;
-        }
 
         #btn-attach-file {
             width: 25px;
             vertical-align: middle;
             cursor: pointer;
-            display: none;
-        }
-
-        .checkmark {
-            display: none;
-            width: 15px;
-            vertical-align: middle;
         }
 
     </style>
@@ -146,39 +118,29 @@
 
         <div class="row">
 
-            <div class="col-3 col-md-3">
-                <hr>
-                <div>
-                    <div id="onUserStatusChanged"></div>
-                </div>
+            <div class="col-12" style="height: 100%">
 
-                <div>
                     <div id="conversation-panel"></div>
                     <div id="key-press" style="text-align: right; display: none; font-size: 11px;">
                         <span style="vertical-align: middle;"></span>
-                        <img src="https://webrtcweb.com/key-press.gif" style="height: 12px; vertical-align: middle;">
+                        <img src="data:image/png;base64,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" style="height: 12px; vertical-align: middle;">
                     </div>
                     <textarea id="txt-chat-message"></textarea>
                     <button class="btn btn-primary" id="btn-chat-message" disabled>Send</button>
                     <img id="btn-attach-file" src="data:image/png;base64,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" title="Attach a File">
 
-                </div>
             </div>
 
-            <div class="col-9 col-md-9" style="height: 100%;">
-                <video id="main-video" controls playsinline autoplay style="height: 50%;"></video>
-                <div id="other-videos" style="height: 50%;"></div>
+            <div class="col-12" id="videos-container" style="height: 100%; align-content: center;">
             </div>
 
         </div>
     </div>
 
     <script>
-        $(document).ready(function () {
-            connection.openOrJoin(connection.socketMessageEvent, function () {
-            });
-        });
+
         window.adapter = true;
+
         (function () {
             var params = {},
                 r = /([^&=]+)=?([^&]*)/g;
@@ -193,27 +155,10 @@
         })();
 
         var connection = new RTCMultiConnection();
-        console.log(connection);
-        
-        connection.setCustomSocketHandler(SignalRHandler);
-        
-        // connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
-        connection.extra.userFullName = params.userFullName;
+        //connection.setCustomSocketHandler(SignalRHandler);
 
-        connection.socketMessageEvent = params.roomId;
-
-        // keep room opened even if owner leaves
-        //connection.autoCloseEntireSession = true;
-
-        // https://www.rtcmulticonnection.org/docs/maxParticipantsAllowed/
-        connection.maxParticipantsAllowed = 99;
-        // set value 2 for one-to-one connection
-        // connection.maxParticipantsAllowed = 2;
-
-        // here goes RTCMultiConnection
-        //connection.chunkSize = 16000;
-        //connection.enableFileSharing = true;
+        connection.socketURL = "http://localhost:9001/";
 
         connection.session = {
             audio: true,
@@ -225,20 +170,30 @@
             OfferToReceiveVideo: true
         };
 
-        connection.onUserStatusChanged = function (event) {
-            var infoBar = document.getElementById('onUserStatusChanged');
+        connection.userid = "@u.User.FullName";
+        connection.extra.userFullName = "@u.User.FullName";
+
+        connection.socketMessageEvent = "@r.Id";
+
+        connection.autoCloseEntireSession = true;
+        connection.maxParticipantsAllowed = 2;
+        connection.enableFileSharing = true;
+
+        connection.onUserStatusChanged = function (event, bonus) {
             var names = [];
             connection.getAllParticipants().forEach(function (pid) {
                 names.push(getFullName(pid));
+                if (bonus === "join") appendChatMessage("User: <b>" + getFullName(pid) + "</b> joined!");
+                else if (bonus === "out") appendChatMessage("User: <b>" + getFullName(pid) + "</b> exited!");
             });
 
             if (!names.length) {
-                names = ['Only You'];
+                names = ['Self'];
             } else {
-                names = [connection.extra.userFullName || 'You'].concat(names);
+                names = [connection.extra.userFullName || 'Self'].concat(names);
             }
 
-            infoBar.innerHTML = '<b>Active users:</b> ' + names.join(', ');
+
         };
 
         connection.onopen = function (event) {
@@ -254,12 +209,12 @@
 
         connection.onmessage = function (event) {
             if (event.data.showMainVideo) {
-                $('#main-video').show();
+                $('#videos-container').show();
                 return;
             }
 
             if (event.data.hideMainVideo) {
-                $('#main-video').hide();
+                $('#videos-container').hide();
                 return;
             }
 
@@ -277,75 +232,62 @@
                 appendChatMessage(event);
                 return;
             }
-
-            if (event.data.checkmark === 'received') {
-                var checkmarkElement = document.getElementById(event.data.checkmark_id);
-                if (checkmarkElement) {
-                    checkmarkElement.style.display = 'inline';
-                }
-                return;
-            }
         };
 
-        // extra code
-
+        connection.videosContainer = document.getElementById("videos-container");
         connection.onstream = function (event) {
-            if (event.stream.isScreen && !event.stream.canvasStream) {
-                //$('#screen-viewer').get(0).srcObject = event.stream;
-                //$('#screen-viewer').hide();
-            }
-            else if (event.extra.roomOwner === true) {
-                var video = document.getElementById('main-video');
-                video.setAttribute('data-streamid', event.streamid);
-                // video.style.display = 'none';
-                if (event.type === 'local') {
-                    video.muted = true;
-                    video.volume = 0;
-                }
-                video.srcObject = event.stream;
-                $('#main-video').show();
-            } else {
-                event.mediaElement.controls = false;
-                var otherVideos = document.querySelector('#other-videos');
-                otherVideos.appendChild(event.mediaElement);
-            }
+            event.mediaElement.removeAttribute('src');
+            event.mediaElement.removeAttribute('srcObject');
 
-            connection.onUserStatusChanged(event);
+            var video = document.createElement('video');
+            video.controls = false;
+            video.setAttribute('data-streamid', event.streamid);
+            if (event.type === 'local') {
+                video.muted = true;
+                video.volume = 0;
+            }
+            video.srcObject = event.stream;
+
+            var mediaElement = getHTMLMediaElement(video, {
+                title: event.userid,
+                buttons: ['full-screen'],
+                width: "50%",
+                showOnMouseEnter: false
+            });
+
+            connection.videosContainer.appendChild(mediaElement);
+
+            setTimeout(function () {
+                mediaElement.media.play();
+            }, 5000);
+
+            mediaElement.id = event.streamid;
+
+            connection.onUserStatusChanged(event, "join");
         };
 
         connection.onstreamended = function (event) {
-            var video = document.querySelector('video[data-streamid="' + event.streamid + '"]');
-            if (!video) {
-                video = document.getElementById(event.streamid);
-                if (video) {
-                    video.parentNode.removeChild(video);
-                    return;
-                }
-            }
-            if (video) {
-                video.srcObject = null;
-                video.style.display = 'none';
-            }
+            if (!connection.extra.roowOwner) location.href = "/";
+            var video = document.getElementById(event.streamid);
+            video.parentNode.removeChild(video);
+
+            connection.onUserStatusChanged(event, "out");
+            return;
         };
 
         var conversationPanel = document.getElementById('conversation-panel');
 
-        function appendChatMessage(event, checkmark_id) {
+        function appendChatMessage(event) {
             var div = document.createElement('div');
 
             div.className = 'message';
 
             if (event.data) {
-                div.innerHTML = '<b>' + (event.extra.userFullName || event.userid) + ':</b><br>' + event.data.chatMessage;
+                div.innerHTML = '<b>' + (event.extra.userFullName || event.userid) + ':</b> ' + event.data.chatMessage;
 
-                if (event.data.checkmark_id) {
-                    connection.send({
-                        checkmark: 'received',
-                        checkmark_id: event.data.checkmark_id
-                    });
-                }
+                
             } else {
-                div.innerHTML = '<b>You:</b> <img class="checkmark" id="' + checkmark_id + '" title="Received" src="https://webrtcweb.com/checkmark.png"><br>' + event;
+                div.innerHTML = '<b>You:</b> ' + event;
                 div.style.background = '#cbffcb';
             }
 
@@ -411,18 +353,17 @@
         };
 
         document.getElementById('btn-chat-message').onclick = function () {
+            if ($('#btn-chat-message').attr("disabled")) return;
             var chatMessage = $('.emojionearea-editor').html();
             $('.emojionearea-editor').html('');
 
             if (!chatMessage || !chatMessage.replace(/ /g, '').length) return;
 
-            var checkmark_id = connection.userid + connection.token();
 
-            appendChatMessage(chatMessage, checkmark_id);
+            appendChatMessage(chatMessage);
 
             connection.send({
-                chatMessage: chatMessage,
-                checkmark_id: checkmark_id
+                chatMessage: chatMessage
             });
 
             connection.send({
@@ -529,9 +470,9 @@
             label.innerHTML = position + '%';
         }
 
-        
 
-        
+
+
 
         function addStreamStopListener(stream, callback) {
             stream.addEventListener('ended', function () {
@@ -557,72 +498,23 @@
             });
         }
 
-        function replaceTrack(videoTrack, screenTrackId) {
-            if (!videoTrack) return;
-            if (videoTrack.readyState === 'ended') {
-                alert('Can not replace an "ended" track. track.readyState: ' + videoTrack.readyState);
-                return;
+        
+
+        connection.DetectRTC.load(function () {
+            if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
+                alert('You dont fulfill requirements or your browser doesnt support WebRTC');
+                window.location.href = "/";
             }
-            connection.getAllParticipants().forEach(function (pid) {
-                var peer = connection.peers[pid].peer;
-                if (!peer.getSenders) return;
-                var trackToReplace = videoTrack;
-                peer.getSenders().forEach(function (sender) {
-                    if (!sender || !sender.track) return;
-                    if (screenTrackId) {
-                        if (trackToReplace && sender.track.id === screenTrackId) {
-                            sender.replaceTrack(trackToReplace);
-                            trackToReplace = null;
-                        }
-                        return;
-                    }
 
-                    if (sender.track.id !== tempStream.getTracks()[0].id) return;
-                    if (sender.track.kind === 'video' && trackToReplace) {
-                        sender.replaceTrack(trackToReplace);
-                        trackToReplace = null;
-                    }
-                });
-            });
-        }
-
-        function replaceScreenTrack(stream) {
-            stream.isScreen = true;
-            stream.streamid = stream.id;
-            stream.type = 'local';
-
-            // connection.attachStreams.push(stream);
-            connection.onstream({
-                stream: stream,
-                type: 'local',
-                streamid: stream.id,
-                // mediaElement: video
-            });
-
-            var screenTrackId = stream.getTracks()[0].id;
-            addStreamStopListener(stream, function () {
-                connection.send({
-                    hideMainVideo: true
-                });
-
-                $('#main-video').hide();
-                replaceTrack(tempStream.getTracks()[0], screenTrackId);
-            });
-
-            stream.getTracks().forEach(function (track) {
-                if (track.kind === 'video' && track.readyState === 'live') {
-                    replaceTrack(track);
+            connection.checkPresence(connection.socketMessageEvent, function (isRoomExist, roomid, error) {
+                if (isRoomExist === true) {
+                    connection.join(roomid);
+                } else {
+                    connection.extra.roowOwner = true;
+                    connection.open(roomid);
                 }
             });
-
-            connection.send({
-                showMainVideo: true
-            });
-
-            $('#main-video').show();
-        }
-
-        
+        });
     </script>
 </body>
 </html>

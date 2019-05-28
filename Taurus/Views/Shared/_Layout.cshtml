@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="~/css/style.css">
 </head>
 <body>
+    
+
     <header class="site-header">
         <div class="nav-bar">
             <div class="container">
@@ -45,17 +47,19 @@
                         <nav class="site-navigation d-flex justify-content-end align-items-center">
                             <ul class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-center">
                                 <li class="current-menu-item"><a href="/">Home</a></li>
-                                <li><a href="/About">About us</a></li>
-                                <li><a href="/Services">Services</a></li>
+                                <li><a href="/Panel">Panel</a></li>
                                 <li><a href="/News">News</a></li>
-                                <li><a href="/Contact">Contact</a></li>
+                                <li><a href="/About">About us</a></li>
 
                                 <li class="call-btn button gradient-bg mt-3 mt-md-0">
-                                    @if (SignInManager.IsSignedIn(User)) {
-                                    <a class="d-flex justify-content-center" href="#">@User.Identity.Name</a>
-                                    } else {
-                                    <a class="d-flex justify-content-center" href="/Login">Login</a>
-                                    } 
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <a class="d-flex justify-content-center" href="/Profile">@User.Identity.Name</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="d-flex justify-content-center" href="/Login">Login</a>
+                                    }
                                 </li>
                             </ul>
                         </nav><!-- .site-navigation -->
@@ -71,97 +75,9 @@
             </div><!-- .container -->
         </div><!-- .nav-bar -->
 
-        <div class="swiper-container hero-slider">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide hero-content-wrap" style="background-image: url('/images/hero.jpg')">
-                    <div class="hero-content-overlay position-absolute w-100 h-100">
-                        <div class="container h-100">
-                            <div class="row h-100">
-                                <div class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-start">
-                                    <header class="entry-header">
-                                        <h1>The Best <br>Medical Services</h1>
-                                    </header><!-- .entry-header -->
-
-                                    <div class="entry-content mt-4">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.</p>
-                                    </div><!-- .entry-content -->
-
-                                    <footer class="entry-footer d-flex flex-wrap align-items-center mt-4">
-                                        <a href="#" class="button gradient-bg">Read More</a>
-                                    </footer><!-- .entry-footer -->
-                                </div><!-- .col -->
-                            </div><!-- .row -->
-                        </div><!-- .container -->
-                    </div><!-- .hero-content-overlay -->
-                </div><!-- .hero-content-wrap -->
-
-                <div class="swiper-slide hero-content-wrap" style="background-image: url('/images/hero.jpg')">
-                    <div class="hero-content-overlay position-absolute w-100 h-100">
-                        <div class="container h-100">
-                            <div class="row h-100">
-                                <div class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-start">
-                                    <header class="entry-header">
-                                        <h1>The Best <br>Medical Services</h1>
-                                    </header><!-- .entry-header -->
-
-                                    <div class="entry-content mt-4">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.</p>
-                                    </div><!-- .entry-content -->
-
-                                    <footer class="entry-footer d-flex flex-wrap align-items-center mt-4">
-                                        <a href="#" class="button gradient-bg">Read More</a>
-                                    </footer><!-- .entry-footer -->
-                                </div><!-- .col -->
-                            </div><!-- .row -->
-                        </div><!-- .container -->
-                    </div><!-- .hero-content-overlay -->
-                </div><!-- .hero-content-wrap -->
-
-                <div class="swiper-slide hero-content-wrap" style="background-image: url('/images/hero.jpg')">
-                    <div class="hero-content-overlay position-absolute w-100 h-100">
-                        <div class="container h-100">
-                            <div class="row h-100">
-                                <div class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-start">
-                                    <header class="entry-header">
-                                        <h1>The Best <br>Medical Services</h1>
-                                    </header><!-- .entry-header -->
-
-                                    <div class="entry-content mt-4">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus faucibus finibus.</p>
-                                    </div><!-- .entry-content -->
-
-                                    <footer class="entry-footer d-flex flex-wrap align-items-center mt-4">
-                                        <a href="#" class="button gradient-bg">Read More</a>
-                                    </footer><!-- .entry-footer -->
-                                </div><!-- .col -->
-                            </div><!-- .row -->
-                        </div><!-- .container -->
-                    </div><!-- .hero-content-overlay -->
-                </div><!-- .hero-content-wrap -->
-            </div><!-- .swiper-wrapper -->
-
-            <div class="pagination-wrap position-absolute w-100">
-                <div class="swiper-pagination d-flex flex-row flex-md-column"></div>
-            </div><!-- .pagination-wrap -->
-        </div><!-- .hero-slider -->
     </header><!-- .site-header -->
 
     @RenderBody()
-
-    <div class="subscribe-banner">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-lg-8 offset-lg-2">
-                    <h2>Subscribe to our newsletter</h2>
-
-                    <form>
-                        <input type="email" placeholder="E-mail address">
-                        <input class="button gradient-bg" type="submit" value="Subscribe">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <footer class="site-footer">
         <div class="footer-widgets">
