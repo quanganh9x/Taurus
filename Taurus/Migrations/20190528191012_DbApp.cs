@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Taurus.Migrations
 {
-    public partial class Migoration : Migration
+    public partial class DbApp : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -324,6 +324,8 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CustomerId = table.Column<int>(nullable: false),
+                    SpecialistId = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
                     Text = table.Column<string>(nullable: false),
                     Status = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
@@ -338,6 +340,12 @@ namespace Taurus.Migrations
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Questions_Specialists_SpecialistId",
+                        column: x => x.SpecialistId,
+                        principalTable: "Specialists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -348,18 +356,11 @@ namespace Taurus.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DoctorId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
-                    CustomerId = table.Column<int>(nullable: true)
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DoctorFlags", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DoctorFlags_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_DoctorFlags_Doctors_DoctorId",
                         column: x => x.DoctorId,
@@ -376,18 +377,11 @@ namespace Taurus.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DoctorId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()"),
-                    CustomerId = table.Column<int>(nullable: true)
+                    UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DoctorVotes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DoctorVotes_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_DoctorVotes_Doctors_DoctorId",
                         column: x => x.DoctorId,
@@ -546,11 +540,6 @@ namespace Taurus.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoctorFlags_CustomerId",
-                table: "DoctorFlags",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DoctorFlags_DoctorId",
                 table: "DoctorFlags",
                 column: "DoctorId");
@@ -571,11 +560,6 @@ namespace Taurus.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoctorVotes_CustomerId",
-                table: "DoctorVotes",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DoctorVotes_DoctorId",
                 table: "DoctorVotes",
                 column: "DoctorId");
@@ -589,6 +573,11 @@ namespace Taurus.Migrations
                 name: "IX_Questions_CustomerId",
                 table: "Questions",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_SpecialistId",
+                table: "Questions",
+                column: "SpecialistId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rooms_DoctorId",

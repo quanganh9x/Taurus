@@ -25,11 +25,13 @@ namespace Taurus.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetAllQuestion()
         {
-            var questions = await _context.Questions.Where(q => q.Status == Status.ACTIVE
-            && q.CreatedAt > DateTime.Now.AddDays(-1)).ToListAsync();
-            return Ok(questions);
+            var questions = await _context.Questions.Where(q => q.Status == Status.ACTIVE).ToListAsync();
+            ViewData["Specialists"] = await _context.Specialists.ToListAsync();
+            ViewData["ActiveThreads"] = await _context.Questions.Where(q => q.Status == Status.ACTIVE).OrderBy(m => m.Answers.Count).Take(5).ToListAsync();
+            return View("../Home/QA", questions);
         }
         
         public IActionResult CreateNewQuestion([FromForm] string text)
@@ -42,10 +44,14 @@ namespace Taurus.Controllers
             return View();
         }
 
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestionById(int id)
         {
+            ViewData["Specialists"] = await _context.Specialists.ToListAsync();
+            ViewData["ActiveThreads"] = await _context.Questions.Where(q => q.Status == Status.ACTIVE && q.CreatedAt > DateTime.Now.AddDays(-1)).OrderBy(m => m.Answers.Count).Take(5).ToListAsync();
             var questions = await _context.Questions.FirstOrDefaultAsync(q => q.Id == id);
-            return Ok(questions);
+            ViewData["Answers"] = await _context.Answers.Where(m => m.QuestionId == id).ToListAsync();
+            return View("../Home/Topic", questions);
         }
     }
 }

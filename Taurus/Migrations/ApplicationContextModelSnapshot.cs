@@ -324,8 +324,6 @@ namespace Taurus.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int?>("CustomerId");
-
                     b.Property<int>("DoctorId");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -333,8 +331,6 @@ namespace Taurus.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("DoctorId");
 
@@ -349,8 +345,6 @@ namespace Taurus.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<int?>("CustomerId");
-
                     b.Property<int>("DoctorId");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -358,8 +352,6 @@ namespace Taurus.Migrations
                         .HasDefaultValueSql("getdate()");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("DoctorId");
 
@@ -426,9 +418,14 @@ namespace Taurus.Migrations
 
                     b.Property<int>("CustomerId");
 
+                    b.Property<int>("SpecialistId");
+
                     b.Property<int>("Status");
 
                     b.Property<string>("Text")
+                        .IsRequired();
+
+                    b.Property<string>("Title")
                         .IsRequired();
 
                     b.Property<DateTime>("UpdatedAt")
@@ -438,6 +435,8 @@ namespace Taurus.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("SpecialistId");
 
                     b.ToTable("Questions");
                 });
@@ -591,7 +590,7 @@ namespace Taurus.Migrations
             modelBuilder.Entity("Taurus.Models.CustomerFlag", b =>
                 {
                     b.HasOne("Taurus.Models.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("Flags")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -599,7 +598,7 @@ namespace Taurus.Migrations
             modelBuilder.Entity("Taurus.Models.CustomerVote", b =>
                 {
                     b.HasOne("Taurus.Models.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("Votes")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -624,10 +623,6 @@ namespace Taurus.Migrations
 
             modelBuilder.Entity("Taurus.Models.DoctorFlag", b =>
                 {
-                    b.HasOne("Taurus.Models.Customer")
-                        .WithMany("DoctorFlags")
-                        .HasForeignKey("CustomerId");
-
                     b.HasOne("Taurus.Models.Doctor", "Doctor")
                         .WithMany("Flags")
                         .HasForeignKey("DoctorId")
@@ -636,10 +631,6 @@ namespace Taurus.Migrations
 
             modelBuilder.Entity("Taurus.Models.DoctorVote", b =>
                 {
-                    b.HasOne("Taurus.Models.Customer")
-                        .WithMany("DoctorVotes")
-                        .HasForeignKey("CustomerId");
-
                     b.HasOne("Taurus.Models.Doctor", "Doctor")
                         .WithMany("Votes")
                         .HasForeignKey("DoctorId")
@@ -659,6 +650,11 @@ namespace Taurus.Migrations
                     b.HasOne("Taurus.Models.Customer", "Customer")
                         .WithMany("Questions")
                         .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Taurus.Models.Specialist", "Specialist")
+                        .WithMany("Questions")
+                        .HasForeignKey("SpecialistId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

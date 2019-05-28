@@ -14,6 +14,11 @@ namespace Taurus.Models
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
+        public int SpecialistId { get; set; }
+        [ForeignKey("SpecialistId")]
+        public virtual Specialist Specialist { get; set; }
+        [Required]
+        public string Title { get; set; }
         [Required]
         public string Text { get; set; }
         /* lists */
@@ -25,5 +30,10 @@ namespace Taurus.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
+
+        public int GetMinutesPassed()
+        {
+            return (DateTime.Now - this.CreatedAt).Days;
+        }
     }
 }

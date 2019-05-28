@@ -14,6 +14,7 @@ namespace Taurus.Models
         public string Name { get; set; }
         /* lists */
         public virtual List<Doctor> Doctors { get; set; }
+        public virtual List<Question> Questions { get; set; }
         /* datetime */
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;

@@ -46,10 +46,10 @@ namespace Taurus.Controllers
             return View();
         }
 
-        [Route("/User")]
-        public IActionResult User()
+        [Route("/QA")]
+        public IActionResult QA()
         {
-            return View("ProfileUser");
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

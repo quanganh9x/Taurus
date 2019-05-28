@@ -75,6 +75,16 @@
         "socket.io.js",
         "socket.io.js.map"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "mediaelement@4.2.10",
+      "destination": "wwwroot/lib/mediaelement/",
+      "files": [
+        "mediaelement.min.js",
+        "mejs-controls.svg",
+        "mejs-controls.png"
+      ]
     }
   ]
 }
