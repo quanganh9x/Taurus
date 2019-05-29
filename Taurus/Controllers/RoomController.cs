@@ -37,7 +37,7 @@ namespace Taurus.Controllers
             3. room nhận các booked session
          */
         [HttpPost("create")]
-        public async Task<IActionResult> CreateNewRoom([Bind("Title,Price,Quota,EstimateTimeStart,EstimateTimeEnd")] Room room )
+        public async Task<IActionResult> CreateNewRoom([Bind("Title,Price,Quota")] Room room )
         {
             if (User.IsInRole("Doctor"))
             {
@@ -49,6 +49,21 @@ namespace Taurus.Controllers
                 return LocalRedirect("/Video/"+room.Id);
             }
             return LocalRedirect("/");
+        }
+
+        [HttpPost("book")]
+        public async Task<IActionResult> CreateRoom([Bind("Title,Price,Quota,EstimatedTimeStart,EstimatedTimeEnd")] Room room)
+        {
+            if (User.IsInRole("Doctor"))
+            {
+                room.DoctorId = int.Parse(_userManager.GetUserId(User));
+                room.Status = RoomStatus.BOOKED;
+                _context.Rooms.Add(room);
+                await _context.SaveChangesAsync();
+
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = room });
+            }
+            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }
 
         [HttpPost("active")]
@@ -143,8 +158,10 @@ namespace Taurus.Controllers
         {
             if (User.IsInRole("Doctor"))
             {
-                List<Room> Rooms = await _context.Rooms.Where(m => m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.PENDING).ToListAsync();
-                return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(Rooms) });
+                var Rooms = await _context.Rooms.Where(m => m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.BOOKED)
+                    .Select(m => new { title = m.Title, start = m.EstimateTimeStart, end = m.EstimateTimeEnd })
+                    .ToListAsync();
+                return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(Rooms));
             }
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Mày không phải Doctor" });
         }
