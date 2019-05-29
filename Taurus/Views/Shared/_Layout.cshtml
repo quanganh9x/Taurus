@@ -50,8 +50,31 @@
                             <ul class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-center">
                                 <li class="current-menu-item"><a href="/">Home</a></li>
                                 <li><a href="/Panel">Panel</a></li>
-                                <li><a href="/Question">Question</a></li>
-                                <li><a href="#"><i class="fa fa-bell"></i></a></li>
+                                <li><a href="/Question">Question</a></li>                                
+
+                                <div class="dropdown show">
+                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-bell"></i>                                        
+                                    </a>
+
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+
+                                        @* Nhét các NOTIFICATION vào đây *@
+                                        <div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                        </div>
+                                        <hr />
+                                        <div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                        </div>
+                                        <hr />
+                                        <div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                        </div>           
+                                        @* Dừng ở đây *@
+
+                                    </div>
+                                </div>
                                 <li><a href="#"><i class="fa fa-bookmark"></i></a></li>
 
 
@@ -67,7 +90,7 @@
                                 else
                                 {
                                     <li>
-                                    <a class="d-flex justify-content-center" href="/Login">Login</a>
+                                        <a class="d-flex justify-content-center" href="/Login">Login</a>
 
                                     </li>
                                 }

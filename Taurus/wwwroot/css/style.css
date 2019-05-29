@@ -142,7 +142,7 @@ a:hover, a:active {
     margin: 0;
     background: #fff;
     list-style: none;
-    overflow-x: scroll;
+    /*overflow-x: scroll;*/
     transition: all 0.35s;
 }
 
@@ -196,7 +196,7 @@ a:hover, a:active {
         max-width: 100%;
         height: auto;
         padding: 0;
-        overflow: auto;
+        /*overflow: auto;*/
         background: transparent;
     }
 
