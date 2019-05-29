@@ -41,7 +41,6 @@ a:hover, a:active {
 .site-header {
     position: relative;
     height: 150px;
-    background-color: #FAFAFA;
 }
 
 .nav-bar {
@@ -1016,7 +1015,7 @@ ul.tabs-nav .tab-nav.active {
 # News
 --------------------------------*/
 .the-news, .the-profile {
-    padding: 100px 0 0 0;
+    padding: 60px 0 60px 0;
 }
 
 .the-news h2,
@@ -1326,9 +1325,6 @@ ul.tabs-nav .tab-nav.active {
 /*--------------------------------------------------------------
 # Sidebar
 --------------------------------------------------------------*/
-.sidebar {
-    padding: 100px 0;
-}
 
 /*
 # Search

@@ -34,14 +34,13 @@ namespace Taurus.Controllers
             return View("../Home/QA", questions);
         }
         
-        public IActionResult CreateNewQuestion([FromForm] string text)
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateNewQuestion([Bind("Title,Text,SpecialistId")] Question q)
         {
-            var question = new Question();
-            question.Text = text;
-            question.CustomerId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            _context.Questions.Add(question);
-            _context.SaveChanges();
-            return View();
+            q.CustomerId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            _context.Questions.Add(q);
+            await _context.SaveChangesAsync();
+            return LocalRedirect("/Question");
         }
 
         [HttpGet("{id}")]

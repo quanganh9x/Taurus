@@ -28,19 +28,15 @@ namespace Taurus.Controllers
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
-       
-        public async Task<IActionResult> CreateAnswer([Bind("QuestionId", "Text" )] Answer ans)
+        
+        [Route("create")]
+        public async Task<IActionResult> CreateAnswer([Bind("QuestionId","Text")] Answer ans)
         {
-            if (!User.IsInRole("Doctor")) {
-                return BadRequest();
-            }
-            Doctor d = await _context.Doctors.FirstOrDefaultAsync(m => m.User.Id == Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value));
-
-            ans.DoctorId = d.Id;
+            ans.DoctorId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             _context.Answers.Add(ans);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return LocalRedirect("/Question/"+ans.QuestionId);
         }
     }
 }

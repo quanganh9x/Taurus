@@ -50,19 +50,27 @@
                             <ul class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-center">
                                 <li class="current-menu-item"><a href="/">Home</a></li>
                                 <li><a href="/Panel">Panel</a></li>
+                                <li><a href="/Question">Question</a></li>
                                 <li><a href="#"><i class="fa fa-bell"></i></a></li>
                                 <li><a href="#"><i class="fa fa-bookmark"></i></a></li>
 
-                                <li class="call-btn button gradient-bg mt-3 mt-md-0">
-                                    @if (SignInManager.IsSignedIn(User))
-                                    {
-                                        <a class="d-flex justify-content-center" href="/Profile">@User.Identity.Name</a>
-                                    }
-                                    else
-                                    {
-                                        <a class="d-flex justify-content-center" href="/Login">Login</a>
-                                    }
-                                </li>
+
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    <li>
+                                        <a href="/Profile">Profile</a>
+                                    </li>
+                                    <li>
+                                        <a href="/Logout">Logout</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                    <a class="d-flex justify-content-center" href="/Login">Login</a>
+
+                                    </li>
+                                }
                             </ul>
                         </nav><!-- .site-navigation -->
 

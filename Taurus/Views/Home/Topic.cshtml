@@ -1,6 +1,6 @@
 ﻿@model Question
    <!-- Custom -->
-<link href="https://forum.azyrusthemes.com/css/custom.css" rel="stylesheet">
+    <link href="~/css/qa.css" rel="stylesheet">
 
 <!-- CSS STYLE-->
 <link rel="stylesheet" type="text/css" href="https://forum.azyrusthemes.com/css/style.css" media="screen" />
@@ -59,6 +59,13 @@
                             <div class="clearfix"></div>
                         </div>
                     </div><!-- POST -->
+
+                    @if (User.IsInRole("Doctor")) {
+                    <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#modalSubmitAnswer">
+                        + Answer 
+                    </button>
+                    }
+
                     @foreach (Answer q in ViewData["Answers"] as List<Answer>)
                     {
                         <!-- POST -->
@@ -156,6 +163,32 @@
     </section>
 
 
+</div>
+
+<div class="modal fade" id="modalSubmitAnswer" tabindex="-1" role="dialog" aria-labelledby="answerTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="answerTitle">Answering</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="answer" method="post" action="@Url.Action("CreateAnswer", "Answer")">
+                    <input type="hidden" class="form-control" value="@Model.Id" name="QuestionId">
+                    <div class="form-group">
+                        <label for="message" class="col-form-label">Text</label>
+                        <textarea class="form-control" id="message" name="Text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="$('#answer').submit();">Save changes</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 

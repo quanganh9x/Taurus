@@ -1,6 +1,6 @@
 ﻿@model Customer
 <div class="the-profile">
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
             <div class="col-3" style="text-align:center">
                 <div class="card" style="width: auto;">
@@ -19,16 +19,13 @@
                         <a href="#" class="card-link">Another link</a>
                     </div>*@
                 </div>
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                    Launch demo modal
-                </button>
             </div>
             <div class="col-9">
                 <div class="appointment-box the-profile-wrap p-3" id="accordion">
                     <h2 class="d-flex align-items-center">Stats!</h2>
                         @foreach (Session s in (List<Session>)ViewData["Sessions"]) {
                         <div class="card">
-                            <div class="card-header" id="heading_@s.Id">
+                            <div class="card-header" style="padding: 0;" id="heading_@s.Id">
                                 <h5 class="mb-0">
                                     <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@s.Id" aria-expanded="true" aria-controls="collapse_@s.Id">
                                         @s.Id

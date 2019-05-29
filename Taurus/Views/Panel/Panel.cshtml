@@ -1,34 +1,30 @@
-﻿<div class="container-fluid">
-    <div class="row">
-        <div class="col-12 col-lg-3">
-            <div class="sidebar">
-                <div class="search-widget">
-                    <form class="flex flex-wrap align-items-center">
-                        <input type="search" placeholder="Search...">
-                        <button type="submit" class="flex justify-content-center align-items-center">Search</button>
-                    </form><!-- .flex -->
-                </div><!-- .search-widget -->
+﻿<div class="container-fluid" style="background-color: #ecf0f1; padding: 60px; min-height: 500px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-4">
+                <div class="sidebar">
 
-                <div class="sidebar-cats">
-                    <h2 class="widget-title">Categories</h2>
 
-                    <ul class="accordion m-0 p-0" id="accordionExample">
-                        <li>
-                            <h5 class="text-primary" data-toggle="collapse"
-                                data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" id="headingOne">
-                                Specialist
-                            </h5>                            
+                    <div class="sidebar-cats">
+                        <h2 class="widget-title">Categories</h2>
 
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                 data-parent="#accordionExample">
+                        <ul class="accordion m-0 p-0" id="accordionExample">
+                            <li>
+                                <h5 class="text-primary" data-toggle="collapse"
+                                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" id="headingOne">
+                                    Specialist
+                                </h5>
 
-                                <ul class="p-0 m-0">
-                                    @foreach (Specialist s in (List<Specialist>)ViewData["Specialists"])
-                                    {
-                                        <li style="cursor:pointer;" onclick="getRoom('@Url.Action("GetRoomByCategory", "Panel", new { categoryId = s.Id })')">@s.Name</li>
-                                    }
-                                </ul>
-                            </div>
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                     data-parent="#accordionExample">
+
+                                    <ul class="p-0 m-0">
+                                        @foreach (Specialist s in (List<Specialist>)ViewData["Specialists"])
+                                        {
+                                            <li style="cursor:pointer;" onclick="getRoom('@Url.Action("GetRoomByCategory", "Panel", new { categoryId = s.Id })')">@s.Name</li>
+                                        }
+                                    </ul>
+                                </div>
                             </li>
                             <li>
                                 <h5 class="text-primary" data-toggle="collapse"
@@ -49,13 +45,14 @@
                             </li>
                         </ul>
 
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-lg-9">
-            <div class="the-news">
-                <div class="row" id="list-room">
-                    
+            <div class="col-12 col-lg-8">
+                <div class="the-news">
+                    <div class="row" id="list-room">
+
+                    </div>
                 </div>
             </div>
         </div>
