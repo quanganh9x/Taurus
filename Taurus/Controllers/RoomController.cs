@@ -37,7 +37,7 @@ namespace Taurus.Controllers
             3. room nhận các booked session
          */
         [HttpPost("create")]
-        public async Task<IActionResult> CreateNewRoom([Bind("Title,Price,Quota")] Room room )
+        public async Task<IActionResult> CreateNewRoom([Bind("Title,Price,Quota")] Room room)
         {
             if (User.IsInRole("Doctor"))
             {
@@ -52,12 +52,14 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("book")]
-        public async Task<IActionResult> CreateRoom([Bind("Title,Price,Quota,EstimatedTimeStart,EstimatedTimeEnd")] Room room)
-        {
+        public async Task<IActionResult> CreateRoom([Bind("Title,Price,Quota")] Room room,  [FromForm] DateTime EstimatedTimeStart, DateTime EstimatedTimeEnd)
+        {            
             if (User.IsInRole("Doctor"))
-            {
+            {                
                 room.DoctorId = int.Parse(_userManager.GetUserId(User));
                 room.Status = RoomStatus.BOOKED;
+                room.EstimateTimeStart = EstimatedTimeStart;
+                room.EstimateTimeEnd = EstimatedTimeEnd;
                 _context.Rooms.Add(room);
                 await _context.SaveChangesAsync();
 
