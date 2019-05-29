@@ -3,38 +3,41 @@
 @foreach (Room r in Model)
 {
 
-        <div class="col-12 room-item" onclick="enterRoom(@r.Id)" style="cursor: pointer;">
-            <div class="the-news-wrap rooms-border">
-                <div class="row">
-                    <div class="col-12 col-md-2" style="margin: auto;">
-                        <img src="@r.Doctor.User.Avatar" alt="" style="height: 100px; width: 100%; object-fit: contain;">
-                    </div>
-                    <div class="col-12 col-md-8">
-                        <header class="entry-header">
-                            <h4>@r.Title</h4>
+    <div class="col-12 room-item" onclick="enterRoom(@r.Id)" style="cursor: pointer;">
+        <div class="the-news-wrap rooms-border">
+            <div class="row">
+                <div class="col-12 col-md-2" style="margin: auto;">
+                    <img src="@r.Doctor.User.Avatar" alt="" style="height: 100px; width: 100%; object-fit: contain;">
+                </div>
+                <div class="col-12 col-md-8">
+                    <header class="entry-header">
+                        <h4>@r.Title</h4>
 
-                            <div class="post-metas d-flex flex-wrap align-items-center">
-                                <div class="posted-date"><label>Date: </label><a href="#">@r.EstimateTimeStart.ToString("ddd dd/MM HH:mm")</a></div>
+                        <div class="post-metas d-flex flex-wrap align-items-center">
+                            @if (r.Status == Taurus.Models.Enums.RoomStatus.PENDING)
+                            {
+                                <div class="posted-date"><label>Date: </label>@r.EstimateTimeStart.Value.ToString("dd/MM HH:mm") - @r.EstimateTimeEnd.Value.ToString("dd/MM HH:mm")</div>
+                            }
 
-                                <div class="posted-by"><label>By: </label><a href="#">@r.Doctor.User.FullName</a></div>
+                            <div class="posted-by"><label>By: </label><a href="#">@r.Doctor.User.FullName</a></div>
 
-                                @*<div class="post-comments"><a href="#">2 Comments</a></div>*@
-                            </div>
-                        </header>
-                    </div>
-                    <div class="col-12 col-md-2 d-flex justify-content-center border-left" style="margin: auto;">
-                        <footer class="entry-footer">
-                            <p style="font-size: 3rem;">@r.Price C</p>
-                        </footer>
-                    </div>
+                            <div class="post-comments">@r.Sessions.Count / @r.Quota</div>
+                        </div>
+                    </header>
+                </div>
+                <div class="col-12 col-md-2 d-flex justify-content-center border-left" style="margin: auto;">
+                    <footer class="entry-footer">
+                        <p style="font-size: 3rem;">@r.Price C</p>
+                    </footer>
                 </div>
             </div>
         </div>
+    </div>
 
 }
 
 <div class="col-12">
-    <ul class="pagination d-flex flex-wrap align-items-center p-0">        
+    <ul class="pagination d-flex flex-wrap align-items-center p-0">
         @for (int i = 1; i <= Model.TotalPages; i++)
         {
             var isActive = Model.PageIndex == i ? "active" : "";
@@ -44,9 +47,22 @@
 </div>
 
 <script>
-    function enterRoom(roomId) {       
-        var roomUrl = '@Url.Action("EnterRoom", "Video", new { id = "noId" })';
-        roomUrl = roomUrl.replace("noId", roomId);
-        window.location.href = roomUrl;
+    function enterRoom(roomId) {
+        $.post("@Url.Action("CheckRoom", "Room")", { id: roomId })
+            .done(function (res) {
+                if (res.status == 0) {
+                    $.post("@Url.Action("CreateSession", "Session")", { RoomId: roomId })
+                        .done(function (resp) {
+                            toastr.success("Session", "Successfully added to queue");
+                            @*var roomUrl = '@Url.Action("EnterRoom", "Video", new { id = "noId" })';
+                            roomUrl = roomUrl.replace("noId", roomId + "?sessionId=" + resp.data);
+                            window.location.href = roomUrl;*@
+                        });
+                }
+            })
+            .fail(function (res) {
+                toastr.error("JoinRoom", "Failed");
+            });
+
     }
 </script>

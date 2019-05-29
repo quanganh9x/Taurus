@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -44,6 +47,46 @@ namespace Taurus.Data
         {
             base.OnConfiguring(optionsBuilder);
             optionsBuilder.UseLazyLoadingProxies().UseSqlServer(_configuration["ConnectionStrings:DefaultConnection"]);
+        }
+
+        public override int SaveChanges()
+        {
+            foreach (var entry in ChangeTracker.Entries().Where(x => x.Entity.GetType().GetProperty("CreatedAt") != null))
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Property("CreatedAt").CurrentValue = DateTime.Now;
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    // Ignore the CreatedTime updates on Modified entities. 
+                    entry.Property("CreatedAt").IsModified = false;
+                }
+                // Always set UpdatedAt. Assuming all entities having CreatedAt property
+                // Also have UpdatedAt
+                entry.Property("UpdatedAt").CurrentValue = DateTime.Now;
+            }
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries().Where(x => x.Entity.GetType().GetProperty("CreatedAt") != null))
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Property("CreatedAt").CurrentValue = DateTime.Now;
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    // Ignore the CreatedTime updates on Modified entities. 
+                    entry.Property("CreatedAt").IsModified = false;
+                }
+                // Always set UpdatedAt. Assuming all entities having CreatedAt property
+                // Also have UpdatedAt
+                entry.Property("UpdatedAt").CurrentValue = DateTime.Now;
+            }
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

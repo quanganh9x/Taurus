@@ -32,8 +32,9 @@ namespace Taurus.Controllers
         [HttpPost("VoteCustomer")]
         public async Task<IActionResult> CustomerVote([Bind("CustomerId")] CustomerVote cv)
         {
-            if (User.IsInRole("Doctor")) {
-                if (await _context.CustomerVotes.Where(m => m.CustomerId == cv.CustomerId).AnyAsync() || await _context.CustomerFlags.Where(m => m.CustomerId == cv.CustomerId).AnyAsync())
+            if (User.IsInRole("Doctor"))
+            {
+                if (await _context.CustomerVotes.Where(m => m.CustomerId == cv.CustomerId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync() || await _context.CustomerFlags.Where(m => m.CustomerId == cv.CustomerId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync())
                 {
                     return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
                 }
@@ -52,7 +53,7 @@ namespace Taurus.Controllers
         {
             if (User.IsInRole("Doctor"))
             {
-                if (await _context.CustomerVotes.Where(m => m.CustomerId == cv.CustomerId).AnyAsync() || await _context.CustomerFlags.Where(m => m.CustomerId == cv.CustomerId).AnyAsync())
+                if (await _context.CustomerVotes.Where(m => m.CustomerId == cv.CustomerId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync() || await _context.CustomerFlags.Where(m => m.CustomerId == cv.CustomerId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync())
                 {
                     return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
                 }
@@ -71,7 +72,7 @@ namespace Taurus.Controllers
         {
             if (!User.IsInRole("Doctor"))
             {
-                if (await _context.DoctorVotes.Where(m => m.DoctorId == dv.DoctorId).AnyAsync() || await _context.DoctorFlags.Where(m => m.DoctorId == dv.DoctorId).AnyAsync())
+                if (await _context.DoctorVotes.Where(m => m.DoctorId == dv.DoctorId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync() || await _context.DoctorFlags.Where(m => m.DoctorId == dv.DoctorId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync())
                 {
                     return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
                 }
@@ -90,7 +91,7 @@ namespace Taurus.Controllers
         {
             if (!User.IsInRole("Doctor"))
             {
-                if (await _context.DoctorVotes.Where(m => m.DoctorId == dv.DoctorId).AnyAsync() || await _context.DoctorFlags.Where(m => m.DoctorId == dv.DoctorId).AnyAsync())
+                if (await _context.DoctorVotes.Where(m => m.DoctorId == dv.DoctorId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync() || await _context.DoctorFlags.Where(m => m.DoctorId == dv.DoctorId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync())
                 {
                     return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
                 }

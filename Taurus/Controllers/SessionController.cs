@@ -31,59 +31,96 @@ namespace Taurus.Controllers
             _userManager = userManager;        
         }
 
-        // GET: /<controller>/
+        /*
+            self-developed algorithm:
+                0. số session được tạo trước (queued) < quota room
+                1. khách subscribes phòng - khởi tạo session, status = PENDING
+                2. khách vào phòng - chuyển session ACTIVE
+                3. khách out phòng - chuyển session DONE
+                4. customer được thông báo khi phòng trống (người khác end 1 session)
+                5. thuật toán gale-shapley tiếp tục gọi người tiếp theo
+                6. 
+         */
         [HttpPost("create")]
         public async Task<IActionResult> CreateSession([Bind("RoomId")] Session s)
         {
-            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == s.RoomId);
-            s.CustomerId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            int estimatedtime = (int)Math.Ceiling(u.Coins / r.Price);
-            if (estimatedtime <= 0)
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == s.RoomId && m.Sessions.Count < m.Quota);
+            if (r == null)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại phòng này" });
+            }
+            if (await GetTimeRemainingOfUser(r.Price) <= 2) // tối thiểu 2 phút
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Tiền ít đòi hít *** thơm" });
             }
+            s.CustomerId = int.Parse(_userManager.GetUserId(User));
             _context.Sessions.Add(s);
             await _context.SaveChangesAsync();
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = estimatedtime });
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = s.Id });
         }
 
-        [HttpPost("update")]
-        public async Task<IActionResult> UpdateSession()
+        [HttpPost("active")]
+        public async Task<IActionResult> ActiveSession([FromForm] int id)
         {
-            var customerId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.CustomerId == customerId && m.Status == RoomStatus.ACTIVE);
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Status == SessionStatus.PENDING);
             if (s == null)
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "T k save" });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại session này" });
             }
-            s.CheckTime = DateTime.Now;
+            s.Status = SessionStatus.ACTIVE;
+            s.StartTime = DateTime.Now;
             _context.Sessions.Update(s);
             await _context.SaveChangesAsync();
-            User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            u.Coins -= s.GetTotalPrice();
-            _context.Users.Update(u);
-            await _context.SaveChangesAsync(); // holding coins
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
-        [HttpPost("end")]
-        public async Task<IActionResult> EndSession()
+        [HttpPost("update-hb")]
+        public async Task<IActionResult> HbUpdateSession([FromForm] int id)
         {
-            var customerId = Int32.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.CustomerId == customerId && m.Status == RoomStatus.ACTIVE);
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.CustomerId == int.Parse(_userManager.GetUserId(User)) && (m.Status == SessionStatus.ACTIVE || m.Status == SessionStatus.PROCESSING));
             if (s == null)
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "T k save" });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không save" });
             }
-            s.CheckTime = DateTime.Now;
-            s.Status = RoomStatus.CLOSED;
+            s.EndTime = DateTime.Now;
+            s.Status = SessionStatus.PROCESSING;
             _context.Sessions.Update(s);
             await _context.SaveChangesAsync();
-            User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            u.Coins -= s.GetTotalPrice();
-            _context.Users.Update(u);
-            await _context.SaveChangesAsync(); // holding coins
+
+            int estimatedtime = await GetTimeRemainingOfUser(s.Room.Price);
+            if (estimatedtime <= 0) // tối thiểu 2 phút
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Hết giờ rồi bạn hiền" });
+            }
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = estimatedtime });
+        }
+
+        [HttpPost("end")]
+        public async Task<IActionResult> EndSession([FromForm] int id)
+        {
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.CustomerId == int.Parse(_userManager.GetUserId(User)) && (m.Status == SessionStatus.ACTIVE || m.Status == SessionStatus.PROCESSING));
+            if (s == null)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không save" });
+            }
+            s.EndTime = DateTime.Now;
+            s.Status = SessionStatus.DONE;
+            _context.Sessions.Update(s);
+            await _context.SaveChangesAsync();
+
+            try
+            {
+                User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                u.Coins -= s.GetTotalPrice();
+                _context.Users.Update(u);
+                await _context.SaveChangesAsync(); // holding coins
+            } catch (Exception)
+            {
+                s.Status = SessionStatus.PROCESSING;
+                _context.Sessions.Update(s);
+                await _context.SaveChangesAsync();
+            }
+
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
@@ -92,6 +129,13 @@ namespace Taurus.Controllers
         {
             var session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId);
             return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(session) });
+        }
+
+        private async Task<int> GetTimeRemainingOfUser(int Price)
+        {
+            User u = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            int estimatedtime = (int)Math.Ceiling(u.Coins / Price);
+            return estimatedtime;
         }
     }
 }

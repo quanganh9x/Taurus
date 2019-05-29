@@ -30,7 +30,7 @@ namespace Taurus.Models
         /* datetime */
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime UpdatedAt { get; set; }
+        
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 }

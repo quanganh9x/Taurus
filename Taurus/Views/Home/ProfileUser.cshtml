@@ -14,10 +14,10 @@
                         <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
                     </ul>
-                    <div class="card-body">
+                    @*<div class="card-body">
                         <a href="#" class="card-link">Card link</a>
                         <a href="#" class="card-link">Another link</a>
-                    </div>
+                    </div>*@
                 </div>
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
                     Launch demo modal
@@ -39,8 +39,16 @@
                             <div id="collapse_@s.Id" class="collapse" aria-labelledby="heading_@s.Id" data-parent="#accordion">
                                 <div class="card-body">
                                     <p><b>Name:</b> @s.Room.Doctor.User.FullName</p>
-                                    <p><b>Charged:</b> @s.GetTotalPrice() Coins</p>
-                                    <p><b>At:</b> @s.CheckTime.ToLocalTime()</p>
+                                    @if (s.Status == Taurus.Models.Enums.SessionStatus.DONE)
+                                    {
+                                        <p><b>Charged:</b> @s.GetTotalPrice() Coins</p>
+
+                                        <p><b>At:</b> @s.StartTime.Value.ToLocalTime()</p>
+                                    }
+                                    else
+                                    {
+                                        <p><b>ON HOLD</b></p>
+                                    }
                                 </div>
                             </div>
                         </div>

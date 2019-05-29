@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -32,9 +33,14 @@ namespace Taurus.Controllers
         [HttpGet("video/{id}")]
         public async Task<IActionResult> EnterRoom(int id)
         {
+            if (User.Identity.Name == null)
+            {
+                return LocalRedirect("/");
+            }
+
             if (User.IsInRole("Doctor"))
             {
-                if (await _context.Rooms.Where(m => m.Id == id && m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.PENDING).AnyAsync())
+                if (await _context.Rooms.Where(m => m.Id == id && m.DoctorId == int.Parse(_userManager.GetUserId(User)) && (m.Status == RoomStatus.PENDING)).AnyAsync())
                 {
                     ViewData["User"] = await _context.Doctors.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
                     ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
@@ -42,13 +48,14 @@ namespace Taurus.Controllers
                 }
                 return LocalRedirect("/Profile");
             }
-
-            if (await _context.Rooms.Where(m => m.Id == id && m.Status == RoomStatus.ACTIVE).AnyAsync())
-            {
-                ViewData["User"] = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
-                ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
-                return View("../Home/Video");
-            } return LocalRedirect("/Panel");
+            
+                if (await _context.Rooms.Where(m => m.Id == id && m.Status == RoomStatus.ACTIVE).AnyAsync()) // room trống, đã đăng ký session
+                {
+                    ViewData["User"] = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
+                    ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
+                    return View("../Home/Video");
+                }
+                return LocalRedirect("/Panel");
         }
     }
 }

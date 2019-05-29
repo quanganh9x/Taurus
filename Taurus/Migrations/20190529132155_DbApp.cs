@@ -282,6 +282,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CustomerId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
@@ -294,6 +295,12 @@ namespace Taurus.Migrations
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerFlags_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -303,6 +310,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CustomerId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
@@ -315,6 +323,12 @@ namespace Taurus.Migrations
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CustomerVotes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -355,6 +369,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DoctorId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
@@ -367,6 +382,12 @@ namespace Taurus.Migrations
                         principalTable: "Doctors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DoctorFlags_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -376,6 +397,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DoctorId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
@@ -388,6 +410,12 @@ namespace Taurus.Migrations
                         principalTable: "Doctors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DoctorVotes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -397,10 +425,14 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     DoctorId = table.Column<int>(nullable: false),
-                    EstimateTimeStart = table.Column<DateTime>(nullable: false),
-                    EstimateTimeEnd = table.Column<DateTime>(nullable: false),
-                    Title = table.Column<string>(nullable: false),
+                    EstimateTimeStart = table.Column<DateTime>(nullable: true),
+                    EstimateTimeEnd = table.Column<DateTime>(nullable: true),
+                    Title = table.Column<string>(nullable: true),
                     Price = table.Column<int>(nullable: false),
+                    Quota = table.Column<int>(nullable: false),
+                    StartTime = table.Column<DateTime>(nullable: true),
+                    EndTime = table.Column<DateTime>(nullable: true),
+                    Revenue = table.Column<float>(nullable: false),
                     Status = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
@@ -454,7 +486,8 @@ namespace Taurus.Migrations
                     RoomId = table.Column<int>(nullable: false),
                     CustomerId = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    CheckTime = table.Column<DateTime>(nullable: false),
+                    StartTime = table.Column<DateTime>(nullable: true),
+                    EndTime = table.Column<DateTime>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },
@@ -530,6 +563,11 @@ namespace Taurus.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomerFlags_UserId",
+                table: "CustomerFlags",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Customers_UserId",
                 table: "Customers",
                 column: "UserId");
@@ -540,9 +578,19 @@ namespace Taurus.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomerVotes_UserId",
+                table: "CustomerVotes",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DoctorFlags_DoctorId",
                 table: "DoctorFlags",
                 column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorFlags_UserId",
+                table: "DoctorFlags",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Doctors_FacilityId",
@@ -563,6 +611,11 @@ namespace Taurus.Migrations
                 name: "IX_DoctorVotes_DoctorId",
                 table: "DoctorVotes",
                 column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorVotes_UserId",
+                table: "DoctorVotes",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",

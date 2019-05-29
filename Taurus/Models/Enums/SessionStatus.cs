@@ -5,13 +5,11 @@ using System.Threading.Tasks;
 
 namespace Taurus.Models.Enums
 {
-    public enum RoomStatus
+    public enum SessionStatus
     {
         ACTIVE = 1,
         DONE = -1,
         PENDING = 0,
         PROCESSING = 2
     }
-    // PENDING -> ACTIVE -> PROCESSING
-                      // -> PROCESSSING
 }

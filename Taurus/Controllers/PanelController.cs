@@ -19,7 +19,7 @@ namespace Taurus.Controllers
     {
         private readonly ApplicationContext _context;
         private readonly UserManager<User> _userManager;
-        private readonly int pageSize = 3;
+        private readonly int pageSize = 5;
 
         public PanelController(ApplicationContext context, UserManager<User> userManager)
         {
@@ -32,6 +32,10 @@ namespace Taurus.Controllers
         [HttpGet("index")]
         public async Task<IActionResult> Index()
         {
+            if (User.Identity.Name == null)
+            {
+                return LocalRedirect("/");
+            }
             if (User.IsInRole("Doctor"))
             {
                 Room r = await _context.Rooms.Where(m => m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.ACTIVE).FirstOrDefaultAsync();
@@ -49,7 +53,7 @@ namespace Taurus.Controllers
         [HttpGet("GetListActiveRoom")]
         public async Task<IActionResult> GetListActiveRoom(int? pageIndex)
         {            
-            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE).ToListAsync();
+            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE && r.Sessions.Count < r.Quota).ToListAsync();
             var rooms = new PaginatedList<Room>(listRoom, listRoom.Count(), pageIndex ?? 1, pageSize);            
             return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
         }

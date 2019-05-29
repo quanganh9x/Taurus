@@ -60,15 +60,6 @@
     },
     {
       "provider": "cdnjs",
-      "library": "emojionearea@3.4.1",
-      "destination": "wwwroot/lib/emojionearea/",
-      "files": [
-        "emojionearea.min.js",
-        "emojionearea.min.css"
-      ]
-    },
-    {
-      "provider": "cdnjs",
       "library": "socket.io@2.2.0",
       "destination": "wwwroot/lib/socket.io/",
       "files": [
@@ -84,6 +75,24 @@
         "mediaelement.min.js",
         "mejs-controls.svg",
         "mejs-controls.png"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr.js/",
+      "files": [
+        "toastr.min.js",
+        "toastr.min.css"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "emojionearea@3.4.1",
+      "destination": "wwwroot/lib/emojionearea/",
+      "files": [
+        "emojionearea.min.js",
+        "emojionearea.min.css"
       ]
     }
   ]

@@ -13,6 +13,14 @@
     <Compile Remove="Migrations\20190528105133_Migoration.Designer.cs" />
     <Compile Remove="Migrations\20190528185743_DbApp.cs" />
     <Compile Remove="Migrations\20190528185743_DbApp.Designer.cs" />
+    <Compile Remove="Migrations\20190528191012_DbApp.cs" />
+    <Compile Remove="Migrations\20190528191012_DbApp.Designer.cs" />
+    <Compile Remove="Migrations\20190529073336_DbApp.cs" />
+    <Compile Remove="Migrations\20190529073336_DbApp.Designer.cs" />
+    <Compile Remove="Migrations\20190529074341_DbApp.cs" />
+    <Compile Remove="Migrations\20190529074341_DbApp.Designer.cs" />
+    <Compile Remove="Migrations\20190529081044_DbApp.cs" />
+    <Compile Remove="Migrations\20190529081044_DbApp.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +39,11 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

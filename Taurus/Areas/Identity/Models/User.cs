@@ -32,7 +32,13 @@ namespace Taurus.Areas.Identity.Models
 
         public int GetAge()
         {
-            return (DateTime.Now.Year - DateOfBirth.Year);
+            return (DateTime.Now.Year - this.DateOfBirth.Year);
         }
+
+        public virtual List<CustomerFlag> CustomerFlags { get; set; }
+        public virtual List<CustomerVote> CustomerVotes { get; set; }
+        public virtual List<DoctorFlag> DoctorFlags { get; set; }
+        public virtual List<DoctorVote> DoctorVotes { get; set; }
+
     }
 }

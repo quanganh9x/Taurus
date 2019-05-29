@@ -10,7 +10,7 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190528191012_DbApp")]
+    [Migration("20190529132155_DbApp")]
     partial class DbApp
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -214,7 +214,7 @@ namespace Taurus.Migrations
                         .IsRequired();
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.HasKey("Id");
@@ -235,7 +235,7 @@ namespace Taurus.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("UserId");
@@ -258,12 +258,16 @@ namespace Taurus.Migrations
                     b.Property<int>("CustomerId");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CustomerFlags");
                 });
@@ -279,12 +283,16 @@ namespace Taurus.Migrations
                     b.Property<int>("CustomerId");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("CustomerVotes");
                 });
@@ -302,7 +310,7 @@ namespace Taurus.Migrations
                     b.Property<int>("SpecialistId");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("UserId");
@@ -329,12 +337,16 @@ namespace Taurus.Migrations
                     b.Property<int>("DoctorId");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("DoctorFlags");
                 });
@@ -350,12 +362,16 @@ namespace Taurus.Migrations
                     b.Property<int>("DoctorId");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
+
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DoctorId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("DoctorVotes");
                 });
@@ -373,7 +389,7 @@ namespace Taurus.Migrations
                     b.Property<string>("Name");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.HasKey("Id");
@@ -398,7 +414,7 @@ namespace Taurus.Migrations
                     b.Property<string>("Title");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.Property<int>("UserId");
@@ -431,7 +447,7 @@ namespace Taurus.Migrations
                         .IsRequired();
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.HasKey("Id");
@@ -453,19 +469,26 @@ namespace Taurus.Migrations
 
                     b.Property<int>("DoctorId");
 
-                    b.Property<DateTime>("EstimateTimeEnd");
+                    b.Property<DateTime?>("EndTime");
 
-                    b.Property<DateTime>("EstimateTimeStart");
+                    b.Property<DateTime?>("EstimateTimeEnd");
+
+                    b.Property<DateTime?>("EstimateTimeStart");
 
                     b.Property<int>("Price");
 
+                    b.Property<int>("Quota");
+
+                    b.Property<float>("Revenue");
+
+                    b.Property<DateTime?>("StartTime");
+
                     b.Property<int>("Status");
 
-                    b.Property<string>("Title")
-                        .IsRequired();
+                    b.Property<string>("Title");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.HasKey("Id");
@@ -481,18 +504,20 @@ namespace Taurus.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CheckTime");
-
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CustomerId");
 
+                    b.Property<DateTime?>("EndTime");
+
                     b.Property<int>("RoomId");
+
+                    b.Property<DateTime?>("StartTime");
 
                     b.Property<int>("Status");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.HasKey("Id");
@@ -515,7 +540,7 @@ namespace Taurus.Migrations
                     b.Property<string>("Name");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
+                        .ValueGeneratedOnAdd()
                         .HasDefaultValueSql("getdate()");
 
                     b.HasKey("Id");
@@ -595,6 +620,11 @@ namespace Taurus.Migrations
                         .WithMany("Flags")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Taurus.Areas.Identity.Models.User", "Origin")
+                        .WithMany("CustomerFlags")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Taurus.Models.CustomerVote", b =>
@@ -603,6 +633,11 @@ namespace Taurus.Migrations
                         .WithMany("Votes")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Taurus.Areas.Identity.Models.User", "Origin")
+                        .WithMany("CustomerVotes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Taurus.Models.Doctor", b =>
@@ -629,6 +664,11 @@ namespace Taurus.Migrations
                         .WithMany("Flags")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Taurus.Areas.Identity.Models.User", "Origin")
+                        .WithMany("DoctorFlags")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Taurus.Models.DoctorVote", b =>
@@ -637,6 +677,11 @@ namespace Taurus.Migrations
                         .WithMany("Votes")
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Taurus.Areas.Identity.Models.User", "Origin")
+                        .WithMany("DoctorVotes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Taurus.Models.Notification", b =>

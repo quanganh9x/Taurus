@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Taurus.Areas.Identity.Models;
 using Taurus.Models;
 
 namespace Taurus.Data
@@ -61,6 +62,22 @@ namespace Taurus.Data
             builder.Entity<Room>()
             .HasMany(p => p.Sessions)
             .WithOne(p => p.Room)
+            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<User>()
+            .HasMany(p => p.CustomerFlags)
+            .WithOne(p => p.Origin)
+            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<User>()
+            .HasMany(p => p.CustomerVotes)
+            .WithOne(p => p.Origin)
+            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<User>()
+            .HasMany(p => p.DoctorVotes)
+            .WithOne(p => p.Origin)
+            .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<User>()
+            .HasMany(p => p.DoctorFlags)
+            .WithOne(p => p.Origin)
             .OnDelete(DeleteBehavior.Restrict);
         }
     }

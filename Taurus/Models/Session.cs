@@ -18,13 +18,14 @@ namespace Taurus.Models
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }
-        public RoomStatus Status { get; set; } = RoomStatus.ACTIVE;
-        public DateTime CheckTime { get; set; }
+        public SessionStatus Status { get; set; } = SessionStatus.PENDING;
+        public DateTime? StartTime { get; set; }
+        public DateTime? EndTime { get; set; }
         /* datetime */
-        
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime UpdatedAt { get; set; }
+        
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
         public float GetTotalPrice()
         {
@@ -33,7 +34,7 @@ namespace Taurus.Models
         
         public int GetTimeSpan()
         {
-            return this.CheckTime.Minute - this.CreatedAt.Minute;
+            return (this.EndTime - this.StartTime).HasValue ? (int)Math.Ceiling((this.EndTime - this.StartTime).Value.TotalMinutes) : 0;
         }
     }
 }
