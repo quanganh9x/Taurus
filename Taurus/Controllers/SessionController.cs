@@ -137,5 +137,18 @@ namespace Taurus.Controllers
             int estimatedtime = (int)Math.Ceiling(u.Coins / Price);
             return estimatedtime;
         }
+
+        [Route("pending")]
+        public async Task<IActionResult> GetPendingSession()
+        {
+            var sessions = await _context.Sessions.Where(s => s.Status == SessionStatus.PENDING && s.Room.Status == RoomStatus.ACTIVE
+            && s.CustomerId == Int32.Parse(_userManager.GetUserId(User))).ToListAsync();
+            List<dynamic> ts = new List<dynamic>();
+            foreach (Session s in sessions)
+            {
+                ts.Add(new { Message = "Room {" + s.Room.Title + "} is ready for you to join!", Url = "/Video/" + s.RoomId + "?sessionId=" + s.Id });
+            }
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(ts) });
+        }
     }
 }

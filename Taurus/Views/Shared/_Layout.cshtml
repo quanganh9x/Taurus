@@ -50,32 +50,35 @@
                             <ul class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-center">
                                 <li class="current-menu-item"><a href="/">Home</a></li>
                                 <li><a href="/Panel">Panel</a></li>
-                                <li><a href="/Question">Question</a></li>                                
+                                <li><a href="/Question">Question</a></li>
 
                                 <div class="dropdown show">
-                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-bell"></i>                                        
-                                    </a>
+                                    <li class="dropdown-toggle" href="#" role="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-bell"></i>
+                                    </li>
 
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
                                         @* Nhét các NOTIFICATION vào đây *@
-                                        <div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                        </div>
-                                        <hr />
-                                        <div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                        </div>
-                                        <hr />
-                                        <div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                        </div>           
+                                        
                                         @* Dừng ở đây *@
 
                                     </div>
                                 </div>
-                                <li><a href="#"><i class="fa fa-bookmark"></i></a></li>
+                                 
+                                <div class="dropdown show">
+                                    <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-bookmark"></i> <span id="bookmark-count"></span>
+                                    </li>
+
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="bookmark">
+
+                                        @* Nhét các NOTIFICATION vào đây *@
+                                        
+                                        @* Dừng ở đây *@
+
+                                    </div>
+                                </div>                                
 
 
                                 @if (SignInManager.IsSignedIn(User))
@@ -160,5 +163,32 @@
             </div><!-- .container -->
         </div><!-- .footer-widgets -->
     </footer><!-- .site-footer -->
+
+    @if (User.Identity.Name != null)
+    {
+        <script>
+            
+            $(document).ready(function () {
+                var ez = function () {
+                    $.get('@Url.Action("GetPendingSession", "Session")')
+                        .done(function (data) {
+                            data = data.data;
+                            data = JSON.parse(data);
+                            $('#bookmark-count').text(`${data.length}`)
+                            $('#bookmark').html('');
+                            for (var i = 0; i < data.length; i++) {
+                                $('#bookmark').append(
+                                    `<div class="p-3">
+                                        <a target="_blank" class="dropdown-item" href="${data[i].Url}">${data[i].Message}</a>
+                                 </div>`
+                                )
+                            }
+                        });
+                }
+                ez();
+                setInterval(ez, 5000);
+            });
+        </script>
+    }
 </body>
 </html>
