@@ -54,9 +54,9 @@
                     $.post("@Url.Action("CreateSession", "Session")", { RoomId: roomId })
                         .done(function (resp) {
                             toastr.success("Session", "Successfully added to queue");
-                            @*var roomUrl = '@Url.Action("EnterRoom", "Video", new { id = "noId" })';
+                            var roomUrl = '@Url.Action("EnterRoom", "Video", new { id = "noId" })';
                             roomUrl = roomUrl.replace("noId", roomId + "?sessionId=" + resp.data);
-                            window.location.href = roomUrl;*@
+                            window.location.href = roomUrl;
                         });
                 }
             })

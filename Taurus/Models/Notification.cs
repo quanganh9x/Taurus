@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using Taurus.Areas.Identity.Models;
+using Taurus.Models.Enums;
 
 namespace Taurus.Models
 {
@@ -18,11 +19,19 @@ namespace Taurus.Models
         public string Description { get; set; }
         [Required]
         public DateTime Time { get; set; }
-        public Status Status { get; set; } = Status.ACTIVE;
+        public NotificationStatus Status { get; set; } = NotificationStatus.UNREAD;
         /* datetime */
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        public Notification(int userId, string title, string description, DateTime time)
+        {
+            UserId = userId;
+            Title = title;
+            Description = description;
+            Time = time;
+        }
     }
 }

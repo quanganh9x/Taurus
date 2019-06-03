@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
+using Taurus.Hub;
 using Taurus.Models;
 using Taurus.Models.Enums;
 using Taurus.Models.Formats;
@@ -20,16 +22,20 @@ namespace Taurus.Controllers
     [Route("session")]
     public class SessionController : Controller
     {
+        private readonly IHubContext<NotificationHub> _hubContext;
         private readonly ApplicationContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
-        public SessionController(ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public SessionController(IHubContext<NotificationHub> hubContext, ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
         {
+            _hubContext = hubContext;
             _context = context;
             _httpContextAccessor = httpContextAccessor;
-            _userManager = userManager;        
+            _userManager = userManager;
         }
+
+
 
         /*
             self-developed algorithm:
@@ -70,7 +76,20 @@ namespace Taurus.Controllers
             s.Status = SessionStatus.ACTIVE;
             s.StartTime = DateTime.Now;
             _context.Sessions.Update(s);
+            
+
+            // Notify cho doctor có customer vào phòng  
+            Notification noti = new Notification(s.Room.Doctor.UserId, "New customer enter room", "A new customer [" + s.Customer.User.FullName + "] has entered your room", DateTime.Now);
             await _context.SaveChangesAsync();
+
+            await _hubContext.Clients.User(s.Room.Doctor.UserId.ToString()).SendAsync("NotificationMessage",
+                new {
+                    Title = noti.Title,
+                    Description = noti.Description,
+                    Time = noti,
+                    Status = noti.Status
+                });
+
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
