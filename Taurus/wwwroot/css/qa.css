@@ -46,11 +46,11 @@ a {
 /*-----------------------------------------------------------------*/
 /*--- Footer ---*/
 
-footer {
+/*footer {
     height: 69px;
     line-height: 69px;
     color: #363838;
-}
+}*/
 
     footer .logo {
         line-height: normal;
@@ -83,6 +83,7 @@ ul.socialicons li {
 
 
 .content {
+    margin-top: -25px;
     background-color: #ecf0f1;
     padding: 60px;
     min-height: 500px;
@@ -686,7 +687,7 @@ a.down:hover {
 
 
 
-.btn-primary {
+/*.btn-primary {
     background-color: #1abc9c;
     box-shadow: none;
     border-radius: 2px;
@@ -695,15 +696,15 @@ a.down:hover {
     font-size: 14px;
     font-family: 'Open Sans Bold', sans-serif;
     border: none;
-}
+}*/
 
-    .btn-primary:hover,
+    /*.btn-primary:hover,
     .btn-primary:active,
     .btn-primary:focus {
         border: none;
         background-color: #20e1bb;
         box-shadow: none;
-    }
+    }*/
 
 
 
