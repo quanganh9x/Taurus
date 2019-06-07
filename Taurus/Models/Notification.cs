@@ -26,6 +26,10 @@ namespace Taurus.Models
         
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
+        public Notification()
+        {
+        }
+
         public Notification(int userId, string title, string description, DateTime time)
         {
             UserId = userId;

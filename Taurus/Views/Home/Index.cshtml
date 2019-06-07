@@ -1,120 +1,404 @@
-﻿<div class="homepage-boxes">
-        <div class="container">
-            <div class="row">
-                @if (User.IsInRole("Doctor"))
-                {
-                <div class="col-12">
-                    <div class="appointment-box the-profile-wrap">
-                        <h2 class="d-flex align-items-center">Make a Live Room!</h2>
+﻿<div class="swiper-container hero-slider">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide hero-content-wrap" style="background-image: url('images/123medical.jpg')">
+            <div class="hero-content-overlay position-absolute w-100 h-100">
+                <div class="container h-100">
+                    <div class="row h-100">
+                        <div class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-start">
+                            <header class="entry-header">
+                                <h1>Chat with Doctors <br>Online</h1>
+                            </header><!-- .entry-header -->
+                            <div class="entry-content mt-4">
+                                <p>With just 2 steps</p>
+                            </div><!-- .entry-content -->
 
-                        <form method="post" action="@Url.Action("CreateNewRoom", "Room")" class="d-flex flex-wrap justify-content-between">
+                            <footer class="entry-footer d-flex flex-wrap align-items-center mt-4">
+                                <a href="#" class="button gradient-bg">1. Sign in </a>
+                                <a href="#" class="button gradient-bg">2. Join a Room </a>
+                            </footer><!-- .entry-footer -->
+                        </div><!-- .col -->
+                    </div><!-- .row -->
+                </div><!-- .container -->
+            </div><!-- .hero-content-overlay -->
+        </div><!-- .hero-content-wrap -->
 
-                            <input type="text" placeholder="Title" name="Title">
+        <div class="swiper-slide hero-content-wrap" style="background-image: url('images/hero.jpg')">
+            <div class="hero-content-overlay position-absolute w-100 h-100">
+                <div class="container h-100">
+                    <div class="row h-100">
+                        <div class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-start">
+                            <header class="entry-header">
+                                <h1>Receive<br>Medical Advices</h1>
+                            </header><!-- .entry-header -->
 
-                            <input type="number" placeholder="Price (per min)" name="Price">
+                            <div class="entry-content mt-4">
+                                <p>From Professional Doctors</p>
+                            </div><!-- .entry-content -->
 
-                            <input type="number" placeholder="Quota" name="Quota">
+                            <footer class="entry-footer d-flex flex-wrap align-items-center mt-4">
+                                <a href="#" class="button gradient-bg">Read More</a>
+                            </footer><!-- .entry-footer -->
+                        </div><!-- .col -->
+                    </div><!-- .row -->
+                </div><!-- .container -->
+            </div><!-- .hero-content-overlay -->
+        </div><!-- .hero-content-wrap -->
 
-                            <input class="button gradient-bg" type="submit" value="Create">
-                        </form>
-                    </div>
+        <div class="swiper-slide hero-content-wrap" style="background-image: url('images/medical.jpg')">
+            <div class="hero-content-overlay position-absolute w-100 h-100">
+                <div class="container h-100">
+                    <div class="row h-100">
+                        <div class="col-12 col-lg-6 d-flex flex-column justify-content-center align-items-start">
+                            <header class="entry-header">
+                                <h1>Mobile App</h1>
+                            </header><!-- .entry-header -->
+
+                            <div class="entry-content mt-4">
+                                <p>Advices in your pocket</p>
+                            </div><!-- .entry-content -->
+
+                            <footer class="entry-footer d-flex flex-wrap align-items-center mt-4">
+                                <a href="#" class="button gradient-bg">Download Here</a>
+                            </footer><!-- .entry-footer -->
+                        </div><!-- .col -->
+                    </div><!-- .row -->
+                </div><!-- .container -->
+            </div><!-- .hero-content-overlay -->
+        </div><!-- .hero-content-wrap -->
+    </div><!-- .swiper-wrapper -->
+
+    <div class="pagination-wrap position-absolute w-100">
+        <div class="swiper-pagination d-flex flex-row flex-md-column"></div>
+    </div><!-- .pagination-wrap -->
+</div><!-- .hero-slider -->
+
+<div class="homepage-boxes">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="opening-hours">
+                    <h2 class="d-flex align-items-center">Opening Hours</h2>
+
+                    <ul class="p-0 m-0">
+                        <li>Monday - Thursday <span>8.00 - 19.00</span></li>
+                        <li>Friday <span>8.00 - 18.30</span></li>
+                        <li>Saturday <span>9.30 - 17.00</span></li>
+                        <li>Sunday <span>9.30 - 15.00</span></li>
+                    </ul>
                 </div>
-                }
-                else {
-                <div class="col-12">
-                    <div class="row" style="height: 200px;">
-                        <div class="col-6">
-                            <button onclick="location.href = '/Question';" class="button gradient-bg" style="width: 100%; height: 100%;"><h1>ASK</h1></button>
-                        </div>
-                        <div class="col-6">
-                            <button onclick="location.href = '/Panel';" class="button gradient-bg" style="width: 100%; height: 100%;"><h1>BROWSE</h1></button>
-                        </div>
-                        
-                        
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3 mt-5 mt-md-0">
+                <div class="emergency-box">
+                    <h2 class="d-flex align-items-center">Emergency</h2>
+
+                    <div class="call-btn button gradient-bg">
+                        <a class="d-flex justify-content-center align-items-center" href="#">
+                            <img src="images/emergency-call.png"> +34 586 778 8892
+                        </a>
                     </div>
+
+                    <p>
+                        Lorem ipsum dolor sit amet, cons ectetur adipiscing elit. Donec males uada lorem maximus
+                        mauris sceler isque, at rutrum nulla.
+                    </p>
                 </div>
-                }
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-5 mt-5 mt-lg-0">
+                <div class="appointment-box">
+                    <h2 class="d-flex align-items-center">Make an Appointment</h2>
+
+                    <form class="d-flex flex-wrap justify-content-between">
+                        <select class="select-department">
+                            <option value="value1">Select Department</option>
+                            <option value="value2">Select Department 1</option>
+                            <option value="value3">Select Department 2</option>
+                        </select>
+
+                        <select class="select-doctor">
+                            <option>Select Doctor</option>
+                            <option>Select Doctor 1</option>
+                            <option>Select Doctor 2</option>
+                        </select>
+
+                        <input type="text" placeholder="Name">
+
+                        <input type="number" placeholder="Phone No">
+
+                        <input class="button gradient-bg" type="submit" value="Boom Appoitnment">
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
+</div>
 
-    
-
-    
-
-    <div class="the-news mb-5" style="padding:initial;">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <h2>Doctor of the Month</h2>
+<div class="our-departments">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="our-departments-wrap">
+                    <h2>Our Departments</h2>
 
                     <div class="row">
                         <div class="col-12 col-md-6 col-lg-4">
-                            <div class="the-news-wrap text-center">
-                                <figure class="post-thumbnail">
-                                    <a href="#"><img src="https://previews.123rf.com/images/anwarsikumbang/anwarsikumbang1502/anwarsikumbang150200445/36649700-man-avatar-user-picture-cartoon-character-vector-illustration.jpg" alt=""></a>
-                                </figure>
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/cardiogram.png" alt="">
 
-                                <header class="entry-header">
-                                    <h3>Admin</h3>
+                                    <h3>Cardioology</h3>
                                 </header>
 
                                 <div class="entry-content">
-                                    <h3><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris.</p>
                                 </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
                             </div>
                         </div>
 
                         <div class="col-12 col-md-6 col-lg-4">
-                            <div class="the-news-wrap text-center">
-                                <figure class="post-thumbnail">
-                                    <a href="#"><img src="https://previews.123rf.com/images/anwarsikumbang/anwarsikumbang1502/anwarsikumbang150200445/36649700-man-avatar-user-picture-cartoon-character-vector-illustration.jpg" alt=""></a>
-                                </figure>
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/stomach-2.png" alt="">
 
-                                <header class="entry-header">
-                                    <h3>Doctor1</h3>
+                                    <h3>Gastroenterology</h3>
                                 </header>
 
                                 <div class="entry-content">
-                                    <h3><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></h3>
+                                    <p>Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien.</p>
                                 </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
                             </div>
                         </div>
-
 
                         <div class="col-12 col-md-6 col-lg-4">
-                            <div class="the-news-wrap text-center">
-                                <figure class="post-thumbnail">
-                                    <a href="#"><img src="https://previews.123rf.com/images/anwarsikumbang/anwarsikumbang1502/anwarsikumbang150200445/36649700-man-avatar-user-picture-cartoon-character-vector-illustration.jpg" alt=""></a>
-                                </figure>
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/blood-sample-2.png" alt="">
 
-                                <header class="entry-header">
-                                    <h3>Doctor2</h3>
+                                    <h3>Medical Lab</h3>
                                 </header>
 
                                 <div class="entry-content">
-                                    </i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i></h3>
+                                    <p>Lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus.</p>
                                 </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
                             </div>
                         </div>
 
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/teeth.png" alt="">
+
+                                    <h3>Dental Care</h3>
+                                </header>
+
+                                <div class="entry-content">
+                                    <p>Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien.</p>
+                                </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/stretcher.png" alt="">
+
+                                    <h3>Surgery</h3>
+                                </header>
+
+                                <div class="entry-content">
+                                    <p>Lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus.</p>
+                                </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/scanner.png" alt="">
+
+                                    <h3>Neurology</h3>
+                                </header>
+
+                                <div class="entry-content">
+                                    <p>Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien.</p>
+                                </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-md-0">
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/bones.png" alt="">
+
+                                    <h3>Orthopaedy</h3>
+                                </header>
+
+                                <div class="entry-content">
+                                    <p>Lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus.</p>
+                                </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-lg-0">
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/blood-donation-2.png" alt="">
+
+                                    <h3>Pediatry</h3>
+                                </header>
+
+                                <div class="entry-content">
+                                    <p>Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien.</p>
+                                </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-4 mb-0">
+                            <div class="our-departments-cont">
+                                <header class="entry-header d-flex flex-wrap align-items-center">
+                                    <img src="images/glasses.png" alt="">
+
+                                    <h3>Ophthalmology</h3>
+                                </header>
+
+                                <div class="entry-content">
+                                    <p>Lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien. Suspendisse cursus.</p>
+                                </div>
+
+                                <footer class="entry-footer">
+                                    <a href="#">read more</a>
+                                </footer>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="subscribe-banner">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-lg-8 offset-lg-2">
-                    <h2>Subscribe to our newsletter</h2>
 
-                    <form>
-                        <input type="email" placeholder="E-mail address">
-                        <input class="button gradient-bg" type="submit" value="Subscribe">
-                    </form>
+
+<div class="the-news">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Doctor of the months</h1>
+
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="opening-hours rank2">
+                            <h2 class="d-flex align-items-center">Rank 2</h2>
+
+                            <div class="the-news-wrap">
+                                <figure class="post-thumbnail">
+                                    <a href="#"><img src="images/team-1.jpg" alt=""></a>
+                                </figure>
+
+                                <header class="entry-header">
+                                    <h2 style="margin-top: 10px;text-align: center;">Doctor Flower Gun</h2>
+
+                                    <h3 style="text-align: center;"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i></h3>
+                                </header>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="opening-hours rank1">
+                            <h2 class="d-flex align-items-center">Rank 1</h2>
+
+                            <div class="the-news-wrap">
+                                <figure class="post-thumbnail">
+                                    <a href="#"><img src="images/team-2.jpg" alt=""></a>
+                                </figure>
+
+                                <header class="entry-header">
+                                    <h2 style="margin-top: 10px;text-align: center;">Doctor Sờ Trym</h2>
+
+                                    <h3 style="text-align: center;"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i></h3>
+
+                                </header>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="opening-hours rank3">
+                            <h2 class="d-flex align-items-center">Rank 3</h2>
+
+                            <div class="the-news-wrap">
+                                <figure class="post-thumbnail">
+                                    <a href="#"><img src="images/team-3.jpg" alt=""></a>
+                                </figure>
+
+                                <header class="entry-header">
+                                    <h2 style="margin-top: 10px;text-align: center;">Doctor Strange</h2>
+
+                                    <h3 style="text-align: center;"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i> <i class="fa fa-star-o"></i></h3>
+
+                                </header>
+
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+<div class="subscribe-banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-8 offset-lg-2">
+                <h2>Subscribe to our newsletter</h2>
+
+                <form>
+                    <input type="email" placeholder="E-mail address">
+                    <input class="button gradient-bg" type="submit" value="Subscribe">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

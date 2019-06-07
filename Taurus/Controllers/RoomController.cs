@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using Taurus.Data;
 using Taurus.Models;
 using Taurus.Models.Enums;
 using Taurus.Models.Formats;
+using Taurus.Service;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,12 +24,15 @@ namespace Taurus.Controllers
     {
         private readonly ApplicationContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly INotificationService _notiService;
 
-        public RoomController(ApplicationContext context, UserManager<User> userManager)
+        public RoomController(ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, INotificationService notiService)
         {
             _context = context;
             _userManager = userManager;
+            _notiService = notiService;
         }
+
 
         /*
             1. doctor tạo room với status PENDING
@@ -50,6 +55,26 @@ namespace Taurus.Controllers
             return LocalRedirect("/");
         }
 
+        [HttpPost("book")]
+        public async Task<IActionResult> CreateRoom([Bind("Title,Price,Quota")] Room room,  [FromForm] DateTime EstimatedTimeStart, DateTime EstimatedTimeEnd)
+        {            
+            if (User.IsInRole("Doctor"))
+            {                
+                room.DoctorId = int.Parse(_userManager.GetUserId(User));
+                room.Status = RoomStatus.BOOKED;
+                room.EstimateTimeStart = EstimatedTimeStart;
+                room.EstimateTimeEnd = EstimatedTimeEnd;
+                _context.Rooms.Add(room);
+                await _context.SaveChangesAsync();
+
+                BackgroundJob.Schedule(
+                () => _notiService.NotifyBookedRoomStartSoon(room, Int32.Parse(_userManager.GetUserId(User))),
+                EstimatedTimeStart.AddMinutes(-5));
+
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = room });
+            }
+            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+        }
         [HttpPost("active")]
         public async Task<IActionResult> ActiveRoom([FromForm] int id)
         {
