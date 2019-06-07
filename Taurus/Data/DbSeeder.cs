@@ -24,7 +24,6 @@ namespace Taurus.Data
             await SeedFacility(context);
             await SeedDoctor(context);
             await SeedCustomer(context);
-            await SeedRoom(context);
         }
 
         public static async Task SeedSpecialist(ApplicationContext context)
@@ -115,33 +114,6 @@ namespace Taurus.Data
                 UserId = 5
             };
             context.Customers.Add(customer);
-            await context.SaveChangesAsync();
-        }
-
-        public static async Task SeedRoom(ApplicationContext context)
-        {
-            var room = new Room()
-            {
-                DoctorId = 1,
-                EstimateTimeStart = DateTime.Parse("2019/5/26 18:00:00"),
-                EstimateTimeEnd = DateTime.Parse("2019/5/26 19:00:00"),
-                Title = "Tâm sự tuổi hồng với Bác sĩ Hoa Súng",
-                Price = 3,
-                Status = RoomStatus.ACTIVE,
-            };
-            context.Rooms.Add(room);
-            await context.SaveChangesAsync();
-
-            room = new Room()
-            {
-                DoctorId = 2,
-                EstimateTimeStart = DateTime.Parse("2019/5/27 18:00:00"),
-                EstimateTimeEnd = DateTime.Parse("2019/5/27 19:00:00"),
-                Title = "Bệnh nhân nam với các điều khó nói",
-                Price = 5,
-                Status = RoomStatus.ACTIVE,
-            };
-            context.Rooms.Add(room);
             await context.SaveChangesAsync();
         }
     }

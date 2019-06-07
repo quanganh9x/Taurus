@@ -21,23 +21,21 @@ namespace Taurus.Controllers
     public class RoomController : Controller
     {
         private readonly ApplicationContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
-        public RoomController(ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public RoomController(ApplicationContext context, UserManager<User> userManager)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
 
         /*
             1. doctor tạo room với status PENDING
             2. doctor vào room, room chuyển status ACTIVE
-            3. room nhận các booked session
+            3. room nhận các booked session, dequeue dần theo thứ tự
          */
         [HttpPost("create")]
-        public async Task<IActionResult> CreateNewRoom([Bind("Title,Price,Quota")] Room room)
+        public async Task<IActionResult> CreateRoom([Bind("Title,Price,Quota,EstimateTimeStart,EstimateTimeEnd")] Room room)
         {
             if (User.IsInRole("Doctor"))
             {
@@ -45,27 +43,11 @@ namespace Taurus.Controllers
                 room.Status = RoomStatus.PENDING;
                 _context.Rooms.Add(room);
                 await _context.SaveChangesAsync();
+                // save room thành công
 
                 return LocalRedirect("/Video/"+room.Id);
             }
             return LocalRedirect("/");
-        }
-
-        [HttpPost("book")]
-        public async Task<IActionResult> CreateRoom([Bind("Title,Price,Quota")] Room room,  [FromForm] DateTime EstimatedTimeStart, DateTime EstimatedTimeEnd)
-        {            
-            if (User.IsInRole("Doctor"))
-            {                
-                room.DoctorId = int.Parse(_userManager.GetUserId(User));
-                room.Status = RoomStatus.BOOKED;
-                room.EstimateTimeStart = EstimatedTimeStart;
-                room.EstimateTimeEnd = EstimatedTimeEnd;
-                _context.Rooms.Add(room);
-                await _context.SaveChangesAsync();
-
-                return Ok(new APIResponse { Status = APIStatus.Success, Data = room });
-            }
-            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }
 
         [HttpPost("active")]
@@ -76,10 +58,35 @@ namespace Taurus.Controllers
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
             }
-            if (!r.StartTime.HasValue) r.StartTime = DateTime.Now;
-            r.Status = RoomStatus.ACTIVE;
+            if (r.Status == RoomStatus.PROCESSING && r.Sessions.Count > 0)
+            {
+                // dequeue session hiện tại
+                r.Sessions.RemoveAt(0);
+                if (r.Sessions.Count == 0)
+                {
+                    // hết session, cần mở thêm Quota
+                } else
+                {
+                    // còn session, gọi tới
+                    Session s = r.Sessions.First();
+                    s.Status = SessionStatus.WAITING;
+                    _context.Sessions.Update(s);
+                    await _context.SaveChangesAsync();
+                    // thông báo
+                }
+            }
+            if (!r.StartTime.HasValue) // tạo room lần đầu
+            {
+                r.StartTime = DateTime.Now;
+                r.Status = RoomStatus.ACTIVE;
+            } else
+            {
+                r.Status = RoomStatus.WAITING;
+            }
             _context.Rooms.Update(r);
             await _context.SaveChangesAsync();
+            // update room thành công
+            
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
@@ -160,7 +167,7 @@ namespace Taurus.Controllers
         {
             if (User.IsInRole("Doctor"))
             {
-                var Rooms = await _context.Rooms.Where(m => m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.BOOKED)
+                var Rooms = await _context.Rooms.Where(m => m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.WAITING)
                     .Select(m => new { title = m.Title, start = m.EstimateTimeStart, end = m.EstimateTimeEnd })
                     .ToListAsync();
                 return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(Rooms));

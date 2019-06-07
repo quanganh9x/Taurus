@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -24,14 +25,12 @@ namespace Taurus.Controllers
     {
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly ApplicationContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
-        public SessionController(IHubContext<NotificationHub> hubContext, ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public SessionController(IHubContext<NotificationHub> hubContext, ApplicationContext context, UserManager<User> userManager)
         {
             _hubContext = hubContext;
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
 
@@ -39,13 +38,11 @@ namespace Taurus.Controllers
 
         /*
             self-developed algorithm:
-                0. số session được tạo trước (queued) < quota room
-                1. khách subscribes phòng - khởi tạo session, status = PENDING
-                2. khách vào phòng - chuyển session ACTIVE
+                1. khách subscribes phòng - khởi tạo session, status = PENDING (số session được tạo trước < quota room)
+                2. session được lồng vào Queue
                 3. khách out phòng - chuyển session DONE
                 4. customer được thông báo khi phòng trống (người khác end 1 session)
                 5. thuật toán gale-shapley tiếp tục gọi người tiếp theo
-                6. 
          */
         [HttpPost("create")]
         public async Task<IActionResult> CreateSession([Bind("RoomId")] Session s)
@@ -53,7 +50,7 @@ namespace Taurus.Controllers
             Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == s.RoomId && m.Sessions.Count < m.Quota);
             if (r == null)
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại phòng này" });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại phòng hoặc phòng đã đầy" });
             }
             if (await GetTimeRemainingOfUser(r.Price) <= 2) // tối thiểu 2 phút
             {
@@ -62,9 +59,13 @@ namespace Taurus.Controllers
             s.CustomerId = int.Parse(_userManager.GetUserId(User));
             _context.Sessions.Add(s);
             await _context.SaveChangesAsync();
+            // session has been created
             return Ok(new APIResponse { Status = APIStatus.Success, Data = s.Id });
         }
 
+        /*
+         * When customer is actually joined the room
+         */
         [HttpPost("active")]
         public async Task<IActionResult> ActiveSession([FromForm] int id)
         {
@@ -73,11 +74,15 @@ namespace Taurus.Controllers
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại session này" });
             }
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && (m.Status == RoomStatus.ACTIVE || m.Status == RoomStatus.WAITING));
+            if (r == null)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Có lỗi xảy ra!" });
+            }
             s.Status = SessionStatus.ACTIVE;
             s.StartTime = DateTime.Now;
             _context.Sessions.Update(s);
             
-
             // Notify cho doctor có customer vào phòng  
             Notification noti = new Notification(s.Room.Doctor.UserId, "New customer enter room", "A new customer [" + s.Customer.User.FullName + "] has entered your room", DateTime.Now);
             await _context.SaveChangesAsync();
@@ -129,7 +134,7 @@ namespace Taurus.Controllers
 
             try
             {
-                User u = await _userManager.FindByIdAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                User u = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
                 u.Coins -= s.GetTotalPrice();
                 _context.Users.Update(u);
                 await _context.SaveChangesAsync(); // holding coins
