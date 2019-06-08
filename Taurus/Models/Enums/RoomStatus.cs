@@ -7,11 +7,11 @@ namespace Taurus.Models.Enums
 {
     public enum RoomStatus
     {
-        ACTIVE = 1,
-        DONE = -1,
-        PENDING = 0,
-        PROCESSING = 2,
-        BOOKED = 3
+        ACTIVE = 1,     // 
+        DONE = -1,      // 
+        PENDING = 0,    //
+        PROCESSING = 2, //
+        BOOKED = 3      //
     }
     // PENDING -> ACTIVE -> PROCESSING
                       // -> PROCESSSING

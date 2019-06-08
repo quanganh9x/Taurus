@@ -53,7 +53,7 @@ namespace Taurus.Controllers
         [HttpGet("GetListActiveRoom")]
         public async Task<IActionResult> GetListActiveRoom(int? pageIndex)
         {            
-            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE && r.Sessions.Count < r.Quota).ToListAsync();
+            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE && r.Sessions.Count(s => s.Status == SessionStatus.ACTIVE || s.Status == SessionStatus.PENDING) < r.Quota).ToListAsync();
             var rooms = new PaginatedList<Room>(listRoom, listRoom.Count(), pageIndex ?? 1, pageSize);            
             return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
         }
