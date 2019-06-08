@@ -1194,7 +1194,7 @@ ul.tabs-nav {
 }
 
 .the-news-wrap {
-    margin-bottom: 60px;
+    margin-bottom: 20px;
 }
 
     .the-news-wrap figure {
@@ -1478,7 +1478,11 @@ ul.tabs-nav {
 # Sidebar
 --------------------------------------------------------------*/
 .sidebar {
-    padding: 100px 0;
+    margin-top: 100px;
+    position: relative;
+    padding: 16px;
+    border-radius: 20px;
+    border: 2px solid #dde4ea;
 }
 
 /*
@@ -1516,8 +1520,8 @@ ul.tabs-nav {
 }
 
 .widget-title {
-    margin-top: 52px;
-    margin-bottom: 32px;
+    margin-top: 12px;
+    margin-bottom:20px;
     font-size: 24px;
     font-weight: 600;
     color: #404040;

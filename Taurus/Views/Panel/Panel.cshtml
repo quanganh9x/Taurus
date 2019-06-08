@@ -2,12 +2,12 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-lg-3">
-                <div class="sidebar" style="padding-top: 40px;">
+                <div class="sidebar" style="padding-top: 10px;">
 
 
                     <div class="sidebar-cats">
                         <h2 class="widget-title">Categories</h2>
-
+                        <hr />
                         <ul class="accordion m-0 p-0" id="accordionExample">
                             <li>
                                 <h5 class="text-primary" data-toggle="collapse"
@@ -68,7 +68,7 @@
             $("#list-room").load(loadUrl);
         }, 30000);
 
-        
+
     })
 
     function getParameterByName(name, url) {
@@ -99,10 +99,10 @@
     }
     function getRoomByPage(page) {
         var pageIndex = getParameterByName('pageIndex', loadUrl);
-        
+
         if (pageIndex == null) {
             loadUrl = loadUrl + "?pageIndex=" + page;
-        } else {            
+        } else {
             loadUrl = updateQueryStringParameter(loadUrl, "pageIndex", page);
         }
         $("#list-room").load(loadUrl);
