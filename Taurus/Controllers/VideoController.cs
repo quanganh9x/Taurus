@@ -44,7 +44,7 @@ namespace Taurus.Controllers
                 {
                     ViewData["User"] = await _context.Doctors.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
                     ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
-                    return View("../Home/Video");
+                    return View("../Room/RoomDoctor");
                 }
                 return LocalRedirect("/Profile");
             }
@@ -53,7 +53,8 @@ namespace Taurus.Controllers
                 {
                     ViewData["User"] = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
                     ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
-                    return View("../Home/Video");
+                    ViewData["Session"] = await _context.Sessions.FirstOrDefaultAsync(m => m.CustomerId == int.Parse(_userManager.GetUserId(User)) && m.Status == SessionStatus.PENDING);
+                    return View("../Room/RoomCustomer");
                 }
                 return LocalRedirect("/Panel");
         }
