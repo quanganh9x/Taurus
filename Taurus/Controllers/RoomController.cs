@@ -47,7 +47,7 @@ namespace Taurus.Controllers
             if (User.IsInRole("Doctor"))
             {
                 room.DoctorId = int.Parse(_userManager.GetUserId(User));
-                room.Status = RoomStatus.PENDING;
+                room.Status = RoomStatus.ACTIVE;
                 _context.Rooms.Add(room);
                 await _context.SaveChangesAsync();
 
