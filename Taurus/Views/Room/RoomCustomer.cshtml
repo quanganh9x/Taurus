@@ -120,7 +120,8 @@
             window.adapter = true;
 
             var connection = new RTCMultiConnection();
-            connection.socketURL = 'http://35.247.52.75:9000/';
+            //connection.socketURL = 'http://35.247.52.75:9000/';
+            connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
             /* initializers */
             connection.userid = @u.UserId;
@@ -316,9 +317,9 @@
             connection.autoSaveToDisk = false;
 
 
-            window.addEventListener('unload', function () {
-                endSession();
-            })
+            //window.addEventListener('unload', function () {
+            //    endSession();
+            //})
 
             function handleError(error) {
                 clearInterval(updateHeartbeat);

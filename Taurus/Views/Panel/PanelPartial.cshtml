@@ -1,4 +1,4 @@
-﻿@model PaginatedList<Room>
+﻿    @model PaginatedList<Room>
 
 @foreach (Room r in Model)
 {
@@ -47,19 +47,61 @@
 </div>
 
 <script>
-        function enterRoom(roomId) {
+    //$(document).ready(function () {
+    //    console.log();
+    //})
+    function enterRoom(roomId) {
+        //var options = {           
+        //    classname: "toast",           
+        //    transition: "fade",            
+        //    insertBefore: true,            
+        //    duration: 3000,
+        //    enableSounds: true,            
+        //    autoClose: true,
+        //    progressBar: true,            
+        //    sounds: {
+        //        // path to sound for informational message:
+        //        info: "/lib/toasty.js/dist/sounds/info/1.mp3",
+        //        // path to sound for successfull message:
+        //        success: "/lib/toasty.js/dist/sounds/success/1.mp3",
+        //        // path to sound for warn message:
+        //        warning: "/lib/toasty.js/dist/sounds/warning/1.mp3",
+        //        // path to sound for error message:
+        //        error: "/lib/toasty.js/dist/sounds/error/1.mp3",
+        //    },
+
+        //    // callback:
+        //    // onShow function will be fired when a toast message appears.
+        //    onShow: function (type) { },
+
+        //    // callback:
+        //    // onHide function will be fired when a toast message disappears.
+        //    onHide: function (type) { },
+
+        //    // the placement where prepend the toast container:
+        //    prependTo: document.body.childNodes[0]
+        //};
+
+        var toast = new Toasty();
             $.post("@Url.Action("CreateSession", "Session")", { RoomId: roomId })
-                .done(function (resp) {
-                    toastr.success("Session", "Successfully added to queue");
-                    $.post("@Url.Action("CheckRoom", "Room")", { id: roomId })
+                .done(function (resp) {                                        
+                    toast.success("Successfully added to queue");
+                    $.post("@Url.Action("CheckRoom", "Room")", { id: roomId, sessionId: resp.data })
                         .done(function (res) {
                             var roomUrl = '@Url.Action("EnterRoom", "Video", new { id = "noId" })';
-                            roomUrl = roomUrl.replace("noId", roomId);
-                            window.location.href = roomUrl;
+                            roomUrl = roomUrl.replace("noId", roomId);                            
+                            var win = window.open(roomUrl, '_blank');
+                            if (win) {
+                                //Browser has allowed it to be opened
+                                win.focus();
+                            } else {
+                                //Browser has blocked it
+                                alert('Please allow popups for this website');
+                            }
                         });
                 })
-                .fail(function (res) {
-                    toastr.error("JoinRoom", "Failed");
+                .fail(function (resp) {                    
+                    toast.error(resp.responseJSON.data);
                 });
         }
 </script>

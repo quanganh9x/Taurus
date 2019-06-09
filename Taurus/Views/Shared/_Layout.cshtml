@@ -14,7 +14,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="~/lib/toastr.js/toastr.min.css" />
+    <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css" />
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src='~/js/jquery.collapsible.min.js'></script>
@@ -24,8 +24,8 @@
     <script src='~/js/jquery.countTo.min.js'></script>
     <script src='~/js/jquery.barfiller.js'></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/moment-with-locales.js"></script>
 
-    <script src="~/lib/toastr.js/toastr.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -63,7 +63,7 @@
                                         <h6 style="color:black" class="dropdown-header">Notifications</h6>
 
                                         <div id="notificationsContainer" class="notifications-container">
-                                            <a class="dropdown-item dropdown-notification" style="color: black" href="#">
+                                            @*<a class="dropdown-item dropdown-notification" style="color: black" href="#">
                                                 <div class="notification-read">
                                                     <i class="fa fa-times" aria-hidden="true"></i>
                                                 </div>
@@ -74,46 +74,7 @@
                                                         <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
                                                     </p>
                                                 </div>
-                                            </a>
-
-                                            <a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
-                                                <div class="notification-read">
-                                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                                </div>
-                                                <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
-                                                <div class="notifications-body">
-                                                    <p class="notification-texte">"Lorem ipsum dolor sit amet, consectetur adipiscing </p>
-                                                    <p class="notification-date text-muted">
-                                                        <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
-                                                    </p>
-                                                </div>
-                                            </a>
-
-                                            <a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
-                                                <div class="notification-read">
-                                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                                </div>
-                                                <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
-                                                <div class="notifications-body">
-                                                    <p class="notification-texte">"Lorem ipsum dolor sit amet, consectetur adipiscing </p>
-                                                    <p class="notification-date text-muted">
-                                                        <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
-                                                    </p>
-                                                </div>
-                                            </a>
-
-                                            <a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
-                                                <div class="notification-read">
-                                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                                </div>
-                                                <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
-                                                <div class="notifications-body">
-                                                    <p class="notification-texte">"Lorem ipsum dolor sit amet, consectetur adipiscing </p>
-                                                    <p class="notification-date text-muted">
-                                                        <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
-                                                    </p>
-                                                </div>
-                                            </a>
+                                            </a>*@                                            
                                         </div>
                                         @*<a class="dropdown-item dropdown-notification-all" style="color: white;" href="#">
                                                 View all notifications
@@ -123,19 +84,30 @@
                                 </div>
                                 @if (SignInManager.IsSignedIn(User) && !User.IsInRole("Doctor"))
                                 {
-                                <div class="dropdown show">
-                                    <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-bookmark"></i> <span id="bookmark-count"></span>
-                                    </li>
+                                    <div class="dropdown show">
+                                        <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-bookmark"></i> <span id="bookmark-count"></span>
+                                        </li>
 
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="bookmark">
+                                        <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink" id="bookmark">
+                                            <h6 style="color:black" class="dropdown-header">Bookmarks</h6>
 
-                                        @* Nhét các NOTIFICATION vào đây *@
-
-                                        @* Dừng ở đây *@
-
+                                            <div id="bookmarksContainer" class="notifications-container">
+                                                @*<a class="dropdown-item dropdown-notification" style="color: black" href="#">
+                                                    <div class="notification-read">
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </div>
+                                                    <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
+                                                    <div class="notifications-body">
+                                                        <p class="notification-texte">"Lorem ipsum dolor sit amet, consectetur adipiscing </p>
+                                                        <p class="notification-date text-muted">
+                                                            <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
+                                                        </p>
+                                                    </div>
+                                                </a>*@
+                                            </div>                                            
+                                        </div>
                                     </div>
-                                </div>
                                 }
 
 
@@ -232,25 +204,45 @@
             connection.on("NotificationMessage", function (message) {
                 console.log(message);
                 $("#notificationsContainer").prepend(
-                    `<a class="dropdown-item dropdown-notification" style="color: black" href="#">
-                        <div class="notification-read">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </div>
-                        <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
-                        <div class="notifications-body">
-                            <p class="notification-texte">"${message.description}</p>
-                            <p class="notification-date text-muted">
-                                <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
-                            </p>
-                        </div>
-                    </a>`
+                    `<a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
+                                <div class="notification-read">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </div>
+                                <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
+                                <div class="notifications-body">
+                                    <p class="notification-texte">"${message.description}</p>
+                                    <p class="notification-date text-muted">
+                                        <i class="fa fa-clock-o" aria-hidden="true"></i> ${moment(message.createdAt).format('dddd, DD MMMM, hh:mm:ss ')}
+                                    </p>
+                                </div>
+                            </a>`
                 )
             });
+
+            connection.on("BookmarkMessage", function (message) {                                          
+                $("#bookmarksContainer").prepend(
+                    `<a target="_blank" class="dropdown-item dropdown-notification notification-unread" style="color: black" href="/Video/${message.title}">
+                                <div class="notification-read">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </div>
+                                <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
+                                <div class="notifications-body">
+                                    <p class="notification-texte">"${message.description}</p>
+                                    <p class="notification-date text-muted">
+                                        <i class="fa fa-clock-o" aria-hidden="true"></i> ${moment(message.createdAt).format('dddd, DD MMMM, hh:mm:ss ')}
+                                    </p>
+                                </div>
+                            </a>`
+                )
+                var toast = new Toasty();
+                toast.info(message.description, 30000);
+            });
+            
             connection.start()
         </script>
         @if (!User.IsInRole("Doctor"))
         {
-        <script>
+            @*<script>
             $(document).ready(function () {
                 var ez = function () {
                     $.get('@Url.Action("GetPendingSession", "Session")')
@@ -267,6 +259,7 @@
                                     </div>`
                                     );
                                 else {
+
                                     $('#bookmark').prepend(
                                         `<div class="p-3">
                                         <a target="_blank" class="dropdown-item" href="${data[i].Url}">${data[i].Message}</a>
@@ -279,9 +272,10 @@
                 ez();
                 setInterval(ez, 5000);
             });
-        </script>
-            }
+            </script>*@
         }
+    }
     <script src='~/js/custom.js'></script>
+    <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>

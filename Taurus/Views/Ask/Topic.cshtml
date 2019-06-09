@@ -1,6 +1,7 @@
 ﻿@model Question
-   <!-- Custom -->
-    <link href="~/css/qa.css" rel="stylesheet">
+@using System.Security.Claims;
+<!-- Custom -->
+<link href="~/css/qa.css" rel="stylesheet">
 
 <!-- CSS STYLE-->
 <link rel="stylesheet" type="text/css" href="https://forum.azyrusthemes.com/css/style.css" media="screen" />
@@ -48,22 +49,23 @@
                         <div class="postinfobot p-0">
 
 
-                            <div class="posted pull-left" style="width: initial"><i class="fa fa-clock-o"></i> @Model.CreatedAt.ToLocalTime() &nbsp;&nbsp;<i class="fa fa-user"></i> @Model.Customer.User.FullName</div>
+                            <div class="posted pull-left" style="width: initial"><i class="fa fa-clock-o"></i> @Model.CreatedAt.ToString("f") &nbsp;&nbsp;<i class="fa fa-user"></i> @Model.Customer.User.FullName</div>
 
                             @*<div class="next pull-right">
-                                <a href="#"><i class="fa fa-thumbs-o-up"></i></a>
+                                    <a href="#"><i class="fa fa-thumbs-o-up"></i></a>
 
-                                <a href="#"><i class="fa fa-flag"></i></a>
-                            </div>*@
+                                    <a href="#"><i class="fa fa-flag"></i></a>
+                                </div>*@
 
                             <div class="clearfix"></div>
                         </div>
                     </div><!-- POST -->
 
-                    @if (User.IsInRole("Doctor")) {
-                    <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#modalSubmitAnswer">
-                        + Answer 
-                    </button>
+                    @if (User.IsInRole("Doctor"))
+                    {
+                        <button type="button" class="btn btn-primary my-3" data-toggle="modal" data-target="#modalSubmitAnswer">
+                            + Answer
+                        </button>
                     }
 
                     @foreach (Answer q in ViewData["Answers"] as List<Answer>)
@@ -81,13 +83,15 @@
 
 
 
-                                <div class="posted pull-left"><i class="fa fa-clock-o"></i> @q.CreatedAt.ToLocalTime() &nbsp;&nbsp;<i class="fa fa-user"></i> @q.Doctor.User.FullName</div>
+                                <div class="posted pull-left"><i class="fa fa-clock-o"></i> @q.CreatedAt.ToString("f") &nbsp;&nbsp;<i class="fa fa-user"></i> @q.Doctor.User.FullName</div>
 
-                                <div class="next pull-right">
-                                    <a href="#"><i class="fa fa-thumbs-o-up"></i></a>
-
-                                    <a href="#"><i class="fa fa-flag"></i></a>
-                                </div>
+                                @if (Model.Customer.UserId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                                {
+                                    <div class="next pull-right">                                        
+                                        <a onclick="voteDoctor(this, @q.DoctorId)" class="vote-btn"><i class="fa fa-thumbs-o-up"></i></a>
+                                        <a onclick="flagDoctor(this, @q.DoctorId)" class="flag-btn"><i class="fa fa-flag"></i></a>
+                                    </div>
+                                }
 
                                 <div class="clearfix"></div>
                             </div>
@@ -196,20 +200,51 @@
 <!-- LOOK THE DOCUMENTATION FOR MORE INFORMATIONS -->
 <script type="text/javascript">
 
-            var revapi;
+    var revapi;
 
-            $(document).ready(function() {
-                "use strict";
-                revapi = $('.tp-banner').revolution(
-                        {
-                            delay: 15000,
-                            startwidth: 1200,
-                            startheight: 278,
-                            hideThumbs: 10,
-                            fullWidth: "on"
-                        });
+    $(document).ready(function () {
+        "use strict";
+        revapi = $('.tp-banner').revolution(
+            {
+                delay: 15000,
+                startwidth: 1200,
+                startheight: 278,
+                hideThumbs: 10,
+                fullWidth: "on"
+            });
 
-            });	//ready
+        $@*('.vote-btn').click(function () {
+            $.post("@Url.Action("CreateSession", "Session")", { doctorId:  })
+                .done(function (resp) {                                        
+                    
+                })
+                .fail(function (resp) {                    
+                    
+                });
+        })*@
+    });	//ready
+
+    function voteDoctor(e, doctorId) {
+        $.post("@Url.Action("DoctorVote", "Vote")", { doctorId: doctorId })
+                .done(function (resp) {                                        
+                    $(e).addClass("voted");
+                    $(e).next().addClass("disabled");
+                })
+                .fail(function (resp) {
+                    console.log(resp);
+                });
+    }
+
+    function flagDoctor(e, doctorId) {        
+        $.post("@Url.Action("DoctorFlag", "Vote")", { doctorId: doctorId })
+                .done(function (resp) {                                        
+                    $(e).addClass("flagged");
+                    $(e).prev().addClass("disabled");
+                })
+                .fail(function (resp) {
+                    console.log(resp);
+                });
+    }
 
 </script>
 

@@ -210,9 +210,11 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("check")]
-        public async Task<IActionResult> CheckRoom([FromForm] int id)
+        public async Task<IActionResult> CheckRoom([FromForm] int id, int sessionId)
         {
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id && r.Sessions.Count == 1 && r.Status != RoomStatus.DONE); // the only case
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id && 
+            r.Sessions.FirstOrDefault(s => s.Status == SessionStatus.PENDING).Id == sessionId &&
+            r.Sessions.Count(s => s.Status == SessionStatus.PROCESSING) == 0 && r.Status != RoomStatus.DONE); // the only case
             if (room == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });

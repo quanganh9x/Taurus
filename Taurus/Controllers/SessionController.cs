@@ -49,24 +49,24 @@ namespace Taurus.Controllers
             Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == s.RoomId && m.Sessions.Count < m.Quota);
             if (r == null)
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại phòng hoặc phòng đã đầy" });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Room is not exist or full" });
             }
             if (await GetTimeRemainingOfUser(r.Price) <= 2) // tối thiểu 2 phút
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Tiền ít đòi hít *** thơm" });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Your account doesn't have enough coins to join room at least 2 minutes" });
             }
             var customer = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
             foreach (Session session in r.Sessions)
             {
                 if (session.CustomerId == customer.Id && session.Status == SessionStatus.PENDING)
                 {
-                    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Bạn đã subscribe phòng này rồi" });
+                    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "You have already subscribed this room" });
                 }
             }
             List<Session> customerSession = await _context.Sessions.Where(m => m.CustomerId == int.Parse(_userManager.GetUserId(User)) && m.Status == SessionStatus.PENDING).ToListAsync();
             if (customerSession.Count >= 3)
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Bạn chỉ được subscribe tối đa 3 phòng" });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "You can not subscribe more than 3 rooms" });
             }
             s.CustomerId = customer.Id;
             _context.Sessions.Add(s);
@@ -99,7 +99,7 @@ namespace Taurus.Controllers
             // Notify cho doctor có customer vào phòng  
             await _notiService.NotifyCustomerEnterRoom(s);
 
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = s.Id });
         }
 
         [HttpPost("update-hb")]
@@ -135,6 +135,7 @@ namespace Taurus.Controllers
             s.Status = SessionStatus.DONE;
             _context.Sessions.Update(s);
             await _context.SaveChangesAsync();
+            await _notiService.NotifyCustomerTurnIsReady(s.Room.Sessions.FirstOrDefault(m => m.Status == SessionStatus.PENDING));
 
             try
             {
