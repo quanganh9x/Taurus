@@ -38,7 +38,7 @@ namespace Taurus.Controllers
 
             if (User.IsInRole("Doctor"))
             {
-                if (await _context.Rooms.Where(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && (m.Status == RoomStatus.PENDING)).AnyAsync())
+                if (await _context.Rooms.Where(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && (m.Status == RoomStatus.PENDING || m.Status == RoomStatus.BOOKED)).AnyAsync())
                 {
                     ViewData["User"] = await _context.Doctors.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
                     ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);

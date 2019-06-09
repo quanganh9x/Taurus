@@ -19,13 +19,11 @@ namespace Taurus.Controllers
     public class VoteController : Controller
     {
         private readonly ApplicationContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
-        public VoteController(ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public VoteController(ApplicationContext context, UserManager<User> userManager)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
 

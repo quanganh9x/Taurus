@@ -58,7 +58,7 @@ namespace Taurus.Controllers
             var customer = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
             foreach (Session session in r.Sessions)
             {
-                if (session.CustomerId == customer.Id)
+                if (session.CustomerId == customer.Id && session.Status == SessionStatus.PENDING)
                 {
                     return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Bạn đã subscribe phòng này rồi" });
                 }
@@ -142,6 +142,8 @@ namespace Taurus.Controllers
                 u.Coins -= s.GetTotalPrice();
                 _context.Users.Update(u);
                 await _context.SaveChangesAsync(); // holding coins
+                // notify consumed money
+                await _notiService.NotifyCustomerConsume(s);
             } catch (Exception)
             {
                 s.Status = SessionStatus.PROCESSING;

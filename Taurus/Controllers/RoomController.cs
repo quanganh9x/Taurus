@@ -196,6 +196,8 @@ namespace Taurus.Controllers
                 r.Revenue = temp;
                 _context.Rooms.Update(r);
                 await _context.SaveChangesAsync();
+                // notify earning
+                await _notiService.NotifyDoctorEarned(r);
             } catch (Exception)
             {
                 // oh shit
@@ -215,6 +217,20 @@ namespace Taurus.Controllers
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
             }
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
+        }
+
+        [HttpPost("addquota")]
+        public async Task<IActionResult> AddRoomQuota([FromForm] int id, [FromForm] int addition)
+        {
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id && r.Sessions.Count == r.Quota && r.Status != RoomStatus.DONE); // the only case
+            if (room == null)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+            }
+            room.Quota += addition;
+            _context.Rooms.Update(room);
+            await _context.SaveChangesAsync();
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 

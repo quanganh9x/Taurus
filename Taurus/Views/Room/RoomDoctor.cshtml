@@ -116,8 +116,7 @@
 
             var ourVideo = document.getElementById("our-video");
             var theirVideo = document.getElementById('their-video');
-            var id = $('#id');
-            var status = $('#status');
+            
 
             // shim
             window.adapter = true;
@@ -347,6 +346,10 @@
                 $.post('@Url.Action("ActiveRoom", "Room")', { id: connection.roomid })
                     .done(function (data) {
                         requestSession();
+                        setInterval( function(){
+                            $("#seconds").html(pad(++sec%60));
+                            $("#minutes").html(pad(parseInt(sec/60,10)));
+                        }, 1000);
                     })
                     .fail(function (data) {
 
@@ -373,10 +376,17 @@
             }
 
             function getSessions () {
-
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetSessions", "Room")',
+                    async: false,
+                    data: { id: connection.roomid }
+                });
             }
 
             function updateRoom() {
+                $('#id').text(connection.roomid);
+                $('#bandwidth').text(connection.isLowBandwidth == true ? "true" : "false");
                 $.post("@Url.Action("HbUpdateRoom", "Room")", { id: connection.roomid })
                     .done(function (data) {
                     })
@@ -384,6 +394,10 @@
                         handleError("update-room-failed");
                     });
             }
+
+            var sec = 0;
+            function pad ( val ) { return val > 9 ? val : "0" + val; }
+            
         });
     </script>
 
@@ -393,10 +407,33 @@
         <div class="row video-container">
             <div class="col-9">
                 <video autoplay id="their-video"></video>
-
+                <p>
+                    <a class="btn btn-primary" data-toggle="collapse" href="#inforoom" role="button" aria-expanded="false" aria-controls="inforoom">Connection Info</a>
+                </p>
+                <div class="collapse multi-collapse" id="inforoom" style="max-height: 20%;">
+                    <div class="card card-body">
+                        <p>
+                            <label>ID: </label><span id="id"></span>
+                            <label>Timer: </label><span id="minutes"></span>:<span id="seconds"></span>
+                            <label>isLowBandwidth: </label><span id="bandwidth"></span>
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="col-3">
                 <video autoplay id="our-video"></video>
+                    <div class="card card-body">
+                        <h5>Sessions</h5>
+                        <style>
+                            .list-group::-webkit-scrollbar {
+                                display: none;
+                            }
+                        </style>
+                        <ul class="list-group" style="overflow: scroll; max-height: 200px;" id="listsession"></ul>
+                        <h5>Controls</h5>
+                        <button class="btn btn-secondary">Add Quota</button>
+                        <button class="btn btn-danger">End Room</button>
+                    </div>
             </div>
         </div>
         <section class="avenue-messenger">
@@ -411,7 +448,7 @@
             </div>
             <div class="chat">
                 <div class="chat-title">
-                    <h1>Jesse Tino</h1>
+                    <h1 id="username"></h1>
                 </div>
                 <div class="messages">
                     <div class="messages-content"></div>
