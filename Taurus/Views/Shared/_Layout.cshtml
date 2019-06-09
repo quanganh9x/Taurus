@@ -221,7 +221,7 @@
 
             connection.on("BookmarkMessage", function (message) {                                          
                 $("#bookmarksContainer").prepend(
-                    `<a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
+                    `<a target="_blank" class="dropdown-item dropdown-notification notification-unread" style="color: black" href="/Video/${message.title}">
                                 <div class="notification-read">
                                     <i class="fa fa-times" aria-hidden="true"></i>
                                 </div>

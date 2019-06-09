@@ -1196,3 +1196,26 @@ a.down:hover {
         padding: 0;
     }
 }
+
+
+/*--------------------------------------------------*/
+
+a.voted {
+    color: blue !important;
+    cursor: default;
+}
+
+a.flagged {
+    color: red !important;
+    cursor: default;
+}
+
+.vote-btn, .flag-btn {
+    cursor: pointer;
+}
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+}

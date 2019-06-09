@@ -34,7 +34,7 @@ namespace Taurus.Controllers
             var questions = await _context.Questions.Where(q => q.Status == Status.ACTIVE).ToListAsync();
             ViewData["Specialists"] = await _context.Specialists.ToListAsync();
             ViewData["ActiveThreads"] = await _context.Questions.Where(q => q.Status == Status.ACTIVE).OrderBy(m => m.Answers.Count).Take(5).ToListAsync();
-            return View("../Home/QA", questions);
+            return View("../Ask/Index", questions);
         }
         
         [HttpPost("create")]
@@ -54,7 +54,7 @@ namespace Taurus.Controllers
             ViewData["ActiveThreads"] = await _context.Questions.Where(q => q.Status == Status.ACTIVE && q.CreatedAt > DateTime.Now.AddDays(-1)).OrderBy(m => m.Answers.Count).Take(5).ToListAsync();
             var questions = await _context.Questions.FirstOrDefaultAsync(q => q.Id == id);
             ViewData["Answers"] = await _context.Answers.Where(m => m.QuestionId == id).ToListAsync();
-            return View("../Home/Topic", questions);
+            return View("../Ask/Topic", questions);
         }
     }
 }

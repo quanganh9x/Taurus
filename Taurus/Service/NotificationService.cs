@@ -50,7 +50,7 @@ namespace Taurus.Service
 
             if (s == null) return;
 
-            Notification noti = new Notification(s.Customer.UserId, "It is your turn! " + s.Room.Id, "You have 30s to join the room named \"" + s.Room.Title + "\"");
+            Notification noti = new Notification(s.Customer.UserId, s.Room.Id.ToString(), "You have 30s to join the room named \"" + s.Room.Title + "\"");
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 
