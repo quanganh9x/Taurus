@@ -502,6 +502,8 @@ namespace Taurus.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<float>("Consume");
+
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("CustomerId");

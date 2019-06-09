@@ -48,7 +48,7 @@ namespace Taurus.Service
 
         public async Task NotifyCustomerTurnIsReady(Session s) {
 
-            Notification noti = new Notification(s.Customer.UserId, "It is your turn", "You have 60s to join the room named [" + s.Room.Title + "]");
+            Notification noti = new Notification(s.Customer.UserId, "It is your turn", "You have 60s to join \"" + s.Room.Title + "\"");
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 
@@ -57,7 +57,7 @@ namespace Taurus.Service
 
         public async Task NotifyCustomerConsume(Session s)
         {
-            Notification noti = new Notification(s.Customer.UserId, "Session completed", "You paid " + s.GetTotalPrice() + " to Doctor " + s.Room.Doctor.User.FullName);
+            Notification noti = new Notification(s.Customer.UserId, "Session completed", "You paid " + s.Consume + " to " + s.Room.Doctor.User.FullName);
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 
@@ -66,7 +66,7 @@ namespace Taurus.Service
 
         public async Task NotifyDoctorEarned(Room r)
         {
-            Notification noti = new Notification(r.Doctor.UserId, "Room closed", "You earned " + r.Revenue + " after this session. Hooray!");
+            Notification noti = new Notification(r.Doctor.UserId, "Room closed", "You earned " + r.Revenue + " with room \"" + r.Title + "\". Hooray!");
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 

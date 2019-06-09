@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Taurus.Migrations
 {
-    public partial class DbApplication : Migration
+    public partial class DbApp : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -488,6 +488,7 @@ namespace Taurus.Migrations
                     Status = table.Column<int>(nullable: false),
                     StartTime = table.Column<DateTime>(nullable: true),
                     EndTime = table.Column<DateTime>(nullable: true),
+                    Consume = table.Column<float>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },

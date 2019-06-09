@@ -10,8 +10,8 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190609071644_DbApplication")]
-    partial class DbApplication
+    [Migration("20190609183735_DbApp")]
+    partial class DbApp
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -503,6 +503,8 @@ namespace Taurus.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Consume");
 
                     b.Property<DateTime>("CreatedAt");
 

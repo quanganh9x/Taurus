@@ -31,6 +31,10 @@ namespace Taurus.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllQuestion()
         {
+            if (User.Identity.Name == null)
+            {
+                return LocalRedirect("/Login");
+            }
             var questions = await _context.Questions.Where(q => q.Status == Status.ACTIVE).ToListAsync();
             ViewData["Specialists"] = await _context.Specialists.ToListAsync();
             ViewData["ActiveThreads"] = await _context.Questions.Where(q => q.Status == Status.ACTIVE).OrderBy(m => m.Answers.Count).Take(5).ToListAsync();

@@ -95,6 +95,7 @@ namespace Taurus.Controllers
             s.Status = SessionStatus.ACTIVE;
             s.StartTime = DateTime.Now;
             _context.Sessions.Update(s);
+            await _context.SaveChangesAsync();
 
             // Notify cho doctor có customer vào phòng  
             await _notiService.NotifyCustomerEnterRoom(s);
@@ -135,12 +136,16 @@ namespace Taurus.Controllers
             s.Status = SessionStatus.DONE;
             _context.Sessions.Update(s);
             await _context.SaveChangesAsync();
-            await _notiService.NotifyCustomerTurnIsReady(s.Room.Sessions.FirstOrDefault(m => m.Status == SessionStatus.PENDING));
+
+            //await _notiService.NotifyCustomerTurnIsReady(s.Room.Sessions.FirstOrDefault(m => m.Status == SessionStatus.PENDING));
 
             try
             {
+                s.Consume = s.GetTotalPrice();
+                _context.Sessions.Update(s);
+                await _context.SaveChangesAsync();
                 User u = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
-                u.Coins -= s.GetTotalPrice();
+                u.Coins -= s.Consume;
                 _context.Users.Update(u);
                 await _context.SaveChangesAsync(); // holding coins
                 // notify consumed money
@@ -167,25 +172,6 @@ namespace Taurus.Controllers
             User u = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
             int estimatedtime = (int)Math.Ceiling(u.Coins / Price);
             return estimatedtime;
-        }
-
-        [Route("pending")]
-        public async Task<IActionResult> GetPendingSession()
-        {
-            var sessions = await _context.Sessions.Where(s => (s.Room.Status != RoomStatus.DONE && s.Room.Status != RoomStatus.PENDING && s.Room.Status != RoomStatus.BOOKED) && s.Customer.UserId == int.Parse(_userManager.GetUserId(User))).ToListAsync();
-            List<dynamic> ts = new List<dynamic>();
-            foreach (Session s in sessions)
-            {
-                if (s.Status == SessionStatus.PENDING)
-                {
-                    ts.Add(new { Message = "You have subscribed to room [" + s.Room.Title + "]. Your # in the queue is " + s.Room.Sessions.IndexOf(s) + " / " + s.Room.Quota, Url = "" });
-                }
-                else if (s.Status == SessionStatus.WAITING)
-                {
-                    ts.Add(new { Message = "Room {" + s.Room.Title + "} is ready for you to join!", Url = "/Video/" + s.RoomId });
-                }
-            }
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(ts) });
         }
     }
 }

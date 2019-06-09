@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Models;
+using Taurus.Models.Enums;
 using Taurus.Models.Formats;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -53,6 +54,33 @@ namespace Taurus.Controllers
             {
                 return View("../Profile/ProfileGlobal", await _context.Customers.FirstOrDefaultAsync(p => p.UserId == id));
             }
+        }
+
+        [Route("/pendingSessions")]
+        public async Task<IActionResult> GetPendingSessions()
+        {
+            var sessions = await _context.Sessions.Where(s => (s.Room.Status != RoomStatus.DONE && s.Room.Status != RoomStatus.PENDING && s.Room.Status != RoomStatus.BOOKED) && s.Customer.UserId == int.Parse(_userManager.GetUserId(User))).ToListAsync();
+            List<dynamic> ts = new List<dynamic>();
+            foreach (Session s in sessions)
+            {
+                if (s.Status == SessionStatus.PENDING)
+                {
+                    ts.Add(new { Message = "You have subscribed to room [" + s.Room.Title + "]. Your # in the queue is " + s.Room.Sessions.IndexOf(s) + " / " + s.Room.Quota, Url = "" });
+                }
+                else if (s.Status == SessionStatus.WAITING)
+                {
+                    ts.Add(new { Message = "Room {" + s.Room.Title + "} is ready for you to join!", Url = "/Video/" + s.RoomId });
+                }
+            }
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(ts) });
+        }
+
+        [Route("/pendingNotifications")]
+        public async Task<IActionResult> GetPendingNotifications()
+        {
+            var notifications = await _context.Notifications.Where(s => s.UserId == int.Parse(_userManager.GetUserId(User))).Select(m => new { Title = m.Title, Description = m.Description, CreatedAt = m.CreatedAt }).ToListAsync();
+            notifications = notifications.TakeLast(7).ToList();
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(notifications) });
         }
 
         [Route("/api/Profile")]

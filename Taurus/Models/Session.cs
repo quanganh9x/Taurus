@@ -21,6 +21,7 @@ namespace Taurus.Models
         public SessionStatus Status { get; set; } = SessionStatus.PENDING;
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+        public float Consume { get; set; } = 0;
         /* datetime */
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;

@@ -122,8 +122,8 @@
             window.adapter = true;
 
             var connection = new RTCMultiConnection();
-            //connection.socketURL = 'http://35.247.52.75:9000/';
-            connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+            connection.socketURL = 'http://35.247.52.75:9000/';
+            //connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
             connection.userid = @u.UserId;
             connection.roomid = @r.Id;
@@ -337,6 +337,9 @@
             })
 
             function handleError(error) {
+                clearTimeout(requestTimeout);
+                clearIntẻval(updateHeartbeat);
+                endRoom();
                 console.error(error);
             }
 
@@ -386,8 +389,6 @@
             }
 
             function updateRoom() {
-                $('#id').text(connection.roomid);
-                $('#bandwidth').text(connection.isLowBandwidth == true ? "true" : "false");
                 $.post("@Url.Action("HbUpdateRoom", "Room")", { id: connection.roomid })
                     .done(function (data) {
                     })
@@ -408,22 +409,15 @@
         <div class="row video-container">
             <div class="col-9">
                 <video autoplay id="their-video"></video>
-                <p>
-                    <a class="btn btn-primary" data-toggle="collapse" href="#inforoom" role="button" aria-expanded="false" aria-controls="inforoom">Connection Info</a>
-                </p>
-                <div class="collapse multi-collapse" id="inforoom" style="max-height: 20%;">
-                    <div class="card card-body">
-                        <p>
-                            <label>ID: </label><span id="id"></span>
-                            <label>Timer: </label><span id="minutes"></span>:<span id="seconds"></span>
-                            <label>isLowBandwidth: </label><span id="bandwidth"></span>
-                        </p>
-                    </div>
-                </div>
+                
             </div>
             <div class="col-3">
                 <video autoplay id="our-video"></video>
                     <div class="card card-body">
+                        <h5>Timer</h5>
+                        <p>
+                            <span id="minutes"></span>:<span id="seconds"></span>
+                        </p>
                         <h5>Sessions</h5>
                         <style>
                             .list-group::-webkit-scrollbar {
@@ -439,18 +433,9 @@
         </div>
         <section class="avenue-messenger">
             <div class="menu">
-                <div class="items">
-                    <span>
-                        <a href="#" id="fade-button" title="Minimize">&mdash;</a><br>
-
-                    </span>
-                </div>
-                <div class="button" id="show-menu">...</div>
+                <div class="button" id="fade-button">&mdash;</div>
             </div>
             <div class="chat">
-                <div class="chat-title">
-                    <h1 id="username"></h1>
-                </div>
                 <div class="messages">
                     <div class="messages-content"></div>
                 </div>
