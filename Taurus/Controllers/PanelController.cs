@@ -34,16 +34,11 @@ namespace Taurus.Controllers
         {
             if (User.Identity.Name == null)
             {
-                return LocalRedirect("/");
+                return LocalRedirect("/Login");
             }
             if (User.IsInRole("Doctor"))
             {
-                Room r = await _context.Rooms.Where(m => m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.ACTIVE).FirstOrDefaultAsync();
-                if (r == null)
-                {
-                    return LocalRedirect("/Profile");
-                }
-                else return LocalRedirect("/Video/" + r.Id);
+                return LocalRedirect("/Profile");
             }
             ViewData["Specialists"] = await _context.Specialists.ToListAsync() ;
             ViewData["Facilities"] =  await _context.Facilities.ToListAsync();
@@ -53,27 +48,25 @@ namespace Taurus.Controllers
         [HttpGet("GetListActiveRoom")]
         public async Task<IActionResult> GetListActiveRoom(int? pageIndex)
         {            
-            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE && r.Sessions.Count(s => s.Status == SessionStatus.ACTIVE || s.Status == SessionStatus.PENDING) < r.Quota).ToListAsync();
+            List<Room> listRoom = await _context.Rooms.Where(r => (r.Status != RoomStatus.PENDING && r.Status != RoomStatus.BOOKED && r.Status != RoomStatus.DONE) && r.Sessions.Count < r.Quota).ToListAsync();
             var rooms = new PaginatedList<Room>(listRoom, listRoom.Count(), pageIndex ?? 1, pageSize);            
-            return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
+            return PartialView("/Views/Panel/PanelPartial.cshtml", rooms);
         }
 
         [HttpGet("GetRoomByCategory/{categoryId}")]
         public async Task<IActionResult> GetRoomByCategory(int categoryId, int? pageIndex)
         {
-            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE &&
-            r.Doctor.Specialist.Id == categoryId).ToListAsync();            
+            List<Room> listRoom = await _context.Rooms.Where(r => (r.Status != RoomStatus.PENDING && r.Status != RoomStatus.BOOKED && r.Status != RoomStatus.DONE) && r.Doctor.Specialist.Id == categoryId).ToListAsync();            
             var rooms = new PaginatedList<Room>(listRoom, listRoom.Count(), pageIndex ?? 1, pageSize);
-            return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
+            return PartialView("/Views/Panel/PanelPartial.cshtml", rooms);
         }
 
         [HttpGet("GetRoomByFacility/{facilityId}")]
         public async Task<IActionResult> GetRoomByFacility(int facilityId, int? pageIndex)
         {            
-            List<Room> listRoom = await _context.Rooms.Where(r => r.Status == RoomStatus.ACTIVE &&
-            r.Doctor.Facility.Id == facilityId).ToListAsync();
+            List<Room> listRoom = await _context.Rooms.Where(r => (r.Status != RoomStatus.PENDING && r.Status != RoomStatus.BOOKED && r.Status != RoomStatus.DONE) && r.Doctor.Facility.Id == facilityId).ToListAsync();
             var rooms = new PaginatedList<Room>(listRoom, listRoom.Count(), pageIndex ?? 1, pageSize);
-            return PartialView("/Views/Panel/RoomPartial.cshtml", rooms);
+            return PartialView("/Views/Panel/PanelPartial.cshtml", rooms);
         }
 
     }

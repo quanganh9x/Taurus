@@ -14,10 +14,10 @@
                         <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
                     </ul>
-                    <div class="card-body">
+                    @*<div class="card-body">
                         <a href="#" class="card-link">Card link</a>
                         <a href="#" class="card-link">Another link</a>
-                    </div>
+                    </div>*@
                 </div>
                 <button style="display: none;" id="launchBook" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBookRoom">
                     Launch demo modal
@@ -27,7 +27,7 @@
                 <div class="appointment-box the-profile-wrap">
                     <h2 class="d-flex align-items-center">Make a Live Room!</h2>
 
-                    <form method="post" action="@Url.Action("CreateNewRoom", "Room")" class="d-flex flex-wrap justify-content-between">
+                    <form method="post" action="@Url.Action("CreateRoom", "Room")" class="d-flex flex-wrap justify-content-between">
 
                         <input type="text" placeholder="Title" name="Title">
 
@@ -119,7 +119,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="book-room-form" action="@Url.Action("CreateRoom", "Room")" method="post">
+                <form id="book-room-form" action="@Url.Action("BookRoom", "Room")" method="post">
                     <div class="form-group">
                         <label for="title-text" class="col-form-label">Title</label>
                         <textarea class="form-control" name="Title" id="title-text"></textarea>
@@ -134,11 +134,11 @@
                     </div>
                     <div class="form-group">
                         <label for="timestart" class="col-form-label">Estimated Time Start</label>
-                        <input type="datetime-local" name="EstimatedTimeStart" class="form-control" id="timestart">
+                        <input type="datetime-local" name="EstimateTimeStart" class="form-control" id="timestart">
                     </div>
                     <div class="form-group">
                         <label for="timeend" class="col-form-label">Estimated Time End</label>
-                        <input type="datetime-local" name="EstimatedTimeEnd" class="form-control" id="timeend">
+                        <input type="datetime-local" name="EstimateTimeEnd" class="form-control" id="timeend">
                     </div>
                 </form>
             </div>

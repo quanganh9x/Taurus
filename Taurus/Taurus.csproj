@@ -8,23 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190528102958_DbInitialize.cs" />
-    <Compile Remove="Migrations\20190528102958_DbInitialize.Designer.cs" />
-    <Compile Remove="Migrations\20190528105133_Migoration.cs" />
-    <Compile Remove="Migrations\20190528105133_Migoration.Designer.cs" />
-    <Compile Remove="Migrations\20190528185743_DbApp.cs" />
-    <Compile Remove="Migrations\20190528185743_DbApp.Designer.cs" />
-    <Compile Remove="Migrations\20190528191012_DbApp.cs" />
-    <Compile Remove="Migrations\20190528191012_DbApp.Designer.cs" />
-    <Compile Remove="Migrations\20190529073336_DbApp.cs" />
-    <Compile Remove="Migrations\20190529073336_DbApp.Designer.cs" />
-    <Compile Remove="Migrations\20190529074341_DbApp.cs" />
-    <Compile Remove="Migrations\20190529074341_DbApp.Designer.cs" />
-    <Compile Remove="Migrations\20190529081044_DbApp.cs" />
-    <Compile Remove="Migrations\20190529081044_DbApp.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\lib\fullcalendar\interaction\main.js" />
     <None Include="wwwroot\lib\fullcalendar\interaction\main.min.js" />
     <None Include="wwwroot\lib\fullcalendar\timegrid\main.js" />
@@ -45,7 +28,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="Views\Room\" />
   </ItemGroup>
 

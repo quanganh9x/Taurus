@@ -21,14 +21,12 @@ namespace Taurus.Controllers
     {
         private readonly int maxNotification = 10;
         private readonly ApplicationContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
         private readonly INotificationService _notiService;
 
-        public NotificationController(ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, INotificationService notiService)
+        public NotificationController(ApplicationContext context, UserManager<User> userManager, INotificationService notiService)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
             _notiService = notiService;
         }

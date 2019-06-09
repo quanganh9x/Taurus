@@ -4,8 +4,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Models;
 
@@ -17,13 +19,14 @@ namespace Taurus.Controllers
     public class QuestionController : Controller
     {
         private readonly ApplicationContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<User> _userManager;
 
-        public QuestionController(ApplicationContext context, IHttpContextAccessor httpContextAccessor)
+        public QuestionController(ApplicationContext context, UserManager<User> userManager)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAllQuestion()
@@ -37,7 +40,8 @@ namespace Taurus.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateNewQuestion([Bind("Title,Text,SpecialistId")] Question q)
         {
-            q.CustomerId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var customer = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
+            q.CustomerId = customer.Id;
             _context.Questions.Add(q);
             await _context.SaveChangesAsync();
             return LocalRedirect("/Question");

@@ -29,6 +29,8 @@ namespace Taurus.Areas.Identity.Models
         public Gender Gender { get; set; }
         // currencies
         public float Coins { get; set; } = 0;
+        // unique
+        public string UniqueId { get; set; } = Guid.NewGuid().ToString();
 
         public int GetAge()
         {

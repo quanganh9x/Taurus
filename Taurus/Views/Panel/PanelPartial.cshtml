@@ -21,7 +21,7 @@
 
                             <div class="posted-by"><label>By: </label><a href="#">@r.Doctor.User.FullName</a></div>
 
-                            <div class="post-comments">@r.Sessions.Count(s => s.Status == Taurus.Models.Enums.SessionStatus.ACTIVE || s.Status == Taurus.Models.Enums.SessionStatus.PENDING) / @r.Quota</div>
+                            <div class="post-comments">@r.Sessions.Count / @r.Quota</div>
                         </div>
                     </header>
                 </div>
@@ -47,22 +47,19 @@
 </div>
 
 <script>
-    function enterRoom(roomId) {
-        $.post("@Url.Action("CheckRoom", "Room")", { id: roomId })
-            .done(function (res) {
-                if (res.status == 0) {
-                    $.post("@Url.Action("CreateSession", "Session")", { RoomId: roomId })
-                        .done(function (resp) {
-                            toastr.success("Session", "Successfully added to queue");
+        function enterRoom(roomId) {
+            $.post("@Url.Action("CreateSession", "Session")", { RoomId: roomId })
+                .done(function (resp) {
+                    toastr.success("Session", "Successfully added to queue");
+                    $.post("@Url.Action("CheckRoom", "Room")", { id: roomId })
+                        .done(function (res) {
                             var roomUrl = '@Url.Action("EnterRoom", "Video", new { id = "noId" })';
-                            roomUrl = roomUrl.replace("noId", roomId + "?sessionId=" + resp.data);
+                            roomUrl = roomUrl.replace("noId", roomId);
                             window.location.href = roomUrl;
                         });
-                }
-            })
-            .fail(function (res) {
-                toastr.error("JoinRoom", "Failed");
-            });
-
-    }
+                })
+                .fail(function (res) {
+                    toastr.error("JoinRoom", "Failed");
+                });
+        }
 </script>

@@ -121,7 +121,8 @@
 
                                     </div>
                                 </div>
-
+                                @if (SignInManager.IsSignedIn(User) && !User.IsInRole("Doctor"))
+                                {
                                 <div class="dropdown show">
                                     <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-bookmark"></i> <span id="bookmark-count"></span>
@@ -135,12 +136,13 @@
 
                                     </div>
                                 </div>
+                                }
 
 
                                 @if (SignInManager.IsSignedIn(User))
                                 {
                                     <li>
-                                        <a href="/Profile">Profile</a>
+                                        <a href="/Profile">@User.Identity.Name</a>
                                     </li>
                                     <li>
                                         <a href="/Logout">Logout</a>
@@ -222,7 +224,7 @@
         </div><!-- .footer-widgets -->
     </footer><!-- .site-footer -->
 
-    @if (User.Identity.Name != null)
+    @if (SignInManager.IsSignedIn(User))
     {
         <script>
 
@@ -245,7 +247,10 @@
                 )
             });
             connection.start()
-
+        </script>
+        @if (!User.IsInRole("Doctor"))
+        {
+        <script>
             $(document).ready(function () {
                 var ez = function () {
                     $.get('@Url.Action("GetPendingSession", "Session")')
@@ -255,11 +260,19 @@
                             $('#bookmark-count').text(`${data.length}`)
                             $('#bookmark').html('');
                             for (var i = 0; i < data.length; i++) {
-                                $('#bookmark').prepend(
-                                    `<div class="p-3">
+                                if (data[i].Url == "")
+                                    $('#bookmark').prepend(
+                                        `<div class="p-3">
+                                        <p class="dropdown-item">${data[i].Message}</p>
+                                    </div>`
+                                    );
+                                else {
+                                    $('#bookmark').prepend(
+                                        `<div class="p-3">
                                         <a target="_blank" class="dropdown-item" href="${data[i].Url}">${data[i].Message}</a>
-                                 </div>`
-                                )
+                                    </div>`
+                                    )
+                                }
                             }
                         });
                 }
@@ -267,7 +280,8 @@
                 setInterval(ez, 5000);
             });
         </script>
-    }
+            }
+        }
     <script src='~/js/custom.js'></script>
 </body>
 </html>

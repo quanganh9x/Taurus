@@ -46,11 +46,7 @@ namespace Taurus.Controllers
             return View();
         }
 
-        [Route("/QA")]
-        public IActionResult QA()
-        {
-            return View();
-        }
+        
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

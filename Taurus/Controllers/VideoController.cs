@@ -20,27 +20,25 @@ namespace Taurus.Controllers
     public class VideoController : Controller
     {
         private readonly ApplicationContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
-        public VideoController(ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public VideoController(ApplicationContext context, UserManager<User> userManager)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
-        
+
         [HttpGet("video/{id}")]
         public async Task<IActionResult> EnterRoom(int id)
         {
             if (User.Identity.Name == null)
             {
-                return LocalRedirect("/");
+                return LocalRedirect("/Login");
             }
 
             if (User.IsInRole("Doctor"))
             {
-                if (await _context.Rooms.Where(m => m.Id == id && m.DoctorId == int.Parse(_userManager.GetUserId(User)) && (m.Status == RoomStatus.PENDING)).AnyAsync())
+                if (await _context.Rooms.Where(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && (m.Status == RoomStatus.PENDING)).AnyAsync())
                 {
                     ViewData["User"] = await _context.Doctors.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
                     ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
@@ -48,15 +46,15 @@ namespace Taurus.Controllers
                 }
                 return LocalRedirect("/Profile");
             }
-            
-                if (await _context.Rooms.Where(m => m.Id == id && m.Status == RoomStatus.ACTIVE).AnyAsync()) // room trống, đã đăng ký session
-                {
-                    ViewData["User"] = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
-                    ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
-                    ViewData["Session"] = await _context.Sessions.FirstOrDefaultAsync(m => m.CustomerId == int.Parse(_userManager.GetUserId(User)) && m.Status == SessionStatus.PENDING);
-                    return View("../Room/RoomCustomer");
-                }
-                return LocalRedirect("/Panel");
+
+            if (await _context.Rooms.Where(m => m.Id == id && (m.Status == RoomStatus.ACTIVE || m.Status == RoomStatus.WAITING)).AnyAsync()) // room trống, đã đăng ký session
+            {
+                ViewData["User"] = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
+                ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
+                ViewData["Session"] = await _context.Sessions.FirstOrDefaultAsync(m => m.RoomId == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)) && (m.Status == SessionStatus.WAITING || m.Status == SessionStatus.PENDING));
+                return View("../Room/RoomCustomer");
+            }
+            return LocalRedirect("/Panel");
         }
     }
 }

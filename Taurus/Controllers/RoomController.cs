@@ -26,7 +26,7 @@ namespace Taurus.Controllers
         private readonly UserManager<User> _userManager;
         private readonly INotificationService _notiService;
 
-        public RoomController(ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager, INotificationService notiService)
+        public RoomController(ApplicationContext context, UserManager<User> userManager, INotificationService notiService)
         {
             _context = context;
             _userManager = userManager;
@@ -34,17 +34,14 @@ namespace Taurus.Controllers
         }
 
 
-        /*
-            1. doctor tạo room với status PENDING
-            2. doctor vào room, room chuyển status ACTIVE
-            3. room nhận các booked session, dequeue dần theo thứ tự
-         */
+        // tạo phòng mới
         [HttpPost("create")]
         public async Task<IActionResult> CreateRoom([Bind("Title,Price,Quota,EstimateTimeStart,EstimateTimeEnd")] Room room)
         {
-            if (User.IsInRole("Doctor"))
+            if (User.IsInRole("Doctor")) // must be doctor
             {
-                room.DoctorId = int.Parse(_userManager.GetUserId(User));
+                var doctor = await _context.Doctors.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User))); 
+                room.DoctorId = doctor.Id; 
                 room.Status = RoomStatus.PENDING;
                 _context.Rooms.Add(room);
                 await _context.SaveChangesAsync();
@@ -55,50 +52,36 @@ namespace Taurus.Controllers
             return LocalRedirect("/");
         }
 
+        // book trước phòng
         [HttpPost("book")]
-        public async Task<IActionResult> CreateRoom([Bind("Title,Price,Quota")] Room room,  [FromForm] DateTime EstimatedTimeStart, DateTime EstimatedTimeEnd)
+        public async Task<IActionResult> BookRoom([Bind("Title,Price,Quota")] Room room,  [FromForm] DateTime EstimateTimeStart, DateTime EstimateTimeEnd)
         {            
             if (User.IsInRole("Doctor"))
-            {                
-                room.DoctorId = int.Parse(_userManager.GetUserId(User));
+            {
+                var doctor = await _context.Doctors.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
+                room.DoctorId = doctor.Id;
                 room.Status = RoomStatus.BOOKED;
-                room.EstimateTimeStart = EstimatedTimeStart;
-                room.EstimateTimeEnd = EstimatedTimeEnd;
+                room.EstimateTimeStart = EstimateTimeStart;
+                room.EstimateTimeEnd = EstimateTimeEnd;
                 _context.Rooms.Add(room);
                 await _context.SaveChangesAsync();
 
                 BackgroundJob.Schedule(
-                () => _notiService.NotifyBookedRoomStartSoon(room, Int32.Parse(_userManager.GetUserId(User))),
-                EstimatedTimeStart.AddMinutes(-5));
+                () => _notiService.NotifyBookedRoomStartSoon(room),
+                EstimateTimeStart.AddMinutes(-10));
 
-                return Ok(new APIResponse { Status = APIStatus.Success, Data = room });
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
             }
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }
+
         [HttpPost("active")]
         public async Task<IActionResult> ActiveRoom([FromForm] int id)
         {
-            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.DoctorId == int.Parse(_userManager.GetUserId(User)) && (m.Status == RoomStatus.PENDING || m.Status == RoomStatus.PROCESSING));
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != RoomStatus.DONE);
             if (r == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
-            }
-            if (r.Status == RoomStatus.PROCESSING && r.Sessions.Count > 0)
-            {
-                // dequeue session hiện tại
-                r.Sessions.RemoveAt(0);
-                if (r.Sessions.Count == 0)
-                {
-                    // hết session, cần mở thêm Quota
-                } else
-                {
-                    // còn session, gọi tới
-                    Session s = r.Sessions.First();
-                    s.Status = SessionStatus.WAITING;
-                    _context.Sessions.Update(s);
-                    await _context.SaveChangesAsync();
-                    // thông báo
-                }
             }
             if (!r.StartTime.HasValue) // tạo room lần đầu
             {
@@ -115,10 +98,52 @@ namespace Taurus.Controllers
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 
+        [HttpPost("request")]
+        public async Task<IActionResult> RequestSession([FromForm] int id)
+        {
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != RoomStatus.DONE);
+            if (r == null)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại phòng này" });
+            }
+            List<Session> remainSessions = r.Sessions.FindAll(
+                delegate (Session session)
+                {
+                    return session.Status == SessionStatus.PENDING;
+                }
+            );
+            if (r.Sessions.Count == r.Quota)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Hết session" });
+            }
+            else if (remainSessions.Count == 0)
+            {
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = "Chưa ai đăng ký zô :)" });
+            }
+            else
+            {
+                // chuyển status phòng thành waiting - chờ customer mới
+                r.Status = RoomStatus.WAITING;
+                _context.Rooms.Update(r);
+                await _context.SaveChangesAsync();
+                if (r.Sessions.Count > 0)
+                {
+                    // gọi tới session tiếp theo
+                    Session s = remainSessions.First();
+                    s.Status = SessionStatus.WAITING;
+                    _context.Sessions.Update(s);
+                    await _context.SaveChangesAsync();
+                    // thông báo
+                }
+            }
+
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
+        }
+
         [HttpPost("update-hb")]
         public async Task<IActionResult> HbUpdateRoom([FromForm] int id)
         {
-            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.DoctorId == int.Parse(_userManager.GetUserId(User)) && (m.Status == RoomStatus.ACTIVE || m.Status == RoomStatus.PROCESSING));
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != RoomStatus.DONE);
             if (r == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
@@ -133,7 +158,7 @@ namespace Taurus.Controllers
         [HttpPost("end")]
         public async Task<IActionResult> EndRoom([FromForm] int id)
         {
-            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.DoctorId == int.Parse(_userManager.GetUserId(User)));
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)));
             if (r == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
@@ -143,21 +168,33 @@ namespace Taurus.Controllers
             _context.Rooms.Update(r);
             await _context.SaveChangesAsync();
 
+            
             try
             {
                 User u = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+                // prevent UaF
+                List<Session> allSessions = r.Sessions;
+                foreach (Session s in allSessions)
+                {
+                    s.Status = SessionStatus.DONE;
+                    _context.Sessions.Update(s);
+                    await _context.SaveChangesAsync();
+                }
                 List<Session> sessionInitialized = r.Sessions.FindAll(
                     delegate (Session session)
                     {
-                        return session.Status == SessionStatus.DONE;
+                        return (session.Status == SessionStatus.DONE);
                     }
                 );
-
+                float temp = 0;
                 foreach (Session s in sessionInitialized)
                 {
                     u.Coins += s.GetTotalPrice();
+                    temp += s.GetTotalPrice();
                 }
                 _context.Users.Update(u);
+                r.Revenue = temp;
+                _context.Rooms.Update(r);
                 await _context.SaveChangesAsync();
             } catch (Exception)
             {
@@ -173,7 +210,7 @@ namespace Taurus.Controllers
         [HttpPost("check")]
         public async Task<IActionResult> CheckRoom([FromForm] int id)
         {
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id && r.Sessions.Count < r.Quota && r.Status == RoomStatus.ACTIVE);
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id && r.Sessions.Count == 1 && r.Status != RoomStatus.DONE); // the only case
             if (room == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
@@ -192,7 +229,7 @@ namespace Taurus.Controllers
         {
             if (User.IsInRole("Doctor"))
             {
-                var Rooms = await _context.Rooms.Where(m => m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.WAITING)
+                var Rooms = await _context.Rooms.Where(m => m.DoctorId == int.Parse(_userManager.GetUserId(User)) && m.Status == RoomStatus.BOOKED)
                     .Select(m => new { title = m.Title, start = m.EstimateTimeStart, end = m.EstimateTimeEnd })
                     .ToListAsync();
                 return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(Rooms));
@@ -211,11 +248,11 @@ namespace Taurus.Controllers
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Mày không phải Doctor" });
         }
 
-        public async Task<IActionResult> UpdateRoomStatus(int id, RoomStatus status)
-        {
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
-            room.Status = status;
-            return Ok(room);
-        }
+        //public async Task<IActionResult> UpdateRoomStatus(int id, RoomStatus status)
+        //{
+        //    var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
+        //    room.Status = status;
+        //    return Ok(room);
+        //}
     }
 }

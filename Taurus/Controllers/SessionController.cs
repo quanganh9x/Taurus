@@ -28,7 +28,7 @@ namespace Taurus.Controllers
         private readonly ApplicationContext _context;
         private readonly UserManager<User> _userManager;
 
-        public SessionController(INotificationService notiService, ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public SessionController(INotificationService notiService, ApplicationContext context, UserManager<User> userManager)
         {
             _notiService = notiService;
             _context = context;
@@ -37,12 +37,11 @@ namespace Taurus.Controllers
 
 
         /*
-            self-developed algorithm:
-                1. khách subscribes phòng - khởi tạo session, status = PENDING (số session được tạo trước < quota room)
-                2. session được lồng vào Queue
-                3. khách out phòng - chuyển session DONE
-                4. customer được thông báo khi phòng trống (người khác end 1 session)
-                5. thuật toán gale-shapley tiếp tục gọi người tiếp theo
+            1. khách subscribes phòng - khởi tạo session, status = PENDING (số session được tạo trước < quota room)
+            2. session được lồng vào Queue
+            3. khách out phòng - chuyển session DONE
+            4. customer được thông báo khi phòng trống (người khác end 1 session)
+            5. thuật toán gale-shapley tiếp tục gọi người tiếp theo
          */
         [HttpPost("create")]
         public async Task<IActionResult> CreateSession([Bind("RoomId")] Session s)
@@ -56,36 +55,49 @@ namespace Taurus.Controllers
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Tiền ít đòi hít *** thơm" });
             }
-            s.CustomerId = int.Parse(_userManager.GetUserId(User));
+            var customer = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
+            foreach (Session session in r.Sessions)
+            {
+                if (session.CustomerId == customer.Id)
+                {
+                    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Bạn đã subscribe phòng này rồi" });
+                }
+            }
+            List<Session> customerSession = await _context.Sessions.Where(m => m.CustomerId == int.Parse(_userManager.GetUserId(User)) && m.Status == SessionStatus.PENDING).ToListAsync();
+            if (customerSession.Count >= 3)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Bạn chỉ được subscribe tối đa 3 phòng" });
+            }
+            s.CustomerId = customer.Id;
             _context.Sessions.Add(s);
             await _context.SaveChangesAsync();
             // session has been created
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = s.Id });
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = s.Id }); // pending session
         }
 
         /*
-         * When customer is actually joined the room
+         * customer đã thực sự vào room
          */
         [HttpPost("active")]
         public async Task<IActionResult> ActiveSession([FromForm] int id)
         {
-            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Status == SessionStatus.PENDING);
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != SessionStatus.DONE);
             if (s == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại session này" });
             }
-            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && (m.Status == RoomStatus.ACTIVE || m.Status == RoomStatus.WAITING));
+            // check lại 1 lần room có tồn tại hoặc có đang trống ?
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == s.RoomId && m.Sessions.Contains(s) && m.Status != RoomStatus.DONE);
             if (r == null)
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Có lỗi xảy ra!" });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Room không tồn tại" });
             }
             s.Status = SessionStatus.ACTIVE;
             s.StartTime = DateTime.Now;
             _context.Sessions.Update(s);
 
             // Notify cho doctor có customer vào phòng  
-            _notiService.NotifyCustomerEnterRoom(s);
-            
+            await _notiService.NotifyCustomerEnterRoom(s);
 
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
@@ -93,7 +105,7 @@ namespace Taurus.Controllers
         [HttpPost("update-hb")]
         public async Task<IActionResult> HbUpdateSession([FromForm] int id)
         {
-            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.CustomerId == int.Parse(_userManager.GetUserId(User)) && (m.Status == SessionStatus.ACTIVE || m.Status == SessionStatus.PROCESSING));
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != SessionStatus.DONE);
             if (s == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không save" });
@@ -114,7 +126,7 @@ namespace Taurus.Controllers
         [HttpPost("end")]
         public async Task<IActionResult> EndSession([FromForm] int id)
         {
-            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.CustomerId == int.Parse(_userManager.GetUserId(User)) && (m.Status == SessionStatus.ACTIVE || m.Status == SessionStatus.PROCESSING));
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)));
             if (s == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không save" });
@@ -141,9 +153,9 @@ namespace Taurus.Controllers
         }
 
         [Route("get/{id}")]
-        public async Task<IActionResult> GetSessionById(int sessionId)
+        public async Task<IActionResult> GetSessionById(int id)
         {
-            var session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId);
+            var session = await _context.Sessions.FirstOrDefaultAsync(s => s.Id == id);
             return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(session) });
         }
 
@@ -157,12 +169,18 @@ namespace Taurus.Controllers
         [Route("pending")]
         public async Task<IActionResult> GetPendingSession()
         {
-            var sessions = await _context.Sessions.Where(s => s.Status == SessionStatus.PENDING && s.Room.Status == RoomStatus.ACTIVE
-            && s.CustomerId == Int32.Parse(_userManager.GetUserId(User))).ToListAsync();
+            var sessions = await _context.Sessions.Where(s => (s.Room.Status != RoomStatus.DONE && s.Room.Status != RoomStatus.PENDING && s.Room.Status != RoomStatus.BOOKED) && s.Customer.UserId == int.Parse(_userManager.GetUserId(User))).ToListAsync();
             List<dynamic> ts = new List<dynamic>();
             foreach (Session s in sessions)
             {
-                ts.Add(new { Message = "Room {" + s.Room.Title + "} is ready for you to join!", Url = "/Video/" + s.RoomId + "?sessionId=" + s.Id });
+                if (s.Status == SessionStatus.PENDING)
+                {
+                    ts.Add(new { Message = "You have subscribed to room [" + s.Room.Title + "]. Your # in the queue is " + s.Room.Sessions.IndexOf(s) + " / " + s.Room.Quota, Url = "" });
+                }
+                else if (s.Status == SessionStatus.WAITING)
+                {
+                    ts.Add(new { Message = "Room {" + s.Room.Title + "} is ready for you to join!", Url = "/Video/" + s.RoomId });
+                }
             }
             return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(ts) });
         }

@@ -10,8 +10,8 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190529132155_DbApp")]
-    partial class DbApp
+    [Migration("20190609071644_DbApplication")]
+    partial class DbApplication
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -181,6 +181,8 @@ namespace Taurus.Migrations
                     b.Property<string>("SecurityStamp");
 
                     b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<string>("UniqueId");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
@@ -408,8 +410,6 @@ namespace Taurus.Migrations
                     b.Property<string>("Description");
 
                     b.Property<int>("Status");
-
-                    b.Property<DateTime>("Time");
 
                     b.Property<string>("Title");
 

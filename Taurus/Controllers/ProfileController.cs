@@ -21,26 +21,37 @@ namespace Taurus.Controllers
     {
         private readonly ApplicationContext _context;
         private readonly UserManager<User> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProfileController(ApplicationContext context, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor)
+        public ProfileController(ApplicationContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor;
         }
 
-        // GET: /<controller>/
+        [HttpGet("/profile")]
         public async Task<IActionResult> Index()
         {
             if (User.IsInRole("Doctor"))
             {
-                return View("../Home/Profile", await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
+                return View("../Profile/Profile", await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
             }
             else
             {
                 ViewData["Sessions"] = await _context.Sessions.Where(m => m.CustomerId == int.Parse(_userManager.GetUserId(User))).ToListAsync();
-                return View("../Home/ProfileUser", await _context.Customers.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
+                return View("../Profile/ProfileCustomer", await _context.Customers.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
+            }
+        }
+
+        [HttpGet("/profile/{id}")]
+        public async Task<IActionResult> ViewProfile(int id)
+        {
+            if (User.IsInRole("Doctor"))
+            {
+                return View("../Profile/ProfileGlobal", await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == id));
+            }
+            else
+            {
+                return View("../Profile/ProfileGlobal", await _context.Customers.FirstOrDefaultAsync(p => p.UserId == id));
             }
         }
 

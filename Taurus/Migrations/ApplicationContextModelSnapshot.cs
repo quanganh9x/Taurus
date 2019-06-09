@@ -180,6 +180,8 @@ namespace Taurus.Migrations
 
                     b.Property<bool>("TwoFactorEnabled");
 
+                    b.Property<string>("UniqueId");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
@@ -406,8 +408,6 @@ namespace Taurus.Migrations
                     b.Property<string>("Description");
 
                     b.Property<int>("Status");
-
-                    b.Property<DateTime>("Time");
 
                     b.Property<string>("Title");
 

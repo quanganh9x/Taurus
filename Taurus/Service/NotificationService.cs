@@ -9,67 +9,55 @@ using Taurus.Models;
 
 namespace Taurus.Service
 {
+    public interface INotificationService
+    {
+        Task NotifyBookedRoomStartSoon(Room room);
+        Task NotifyCustomerEnterRoom(Session s);
+        Task NotifyCustomerTurnIsReady(Session s);
+    }
+
     public class NotificationService : INotificationService
     {
-        private Notification noti;
         private readonly ApplicationContext _context;
         private readonly IHubContext<NotificationHub> _hubContext;
 
         public NotificationService(ApplicationContext context, IHubContext<NotificationHub> hubContext)
         {
-            noti = new Notification();
             _context = context;
             _hubContext = hubContext;
         }
 
         // Tên method hơi củ chuối
-        public void NotifyBookedRoomStartSoon(Room room, int doctorUserId) {
-            noti = new Notification(doctorUserId, "Your have a booked room in next 5 minutes",
-                "Please click here to open your room [" + room.Title + "]", DateTime.Now);
+        public async Task NotifyBookedRoomStartSoon(Room room) {
+            var noti = new Notification(room.Doctor.UserId, "Your customers are waiting!",
+                "You have a room named [" + room.Title + "] in the next 10 minutes");
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 
-            _hubContext.Clients.User(doctorUserId.ToString()).SendAsync("NotificationMessage",
-                new
-                {
-                    Title = noti.Title,
-                    Description = noti.Description,
-                    Time = noti.Time,
-                    Status = noti.Status
-                });
+            await fireNotification(room.Doctor.UserId, "NotificationMessage", noti);
         }
 
-        public void NotifyCustomerEnterRoom(Session s)
+        public async Task NotifyCustomerEnterRoom(Session s)
         {
-            Notification noti = new Notification(s.Room.Doctor.UserId, "New customer enter room", "A new customer [" + s.Customer.User.FullName + "] has entered your room", DateTime.Now);
+            Notification noti = new Notification(s.Room.Doctor.UserId, "New customer entered", "A customer named [" + s.Customer.User.FullName + "] has entered your room");
             _context.Notifications.Add(noti);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            _hubContext.Clients.User(s.Room.Doctor.UserId.ToString()).SendAsync("NotificationMessage",
-                new
-                {
-                    Title = noti.Title,
-                    Description = noti.Description,
-                    Time = noti.Time,
-                    Status = noti.Status
-                });
+            await fireNotification(s.Room.Doctor.UserId, "NotificationMessage", noti);
         }
 
-        public void NotifyCustomerTurnIsReady(Session s) {
+        public async Task NotifyCustomerTurnIsReady(Session s) {
 
-            Notification noti = new Notification(s.Customer.UserId, "Your turn to enter room number " + s.Room.Id, "Please click here in to enter room, you have 30s left", DateTime.Now);
+            Notification noti = new Notification(s.Customer.UserId, "It is your turn!" + s.Room.Id, "You have 30s to join the room named [" + s.Room.Title + "]");
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 
-            _hubContext.Clients.User(s.Customer.UserId.ToString()).SendAsync("BookMarkMessage",
-                new
-                {
-                    Title = noti.Title,
-                    Description = noti.Description,
-                    Countdown = 30,
-                    Time = noti.Time,
-                    Status = noti.Status
-                });
+            await fireNotification(s.Customer.UserId, "BookMarkMessage", noti);
+        }
+
+        private async Task fireNotification(int userId, string eventName, Notification n)
+        {
+            await _hubContext.Clients.User(userId.ToString()).SendAsync("BookmarkMessage", Newtonsoft.Json.JsonConvert.SerializeObject(n));
         }
     }
 }

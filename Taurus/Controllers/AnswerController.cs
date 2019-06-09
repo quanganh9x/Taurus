@@ -19,24 +19,27 @@ namespace Taurus.Controllers
     public class AnswerController : Controller
     {
         private readonly ApplicationContext _context;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<User> _userManager;
 
-        public AnswerController(ApplicationContext context, IHttpContextAccessor httpContextAccessor, UserManager<User> userManager)
+        public AnswerController(ApplicationContext context, UserManager<User> userManager)
         {
             _context = context;
-            _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
         
         [Route("create")]
         public async Task<IActionResult> CreateAnswer([Bind("QuestionId","Text")] Answer ans)
         {
-            ans.DoctorId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            _context.Answers.Add(ans);
-            await _context.SaveChangesAsync();
+            if (User.IsInRole("Doctor"))
+            {
+                var doctor = await _context.Doctors.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
+                ans.DoctorId = doctor.Id;
+                _context.Answers.Add(ans);
+                await _context.SaveChangesAsync();
 
-            return LocalRedirect("/Question/"+ans.QuestionId);
+                return LocalRedirect("/Question/" + ans.QuestionId);
+            }
+            return BadRequest();
         }
     }
 }

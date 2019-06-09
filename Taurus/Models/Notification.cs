@@ -17,8 +17,6 @@ namespace Taurus.Models
         public virtual User User { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        [Required]
-        public DateTime Time { get; set; }
         public NotificationStatus Status { get; set; } = NotificationStatus.UNREAD;
         /* datetime */
         
@@ -26,16 +24,11 @@ namespace Taurus.Models
         
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        public Notification()
-        {
-        }
-
-        public Notification(int userId, string title, string description, DateTime time)
+        public Notification(int userId, string title, string description)
         {
             UserId = userId;
             Title = title;
             Description = description;
-            Time = time;
         }
     }
 }

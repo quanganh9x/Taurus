@@ -124,7 +124,8 @@ namespace Taurus.Controllers
                         var claims = new[]
                         {
                             new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                            new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString())
+                            new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
+                            new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString())
                         };
 
                         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_cfg["Tokens:Key"]));
@@ -133,7 +134,7 @@ namespace Taurus.Controllers
                         var token = new JwtSecurityToken(_cfg["Tokens:Issuer"],
                           _cfg["Tokens:Audience"],
                           claims,
-                          expires: DateTime.Now.AddMinutes(30),
+                          expires: DateTime.Now.AddYears(30),
                           signingCredentials: creds);
 
                         return Ok(new APIResponse { Status = APIStatus.Success, Data = new JwtSecurityTokenHandler().WriteToken(token) });
