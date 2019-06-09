@@ -48,7 +48,9 @@ namespace Taurus.Service
 
         public async Task NotifyCustomerTurnIsReady(Session s) {
 
-            Notification noti = new Notification(s.Customer.UserId, "It is your turn!" + s.Room.Id, "You have 30s to join the room named [" + s.Room.Title + "]");
+            if (s == null) return;
+
+            Notification noti = new Notification(s.Customer.UserId, "It is your turn! " + s.Room.Id, "You have 30s to join the room named \"" + s.Room.Title + "\"");
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 
@@ -57,7 +59,7 @@ namespace Taurus.Service
 
         private async Task fireNotification(int userId, string eventName, Notification n)
         {
-            await _hubContext.Clients.User(userId.ToString()).SendAsync("BookmarkMessage", Newtonsoft.Json.JsonConvert.SerializeObject(n));
+            await _hubContext.Clients.User(userId.ToString()).SendAsync("BookmarkMessage", n);
         }
     }
 }
