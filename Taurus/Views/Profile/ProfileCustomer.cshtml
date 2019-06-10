@@ -37,7 +37,6 @@
                                                 </a>
                                             </li>
                                         </ul> <!-- tab-content .// -->
-                                        <div class="tab-content">
                                             <div class="tab-content">
                                                 <div class="tab-pane fade show active" id="nav-tab-paypal">
                                                     <p>Enter the amount to transfer.</p>
@@ -52,24 +51,21 @@
                                                 <div class="tab-pane fade" id="nav-tab-bank">
                                                     <p>Bank accaunt details</p>
                                                     <dl class="param">
-                                                        <dt>BANK: </dt>
+                                                        <dt>Account Number: </dt>
                                                         <dd><input type="text" class="form-control" placeholder="Enter name Bank" /></dd>
                                                     </dl>
                                                     <dl class="param">
-                                                        <dt>Accaunt number: </dt>
+                                                        <dt>Message: </dt>
                                                         <dd><input style="text" class="form-control" placeholder=" Enter Accaunt number" /></dd>
                                                     </dl>
                                                     <dl class="param">
-                                                        <dt>IBAN: </dt>
+                                                        <dt>Amount: </dt>
                                                         <dd><input style="text" class="form-control" placeholder="Iban number" /></dd>
                                                     </dl>
                                                     <button class="subscribe btn btn-primary btn-block" type="button"> Confirm  </button>
-                                                    <p>
-                                                        <strong>Note:</strong> 
-                                                    </p>
+                                                    
                                                 </div> <!-- tab-pane.// -->
                                             </div>
-                                        </div>
                                     </div> <!-- card-body.// -->
                                 </article>
                             </div>
@@ -176,7 +172,7 @@
                                     {
                                         <p><b>Charged:</b> @s.GetTotalPrice() Coins</p>
 
-                                        <p><b>At:</b> @s.StartTime.Value.ToLocalTime()</p>
+                                        @*<p><b>At:</b> @s.StartTime.Value.ToLocalTime()</p>*@
                                     }
                                     else
                                     {

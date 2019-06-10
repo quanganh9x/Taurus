@@ -198,9 +198,9 @@
         <script>
             
             $(document).ready(function () {
-                
-                var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
-                connection.on("ReceiveNotifications", (data) => {
+
+                window.connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
+                window.connection.on("ReceiveNotifications", (data) => {
                     data = JSON.parse(data);
                     $('#notificationCount').text(`(${data.length})`)
                     if (data.length > 0) {
@@ -224,7 +224,7 @@
                     }
                 });                
 
-                connection.on("receiveSessions", (data) => {
+                window.connection.on("receiveSessions", (data) => {
                     data = JSON.parse(data);
                     $('#bookmarkCount').text(`(${data.length})`)
                     if (data.length > 0) {
@@ -255,7 +255,7 @@
                     }
                 });
 
-                connection.start();                
+                window.connection.start();                
             });
         </script>
     }

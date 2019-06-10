@@ -97,10 +97,13 @@
                             } else {
                                 //Browser has blocked it
                                 alert('Please allow popups for this website');
-                            }
+                            }                        
+                        })
+                        .fail(function (resp) {
+                            window.connection.invoke("GetPendingSessions");
                         });
                 })
-                .fail(function (resp) {                    
+                .fail(function (resp) {                      
                     toast.error(resp.responseJSON.data);
                 });
         }

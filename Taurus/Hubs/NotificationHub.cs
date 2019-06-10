@@ -40,11 +40,11 @@ namespace Taurus.Hubs
             {
                 if (s.Status == SessionStatus.PENDING)
                 {
-                    ts.Add(new { Message = "You have subscribed to room [" + s.Room.Title + "]. Your number in the queue is " + s.Room.Sessions.IndexOf(s) + " / " + s.Room.Quota, Url = "" });
+                    ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + s.Room.Sessions.Count() + " / " + s.Room.Quota, Url = "" });
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {
-                    ts.Add(new { Message = "Room {" + s.Room.Title + "} is ready for you to join!", Url = "/Video/" + s.RoomId });
+                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Url = "/Video/" + s.RoomId });
                 }
             }
             await Clients.User(Context.UserIdentifier).SendAsync("ReceiveSessions", Newtonsoft.Json.JsonConvert.SerializeObject(ts));
