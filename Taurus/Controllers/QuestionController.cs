@@ -35,7 +35,7 @@ namespace Taurus.Controllers
             {
                 return LocalRedirect("/Login");
             }
-            var questions = await _context.Questions.Where(q => q.Status == Status.ACTIVE).ToListAsync();
+            var questions = await _context.Questions.ToListAsync();
             ViewData["Specialists"] = await _context.Specialists.ToListAsync();
             ViewData["ActiveThreads"] = await _context.Questions.Where(q => q.Status == Status.ACTIVE).OrderBy(m => m.Answers.Count).Take(5).ToListAsync();
             return View("../Ask/Index", questions);

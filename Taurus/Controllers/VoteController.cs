@@ -66,39 +66,36 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("VoteDoctor")]
-        public async Task<IActionResult> DoctorVote([Bind("DoctorId")] DoctorVote dv)
+        public async Task<IActionResult> DoctorVote([Bind("DoctorId")] DoctorVote dv, [FromForm] int questionId)
         {
             if (!User.IsInRole("Doctor"))
             {
-                if (await _context.DoctorVotes.Where(m => m.DoctorId == dv.DoctorId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync() || await _context.DoctorFlags.Where(m => m.DoctorId == dv.DoctorId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync())
-                {
-                    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
-                }
-                else
-                {
-                    _context.DoctorVotes.Add(dv);
-                    await _context.SaveChangesAsync();
-                    return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
-                }
+                Question q = await _context.Questions.FirstOrDefaultAsync(m => m.Id == questionId);
+                if(q.Status == Status.INACTIVE) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+                dv.UserId = int.Parse(_userManager.GetUserId(User));
+                _context.DoctorVotes.Add(dv);
+                q.Status = Status.INACTIVE;
+                _context.Questions.Update(q);
+                await _context.SaveChangesAsync();
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = null });               
             }
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }
 
         [HttpPost("FlagDoctor")]
-        public async Task<IActionResult> DoctorFlag([Bind("DoctorId")] DoctorFlag dv)
+        public async Task<IActionResult> DoctorFlag([Bind("DoctorId")] DoctorFlag dv, [FromForm] int questionId)
         {
             if (!User.IsInRole("Doctor"))
             {
-                if (await _context.DoctorVotes.Where(m => m.DoctorId == dv.DoctorId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync() || await _context.DoctorFlags.Where(m => m.DoctorId == dv.DoctorId && m.UserId == int.Parse(_userManager.GetUserId(User))).AnyAsync())
-                {
-                    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
-                }
-                else
-                {
-                    _context.DoctorFlags.Add(dv);
-                    await _context.SaveChangesAsync();
-                    return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
-                }
+                Question q = await _context.Questions.FirstOrDefaultAsync(m => m.Id == questionId);
+                if (q.Status == Status.INACTIVE) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+                dv.UserId = int.Parse(_userManager.GetUserId(User));
+                _context.DoctorFlags.Add(dv);
+                q.Status = Status.INACTIVE;
+                _context.Questions.Update(q);
+                
+                await _context.SaveChangesAsync();
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = null });                
             }
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }

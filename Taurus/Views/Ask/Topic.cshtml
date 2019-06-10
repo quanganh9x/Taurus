@@ -85,11 +85,11 @@
 
                                 <div class="posted pull-left"><i class="fa fa-clock-o"></i> @q.CreatedAt.ToString("f") &nbsp;&nbsp;<i class="fa fa-user"></i> @q.Doctor.User.FullName</div>
 
-                                @if (Model.Customer.UserId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                                @if (Model.Customer.UserId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) && q.Question.Status == Status.ACTIVE)
                                 {
                                     <div class="next pull-right">                                        
-                                        <a onclick="voteDoctor(this, @q.DoctorId)" class="vote-btn"><i class="fa fa-thumbs-o-up"></i></a>
-                                        <a onclick="flagDoctor(this, @q.DoctorId)" class="flag-btn"><i class="fa fa-flag"></i></a>
+                                        <a onclick="voteDoctor(this, @q.DoctorId, @q.QuestionId)" class="vote-btn"><i class="fa fa-thumbs-o-up"></i></a>
+                                        <a onclick="flagDoctor(this, @q.DoctorId, @q.QuestionId)" class="flag-btn"><i class="fa fa-flag"></i></a>
                                     </div>
                                 }
 
@@ -201,6 +201,7 @@
 <script type="text/javascript">
 
     var revapi;
+    var toast
 
     $(document).ready(function () {
         "use strict";
@@ -213,36 +214,30 @@
                 fullWidth: "on"
             });
 
-        $@*('.vote-btn').click(function () {
-            $.post("@Url.Action("CreateSession", "Session")", { doctorId:  })
-                .done(function (resp) {                                        
-                    
-                })
-                .fail(function (resp) {                    
-                    
-                });
-        })*@
+        toast = new Toasty();
     });	//ready
 
-    function voteDoctor(e, doctorId) {
-        $.post("@Url.Action("DoctorVote", "Vote")", { doctorId: doctorId })
+    
+
+    function voteDoctor(e, doctorId, questionId) {
+        $.post("@Url.Action("DoctorVote", "Vote")", { doctorId: doctorId, questionId: questionId })
                 .done(function (resp) {                                        
                     $(e).addClass("voted");
                     $(e).next().addClass("disabled");
                 })
                 .fail(function (resp) {
-                    console.log(resp);
+                    toast.error("You have already voted")                   
                 });
     }
 
-    function flagDoctor(e, doctorId) {        
-        $.post("@Url.Action("DoctorFlag", "Vote")", { doctorId: doctorId })
+    function flagDoctor(e, doctorId, questionId) {        
+        $.post("@Url.Action("DoctorFlag", "Vote")", { doctorId: doctorId, questionId: questionId })
                 .done(function (resp) {                                        
                     $(e).addClass("flagged");
                     $(e).prev().addClass("disabled");
                 })
                 .fail(function (resp) {
-                    console.log(resp);
+                    toast.error("You have already voted")
                 });
     }
 

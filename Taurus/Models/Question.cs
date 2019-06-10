@@ -33,7 +33,7 @@ namespace Taurus.Models
 
         public int GetMinutesPassed()
         {
-            return (DateTime.Now - this.CreatedAt).Days;
+            return (int) (DateTime.Now - this.CreatedAt).TotalMinutes;
         }
     }
 }

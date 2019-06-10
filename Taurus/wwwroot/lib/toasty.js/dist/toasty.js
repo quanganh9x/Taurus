@@ -64,13 +64,13 @@
         // NOTE: the paths must point from the project's root folder.
         sounds: {
             // path to sound for informational message:
-            info: "./dist/sounds/info/1.mp3",
+            info: "~/lib/dist/sounds/info/1.mp3",
             // path to sound for successfull message:
-            success: "./dist/sounds/success/1.mp3",
+            success: "~/lib/dist/sounds/success/1.mp3",
             // path to sound for warn message:
-            warning: "./dist/sounds/warning/1.mp3",
+            warning: "~/lib/dist/sounds/warning/1.mp3",
             // path to sound for error message:
-            error: "./dist/sounds/error/1.mp3",
+            error: "~/lib/dist/sounds/error/1.mp3",
         },
 
         // callback:
