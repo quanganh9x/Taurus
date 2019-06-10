@@ -106,6 +106,13 @@ namespace Taurus.Controllers
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại phòng này" });
             }
+            Session remainSession = r.Sessions.FirstOrDefault(m => m.Status == SessionStatus.WAITING);
+            if (remainSession != null)
+            {
+                remainSession.Status = SessionStatus.DONE;
+                _context.Sessions.Update(remainSession);
+                await _context.SaveChangesAsync();
+            }
             List<Session> remainSessions = r.Sessions.FindAll(
                 delegate (Session session)
                 {
@@ -114,7 +121,7 @@ namespace Taurus.Controllers
             );
             if (r.Sessions.Count == r.Quota)
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Hết session" });
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = "Hết session" });
             }
             else if (remainSessions.Count == 0)
             {
@@ -126,15 +133,12 @@ namespace Taurus.Controllers
                 r.Status = RoomStatus.WAITING;
                 _context.Rooms.Update(r);
                 await _context.SaveChangesAsync();
-                if (r.Sessions.Count > 0)
-                {
-                    // gọi tới session tiếp theo
-                    Session s = remainSessions.First();
-                    s.Status = SessionStatus.WAITING;
-                    _context.Sessions.Update(s);
-                    await _context.SaveChangesAsync();
-                    // thông báo
-                }
+                Session s = remainSessions.First(); 
+                s.Status = SessionStatus.WAITING;
+                _context.Sessions.Update(s);
+                await _context.SaveChangesAsync();
+
+                await _notiService.NotifyCustomerTurnIsReady(s);
             }
 
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });

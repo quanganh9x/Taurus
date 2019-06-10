@@ -322,9 +322,9 @@
             connection.autoSaveToDisk = false;
 
 
-            //window.addEventListener('unload', function () {
-            //    endSession();
-            //})
+            window.addEventListener('unload', function () {
+                endSession();
+            })
 
             function handleError(error) {
                 clearInterval(updateHeartbeat);

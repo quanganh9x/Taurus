@@ -182,6 +182,7 @@
 
             connection.onNewParticipant = function (participantId, userPreferences) {
                 clearTimeout(requestTimeout); // no more timeout
+                updateRoom();
                 updateHeartbeat = setInterval(updateRoom, 15000);
                 connection.acceptParticipationRequest(participantId, userPreferences);
             };
