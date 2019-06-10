@@ -107,9 +107,12 @@ namespace Taurus.Controllers
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không tồn tại phòng này" });
             }
             Session remainSession = r.Sessions.FirstOrDefault(m => m.Status == SessionStatus.WAITING);
-            remainSession.Status = SessionStatus.DONE;
-            _context.Sessions.Update(remainSession);
-            await _context.SaveChangesAsync();
+            if (remainSession != null)
+            {
+                remainSession.Status = SessionStatus.DONE;
+                _context.Sessions.Update(remainSession);
+                await _context.SaveChangesAsync();
+            }
             List<Session> remainSessions = r.Sessions.FindAll(
                 delegate (Session session)
                 {
