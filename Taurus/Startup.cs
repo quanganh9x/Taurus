@@ -18,7 +18,7 @@ using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Taurus.Areas.Identity.Models;
-using Taurus.Hub;
+using Taurus.Hubs;
 using Hangfire;
 using Hangfire.SqlServer;
 using Taurus.Service;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Taurus.Data;
-using Taurus.Hub;
+using Taurus.Hubs;
 using Taurus.Models;
 
 namespace Taurus.Service

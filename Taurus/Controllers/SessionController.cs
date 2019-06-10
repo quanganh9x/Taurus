@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
-using Taurus.Hub;
 using Taurus.Models;
 using Taurus.Models.Enums;
 using Taurus.Models.Formats;
