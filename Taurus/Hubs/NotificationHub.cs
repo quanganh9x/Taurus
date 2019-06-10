@@ -37,10 +37,10 @@ namespace Taurus.Hubs
             var sessions = await _context.Sessions.Where(s => s.Room.Status != RoomStatus.DONE && s.Customer.UserId == int.Parse(Context.UserIdentifier)).ToListAsync();
             List<dynamic> ts = new List<dynamic>();
             foreach (Session s in sessions)
-            {
+            {                
                 if (s.Status == SessionStatus.PENDING)
                 {
-                    ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + s.Room.Sessions.Count() + " / " + s.Room.Quota, Url = "" });
+                    ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) + 1) + " / " + s.Room.Quota, Url = "" });
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {

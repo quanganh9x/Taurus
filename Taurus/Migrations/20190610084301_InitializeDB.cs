@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Taurus.Migrations
 {
-    public partial class Application : Migration
+    public partial class InitializeDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -249,6 +249,7 @@ namespace Taurus.Migrations
                     UserId = table.Column<int>(nullable: false),
                     SpecialistId = table.Column<int>(nullable: false),
                     FacilityId = table.Column<int>(nullable: false),
+                    IsDoctorOfTheMonth = table.Column<bool>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "getdate()")
                 },

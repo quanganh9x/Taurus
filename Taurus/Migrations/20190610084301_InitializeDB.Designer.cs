@@ -10,8 +10,8 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190610023936_Application")]
-    partial class Application
+    [Migration("20190610084301_InitializeDB")]
+    partial class InitializeDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -308,6 +308,8 @@ namespace Taurus.Migrations
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<int>("FacilityId");
+
+                    b.Property<bool>("IsDoctorOfTheMonth");
 
                     b.Property<int>("SpecialistId");
 

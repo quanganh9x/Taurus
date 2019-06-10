@@ -21,6 +21,7 @@ namespace Taurus.Models
         public int FacilityId { get; set; }
         [ForeignKey("FacilityId")]
         public virtual Facility Facility { get; set; }
+        public bool IsDoctorOfTheMonth { get; set; } = false;
         /* lists */
         public virtual List<Room> Rooms { get; set; }
         public virtual List<Answer> Answers { get; set; }

@@ -307,6 +307,8 @@ namespace Taurus.Migrations
 
                     b.Property<int>("FacilityId");
 
+                    b.Property<bool>("IsDoctorOfTheMonth");
+
                     b.Property<int>("SpecialistId");
 
                     b.Property<DateTime>("UpdatedAt")

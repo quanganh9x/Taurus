@@ -90,7 +90,7 @@ namespace Taurus.Service
             {
                 if (s.Status == SessionStatus.PENDING)
                 {
-                    ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + s.Room.Sessions.Count() + " / " + s.Room.Quota, Url = "" });
+                    ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) + 1) + " / " + s.Room.Quota, Url = "" });
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {
