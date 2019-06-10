@@ -1,4 +1,8 @@
-﻿@model Doctor
+﻿@{
+    ViewData["Title"] = "Profile";
+}
+
+@model Doctor
 <div class="the-profile">
     <div class="container">
         <div class="row">
@@ -15,9 +19,9 @@
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
                     </ul>
                     @*<div class="card-body">
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>*@
+                            <a href="#" class="card-link">Card link</a>
+                            <a href="#" class="card-link">Another link</a>
+                        </div>*@
                 </div>
                 <button style="display: none;" id="launchBook" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBookRoom">
                     Launch demo modal
@@ -79,17 +83,17 @@
                     type: 'GET',
                     error: function () {
                     },
-                    textColor: 'white' 
+                    textColor: 'white'
                 }
             ]
         });
 
         calendar.render();
 
-        $("#book-room-btn").click(function () {            
+        $("#book-room-btn").click(function () {
             $.post($("#book-room-form").attr('action'), $("#book-room-form").serialize())
                 .done(function (data) {
-                    console.log(data);                    
+                    console.log(data);
                     calendar.addEvent(
                         {
                             title: data.data.title,
@@ -103,7 +107,7 @@
                 });
             $("#book-room-form").trigger("reset");
             $("#modalBookRoom").modal('hide');
-            
+
         });
     });
 

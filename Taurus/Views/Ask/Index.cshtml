@@ -1,28 +1,32 @@
-﻿@model List<Question>
+﻿@{
+    ViewData["Title"] = "Question";
+}
+
+@model List<Question>
     <!-- Custom -->
-    <link href="~/css/qa.css" rel="stylesheet">
+<link href="~/css/qa.css" rel="stylesheet">
 
-    <!-- CSS STYLE-->
-    <link rel="stylesheet" type="text/css" href="https://forum.azyrusthemes.com/css/style.css" media="screen" />
+<!-- CSS STYLE-->
+<link rel="stylesheet" type="text/css" href="https://forum.azyrusthemes.com/css/style.css" media="screen" />
 
-    <!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
-    <link rel="stylesheet" type="text/css" href="https://forum.azyrusthemes.com/rs-plugin/css/settings.css" media="screen" />
+<!-- SLIDER REVOLUTION 4.x CSS SETTINGS -->
+<link rel="stylesheet" type="text/css" href="https://forum.azyrusthemes.com/rs-plugin/css/settings.css" media="screen" />
 
-    <!-- SLIDER REVOLUTION 4.x SCRIPTS  -->
-    <script type="text/javascript" src="https://forum.azyrusthemes.com/rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
-    <script type="text/javascript" src="https://forum.azyrusthemes.com/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+<!-- SLIDER REVOLUTION 4.x SCRIPTS  -->
+<script type="text/javascript" src="https://forum.azyrusthemes.com/rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
+<script type="text/javascript" src="https://forum.azyrusthemes.com/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
 
 
-    <div class="container-fluid">
+<div class="container-fluid">
 
-        <section class="content">
-            @*<div class="container">
+    <section class="content">
+        @*<div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-xs-12 col-md-8">
                         <div class="pull-left"><a href="#" class="prevnext"><i class="fa fa-angle-left"></i></a></div>
                         <div class="pull-left">
                             <ul class="paginationforum">
-                                
+
                             </ul>
                         </div>
                         <div class="pull-left"><a href="#" class="prevnext last"><i class="fa fa-angle-right"></i></a></div>
@@ -32,14 +36,15 @@
             </div>*@
 
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8 col-md-8">
-                        @foreach (Question q in Model) {
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8">
+                    @foreach (Question q in Model)
+                    {
                         <!-- POST -->
                         <div class="post">
                             <div class="wrap-ut pull-left">
-                                
+
                                 <div class="posttext pull-left ml-3">
                                     <h2><a href="/Question/@q.Id">@q.Title</a></h2>
                                     <p><b>By:</b> @q.Customer.User.FullName</p>
@@ -63,51 +68,49 @@
                             </div>
                             <div class="clearfix"></div>
                         </div><!-- POST -->
-                                    }
+                    }
 
-                    </div>
-                    <div class="col-lg-4 col-md-4">
+                </div>
+                <div class="col-lg-4 col-md-4">
 
-                        <button type="button" style="width:100%" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalSubmitQuestion">
-                            Wanna ask ?
-                        </button>
-                        <!-- -->
-                        <div class="sidebarblock">
-                            <h3>Specialists</h3>
-                            <div class="divline"></div>
-                            <div class="blocktxt">
-                                <ul class="cats">
-                                     @foreach (Specialist sp in ViewData["Specialists"] as List<Specialist>) {
-                                        <li><a href="#">@sp.Name<span class="badge pull-right">@sp.Questions.Count</span></a></li>
-                                     }
-                                </ul>
-                            </div>
+                    <button type="button" style="width:100%" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalSubmitQuestion">
+                        Wanna ask ?
+                    </button>
+                    <!-- -->
+                    <div class="sidebarblock">
+                        <h3>Specialists</h3>
+                        <div class="divline"></div>
+                        <div class="blocktxt">
+                            <ul class="cats">
+                                @foreach (Specialist sp in ViewData["Specialists"] as List<Specialist>)
+                                {
+                                    <li><a href="#">@sp.Name<span class="badge pull-right">@sp.Questions.Count</span></a></li>
+                                }
+                            </ul>
                         </div>
+                    </div>
 
-                        <!-- -->
-
-
-
-                        <!-- -->
-                        <div class="sidebarblock">
-                            <h3>Active Threads</h3>
-                            @foreach (Question qq in ViewData["ActiveThreads"] as List<Question>)
-                            {
+                    <!-- -->
+                    <!-- -->
+                    <div class="sidebarblock">
+                        <h3>Active Threads</h3>
+                        @foreach (Question qq in ViewData["ActiveThreads"] as List<Question>)
+                        {
                             <div class="divline"></div>
                             <div class="blocktxt">
                                 <a href="#">@qq.Title</a>
                             </div>
-                            }
-                        </div>
-
-
+                        }
                     </div>
+
+
                 </div>
             </div>
+        </div>
 
 
 
-            @*<div class="container">
+        @*<div class="container">
                 <div class="row">
                     <div class="col-lg-8 col-xs-12">
                         <div class="pull-left"><a href="#" class="prevnext"><i class="fa fa-angle-left"></i></a></div>
@@ -136,69 +139,69 @@
             </div>*@
 
 
-        </section>
+    </section>
 
-        
-    </div>
 
-    <div class="modal fade" id="modalSubmitQuestion" tabindex="-1" role="dialog" aria-labelledby="questionTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="questionTitle">Asking</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="question" method="post" action="@Url.Action("CreateNewQuestion", "Question")">
-                        <div class="form-group">
-                            <label for="select-spe" class="col-form-label">Specialist</label>
-                            <select class="form-control" id="select-spe" name="SpecialistId">
-                                @foreach (Specialist sp in ViewData["Specialists"] as List<Specialist>)
-                                {
-                                    <option value="@sp.Id">@sp.Name</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="title-name" class="col-form-label">Title</label>
-                            <input type="text" class="form-control" id="title-name" name="Title">
-                        </div>
-                        <div class="form-group">
-                            <label for="message" class="col-form-label">Text</label>
-                            <textarea class="form-control" id="message" name="Text"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="$('#question').submit();">Save changes</button>
-                </div>
+</div>
+
+<div class="modal fade" id="modalSubmitQuestion" tabindex="-1" role="dialog" aria-labelledby="questionTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questionTitle">Asking</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="question" method="post" action="@Url.Action("CreateNewQuestion", "Question")">
+                    <div class="form-group">
+                        <label for="select-spe" class="col-form-label">Specialist</label>
+                        <select class="form-control" id="select-spe" name="SpecialistId">
+                            @foreach (Specialist sp in ViewData["Specialists"] as List<Specialist>)
+                            {
+                                <option value="@sp.Id">@sp.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="title-name" class="col-form-label">Title</label>
+                        <input type="text" class="form-control" id="title-name" name="Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="message" class="col-form-label">Text</label>
+                        <textarea class="form-control" id="message" name="Text"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="$('#question').submit();">Save changes</button>
             </div>
         </div>
     </div>
+</div>
 
 
 
-    <!-- LOOK THE DOCUMENTATION FOR MORE INFORMATIONS -->
-    <script type="text/javascript">
+<!-- LOOK THE DOCUMENTATION FOR MORE INFORMATIONS -->
+<script type="text/javascript">
 
-            var revapi;
+    var revapi;
 
-            $(document).ready(function() {
-                "use strict";
-                revapi = $('.tp-banner').revolution(
-                        {
-                            delay: 15000,
-                            startwidth: 1200,
-                            startheight: 278,
-                            hideThumbs: 10,
-                            fullWidth: "on"
-                        });
+    $(document).ready(function () {
+        "use strict";
+        revapi = $('.tp-banner').revolution(
+            {
+                delay: 15000,
+                startwidth: 1200,
+                startheight: 278,
+                hideThumbs: 10,
+                fullWidth: "on"
+            });
 
-            });	//ready
+    });	//ready
 
-    </script>
+</script>
 
-    <!-- END REVOLUTION SLIDER -->
+<!-- END REVOLUTION SLIDER -->

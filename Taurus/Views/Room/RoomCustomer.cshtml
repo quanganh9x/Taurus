@@ -1,4 +1,8 @@
 ﻿@{
+    ViewData["Title"] = "Room Customer";
+}
+
+@{
     Layout = null;
     Customer u = ViewData["User"] as Customer;
     Room r = ViewData["Room"] as Room;
@@ -11,24 +15,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Room</title>
-    
-    
+
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
-    
-    
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css'>
     <link rel="stylesheet" href="~/css/room.css">
-    
-    
+
+
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js'></script>
-    
-    
+
+
     <script src="~/lib/webrtc-adapter/adapter.min.js"></script>
     <script src="~/lib/rtcmulticonnection/dist/RTCMultiConnection.min.js"></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
@@ -188,7 +192,7 @@
                 connection.onUserStatusChanged(event);
                 handleError("an-error-occurred");
             };
-            
+
 
             connection.onmessage = function (event) {
                 if (event.data.typing === true) {
@@ -379,7 +383,7 @@
         <div class="row video-container">
             <div class="col-9">
                 <video autoplay id="their-video"></video>
-                
+
             </div>
             <div class="col-3">
                 <video autoplay id="our-video"></video>
@@ -393,21 +397,21 @@
         </div>
         <section class="avenue-messenger">
             <div class="menu">
-                
+
                 <div class="button" id="fade-button">&mdash;</div>
             </div>
             <div class="chat">
-                    <div class="messages">
-                        <div class="messages-content"></div>
-                    </div>
-                    <div class="message-box">
-                        <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
-                        <button type="submit" class="message-submit">Send</button>
-                        <button class="message-submit message-upload"><i class="fa fa-upload"></i></button>
-                    </div>
+                <div class="messages">
+                    <div class="messages-content"></div>
                 </div>
-                
-            </section>
-        </div>
-    </body>
-    </html>
+                <div class="message-box">
+                    <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
+                    <button type="submit" class="message-submit">Send</button>
+                    <button class="message-submit message-upload"><i class="fa fa-upload"></i></button>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</body>
+</html>
