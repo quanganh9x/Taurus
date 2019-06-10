@@ -223,14 +223,14 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("addquota")]
-        public async Task<IActionResult> AddRoomQuota([FromForm] int id, [FromForm] int addition)
+        public async Task<IActionResult> AddRoomQuota([FromForm] int id, [FromForm] int Quota)
         {
-            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id && r.Sessions.Count == r.Quota && r.Status != RoomStatus.DONE); // the only case
+            var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id && r.Status != RoomStatus.DONE); // the only case
             if (room == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
             }
-            room.Quota += addition;
+            room.Quota += Quota;
             _context.Rooms.Update(room);
             await _context.SaveChangesAsync();
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
@@ -266,11 +266,20 @@ namespace Taurus.Controllers
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Mày không phải Doctor" });
         }
 
-        //public async Task<IActionResult> UpdateRoomStatus(int id, RoomStatus status)
-        //{
-        //    var room = await _context.Rooms.FirstOrDefaultAsync(r => r.Id == id);
-        //    room.Status = status;
-        //    return Ok(room);
-        //}
+        [HttpGet("sessionlist")]
+        public async Task<IActionResult> GetSessions([FromForm] int id)
+        {
+            if (User.IsInRole("Doctor"))
+            {
+                Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != RoomStatus.DONE);
+                if (r == null)
+                {
+                    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Có room đâu mà lấy :)" });
+                }
+                var sessions = r.Sessions.Select(m => new { UserName = m.Customer.User.FullName, Status = m.Status.ToString() }).ToList();
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(sessions) });
+            }
+            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Mày không phải Doctor" });
+        }
     }
 }

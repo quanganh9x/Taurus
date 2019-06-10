@@ -269,14 +269,7 @@
                     }
                 });
 
-                connection.start().then(() => {
-                    setInterval(init, 5000);
-                })
-
-                function init() {
-                    connection.invoke("GetPendingNotifications");
-                    connection.invoke("GetPendingSessions");
-                }
+                connection.start();
                 @*var bookmarkHeartbeat = function () {
                     $.get('@Url.Action("GetPendingSessions", "Profile")')
                         .done(function (data) {

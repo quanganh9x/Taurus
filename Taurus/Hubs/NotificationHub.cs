@@ -18,6 +18,13 @@ namespace Taurus.Hubs
             _context = context;
         }
 
+        public override Task OnConnectedAsync()
+        {
+            Task.Run(async () => await GetPendingNotifications()).Wait();
+            Task.Run(async () => await GetPendingSessions()).Wait();
+            return base.OnConnectedAsync();
+        }
+
         public async Task GetPendingNotifications()
         {
             var notifications = await _context.Notifications.Where(s => s.UserId == int.Parse(Context.UserIdentifier)).Select(m => new { Title = m.Title, Description = m.Description, CreatedAt = m.CreatedAt }).ToListAsync();
