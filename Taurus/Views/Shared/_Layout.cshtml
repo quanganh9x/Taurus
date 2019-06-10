@@ -10,7 +10,7 @@
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no ">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
@@ -50,61 +50,62 @@
                             <ul class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-center">
                                 <li class="current-menu-item"><a href="/">Home</a></li>
                                 <li><a href="/Panel">Rooms</a></li>
-                                <li><a href="/Question">Question</a></li>
+                                <li><a href="/Question">Questions</a></li>
 
-                                @if (SignInManager.IsSignedIn(User)) {
-                                <div class="dropdown show">
-                                    <li class="dropdown-toggle" href="#" role="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-bell" id="notification-icon"></i>&nbsp;<span id="notificationCount"></span>
-                                    </li>
-
-                                    <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                        <h6 style="color:black" class="dropdown-header">Notifications</h6>
-
-                                        <div id="notificationsContainer" class="notifications-container">
-                                            @*<a class="dropdown-item dropdown-notification" style="color: black" href="#">
-                                                    <div class="notification-read">
-                                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                                    </div>
-                                                    <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
-                                                    <div class="notifications-body">
-                                                        <p class="notification-texte">"Lorem ipsum dolor sit amet, consectetur adipiscing </p>
-                                                        <p class="notification-date text-muted">
-                                                            <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
-                                                        </p>
-                                                    </div>
-                                                </a>*@
-                                        </div>
-
-                                    </div>
-                                </div>
-                                @if (!User.IsInRole("Doctor"))
+                                @if (SignInManager.IsSignedIn(User))
                                 {
                                     <div class="dropdown show">
-                                        <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-bookmark" id="bookmark-icon"></i>&nbsp;<span id="bookmarkCount"></span>
+                                        <li class="dropdown-toggle" href="#" role="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-bell" id="notification-icon"></i>&nbsp;<span id="notificationCount"></span>
                                         </li>
 
-                                        <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink" id="bookmark">
-                                            <h6 style="color:black" class="dropdown-header">Bookmarks</h6>
+                                        <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <h6 style="color:black" class="dropdown-header">Notifications</h6>
 
-                                            <div id="bookmarksContainer" class="notifications-container">
+                                            <div id="notificationsContainer" class="notifications-container">
                                                 @*<a class="dropdown-item dropdown-notification" style="color: black" href="#">
-                                                        <div class="notification-read">
-                                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                                        </div>
-                                                        <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
-                                                        <div class="notifications-body">
-                                                            <p class="notification-texte">"Lorem ipsum dolor sit amet, consectetur adipiscing </p>
-                                                            <p class="notification-date text-muted">
-                                                                <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
-                                                            </p>
-                                                        </div>
-                                                    </a>*@
+                            <div class="notification-read">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </div>
+                            <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
+                            <div class="notifications-body">
+                                <p class="notification-texte">"Lorem ipsum dolor sit amet, consectetur adipiscing </p>
+                                <p class="notification-date text-muted">
+                                    <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
+                                </p>
+                            </div>
+                        </a>*@
                                             </div>
+
                                         </div>
                                     </div>
-                                }
+                                    @if (!User.IsInRole("Doctor"))
+                                    {
+                                        <div class="dropdown show">
+                                            <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-bookmark" id="bookmark-icon"></i>&nbsp;<span id="bookmarkCount"></span>
+                                            </li>
+
+                                            <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink" id="bookmark">
+                                                <h6 style="color:black" class="dropdown-header">Bookmarks</h6>
+
+                                                <div id="bookmarksContainer" class="notifications-container">
+                                                    @*<a class="dropdown-item dropdown-notification" style="color: black" href="#">
+                                <div class="notification-read">
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </div>
+                                <img class="notification-img" src="https://placehold.it/48x48" alt="Icone Notification" />
+                                <div class="notifications-body">
+                                    <p class="notification-texte">"Lorem ipsum dolor sit amet, consectetur adipiscing </p>
+                                    <p class="notification-date text-muted">
+                                        <i class="fa fa-clock-o" aria-hidden="true"></i> Monday, 10 May, 8h00
+                                    </p>
+                                </div>
+                            </a>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                 }
 
 
@@ -152,8 +153,7 @@
                         <div class="foot-about">
                             <h2><a href="#"><img src="/images/logo.png" alt=""></a></h2>
 
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec malesuada lorem maximus mauris scelerisque, at rutrum nulla dictum. Ut ac ligula sapien.</p>
-
+                            <p>WelCome to Us</p>
                             <p class="copyright">
                                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                 Copyright &copy;
@@ -168,9 +168,9 @@
                             <h2>Contact</h2>
 
                             <ul class="p-0 m-0">
-                                <li><span>Addtress:</span>Mitlton Str. 26-27 London UK</li>
-                                <li><span>Phone:</span>+53 345 7953 32453</li>
-                                <li><span>Email:</span>yourmail@gmail.com</li>
+                                <li><span>Address:</span>So 8 Ton That Thuyet, Cau Giay, Ha Noi</li>
+                                <li><span>Phone:</span>+84 989 789 999 . </li>
+                                <li><span>Email:</span>support@gmail.com</li>
                             </ul>
                         </div>
                     </div><!-- .col -->
@@ -178,13 +178,10 @@
                     <div class="col-12 col-md-6 col-lg-4 mt-5 mt-md-0">
                         <div class="foot-links">
                             <h2>Useful Links</h2>
-
                             <ul class="p-0 m-0">
                                 <li><a href="/">Home</a></li>
-                                <li><a href="/About">About us</a></li>
-                                <li><a href="/Contact">Contact</a></li>
-                                <li><a href="/News">News</a></li>
-                                <li><a href="/Services">Services</a></li>
+                                <li><a href="/Panel">Rooms</a></li>
+                                <li><a href="/Question">Questions</a></li>
                             </ul>
                         </div><!-- .foot-links -->
                     </div><!-- .col -->

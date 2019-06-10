@@ -71,65 +71,23 @@
         <div class="swiper-pagination d-flex flex-row flex-md-column"></div>
     </div><!-- .pagination-wrap -->
 </div><!-- .hero-slider -->
-
 <div class="homepage-boxes">
     <div class="container">
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
-                <div class="opening-hours">
-                    <h2 class="d-flex align-items-center">Opening Hours</h2>
+            <div class="col-12">
+                <div class="appointment-box the-profile-wrap">
+                    <h2 class="d-flex align-items-center">Make a Live Room!</h2>
+                    <form method="post" action="@Url.Action("CreateRoom", "Room")" class="d-flex flex-wrap justify-content-between">
 
-                    <ul class="p-0 m-0">
-                        <li>Monday - Thursday <span>8.00 - 19.00</span></li>
-                        <li>Friday <span>8.00 - 18.30</span></li>
-                        <li>Saturday <span>9.30 - 17.00</span></li>
-                        <li>Sunday <span>9.30 - 15.00</span></li>
-                    </ul>
-                </div>
-            </div>
+                        <input type="text" placeholder="Title" name="Title">
 
-            <div class="col-12 col-md-6 col-lg-3 mt-5 mt-md-0">
-                <div class="emergency-box">
-                    <h2 class="d-flex align-items-center">Emergency</h2>
+                        <input type="number" placeholder="Price (per min)" name="Price">
 
-                    <div class="call-btn button gradient-bg">
-                        <a class="d-flex justify-content-center align-items-center" href="#">
-                            <img src="images/emergency-call.png"> +34 586 778 8892
-                        </a>
-                    </div>
+                        <input type="number" placeholder="Quota" name="Quota">
 
-                    <p>
-                        Lorem ipsum dolor sit amet, cons ectetur adipiscing elit. Donec males uada lorem maximus
-                        mauris sceler isque, at rutrum nulla.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-6 col-lg-5 mt-5 mt-lg-0">
-                <div class="appointment-box">
-                    <h2 class="d-flex align-items-center">Make an Appointment</h2>
-
-                    <form class="d-flex flex-wrap justify-content-between">
-                        <select class="select-department">
-                            <option value="value1">Select Department</option>
-                            <option value="value2">Select Department 1</option>
-                            <option value="value3">Select Department 2</option>
-                        </select>
-
-                        <select class="select-doctor">
-                            <option>Select Doctor</option>
-                            <option>Select Doctor 1</option>
-                            <option>Select Doctor 2</option>
-                        </select>
-
-                        <input type="text" placeholder="Name">
-
-                        <input type="number" placeholder="Phone No">
-
-                        <input class="button gradient-bg" type="submit" value="Boom Appoitnment">
+                        <input class="button gradient-bg" type="submit" value="Create">
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
@@ -319,22 +277,21 @@
             <div class="col-12">
                 <h1>Doctor of the months</h1>
 
-                <div class="row">
+                <div class="row item-rank-doctor">
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="opening-hours rank2">
                             <h2 class="d-flex align-items-center">Rank 2</h2>
 
                             <div class="the-news-wrap">
                                 <figure class="post-thumbnail">
-                                    <a href="#"><img src="images/team-1.jpg" alt=""></a>
+                                    <img src="https://i2-prod.mirror.co.uk/interactives/article12645227.ece/ALTERNATES/s615/doctor.jpg" class="rounded mx-auto d-block" alt="...">
+                                    @*<a href="#"><img src="https://i2-prod.mirror.co.uk/interactives/article12645227.ece/ALTERNATES/s615/doctor.jpg" alt=""></a>*@
                                 </figure>
-
                                 <header class="entry-header">
                                     <h2 style="margin-top: 10px;text-align: center;">Doctor Flower Gun</h2>
 
-                                    <h3 style="text-align: center;"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i></h3>
+                                    <h3 style="text-align: center;"><i class="fa fa-star" ></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star-o"></i></h3>
                                 </header>
-
                             </div>
 
                         </div>
@@ -346,7 +303,7 @@
 
                             <div class="the-news-wrap">
                                 <figure class="post-thumbnail">
-                                    <a href="#"><img src="images/team-2.jpg" alt=""></a>
+                                    <a href="#"><img src="https://bacsigan.com/wp-content/uploads/2017/03/find-a-doctor.jpg " alt=""></a>
                                 </figure>
 
                                 <header class="entry-header">
@@ -367,7 +324,7 @@
 
                             <div class="the-news-wrap">
                                 <figure class="post-thumbnail">
-                                    <a href="#"><img src="images/team-3.jpg" alt=""></a>
+                                    <a href="#"><img src="http://htt.edu.vn/wp-content/uploads/2019/01/1548214315.jpg" alt=""></a>
                                 </figure>
 
                                 <header class="entry-header">
