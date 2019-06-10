@@ -36,10 +36,10 @@ namespace Taurus.Areas.Identity
                 .AddDefaultTokenProviders();
                 services.ConfigureApplicationCookie(options =>
                 {
-                    options.AccessDeniedPath = "/Denied";
+                    options.AccessDeniedPath = "/";
                     options.Cookie.Name = "quanganh9x";
-                    options.Cookie.Expiration = TimeSpan.FromDays(14);
-                    options.ExpireTimeSpan = TimeSpan.FromDays(14);
+                    options.Cookie.Expiration = TimeSpan.FromDays(30);
+                    options.ExpireTimeSpan = TimeSpan.FromDays(30);
                     options.LoginPath = "/Login";
                     options.LogoutPath = "/Logout";
                     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;

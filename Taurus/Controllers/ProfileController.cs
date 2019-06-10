@@ -46,9 +46,7 @@ namespace Taurus.Controllers
         [HttpGet("/profile/{id}")]
         public async Task<IActionResult> ViewProfile(int id)
         {
-            
-                return View("../Profile/ProfileGlobal", await _context.Users.FirstOrDefaultAsync(p => p.Id == id));
-            
+            return View("../Profile/ProfileGlobal", await _context.Users.FirstOrDefaultAsync(p => p.Id == id));
         }
 
         [Route("/pendingSessions")]
@@ -78,18 +76,21 @@ namespace Taurus.Controllers
             return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(notifications) });
         }
 
-        [Route("/api/Profile")]
-        [HttpGet]
-        public async Task<IActionResult> GetProfileAPI()
+        [HttpPost("edit")]
+        public async Task<IActionResult> UpdateProfile([FromForm] string FullName, [FromForm] string Address, [FromForm] string City, [FromForm] string Country, [FromForm] Gender Gender)
         {
-            if (User.IsInRole("Doctor"))
+            User user = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            if (user == null)
             {
-                return Ok(new APIResponse { Status = APIStatus.Success, Data = await _context.Doctors.FirstOrDefaultAsync(p => p.Id == int.Parse(_userManager.GetUserId(User))) });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
             }
-            else
-            {
-                return Ok(new APIResponse { Status = APIStatus.Success, Data = await _context.Customers.FirstOrDefaultAsync(p => p.Id == int.Parse(_userManager.GetUserId(User))) });
-            }
+            user.FullName = FullName;
+            user.Address = Address;
+            user.Gender = Gender;
+            user.City = City;
+            user.Country = Country;
+            await _userManager.UpdateAsync(user);
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
     }
 }

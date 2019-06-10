@@ -86,10 +86,9 @@
         //    prependTo: document.body.childNodes[0]
         //};
 
-        var toast = new Toasty();
             $.post("@Url.Action("CreateSession", "Session")", { RoomId: roomId })
                 .done(function (resp) {
-                    toast.success("Successfully added to queue");
+                    window.toast.success("Successfully added to queue");
                     $.post("@Url.Action("CheckRoom", "Room")", { id: roomId, sessionId: resp.data })
                         .done(function (res) {
                             var roomUrl = '@Url.Action("EnterRoom", "Video", new { id = "noId" })';
@@ -108,7 +107,7 @@
                         });
                 })
                 .fail(function (resp) {                      
-                    toast.error(resp.responseJSON.data);
+                    window.toast.error(resp.responseJSON.data);
                 });
         }
 </script>

@@ -8,6 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\emojionearea\**" />
+    <Compile Remove="wwwroot\lib\toastr.js\**" />
+    <Content Remove="wwwroot\lib\emojionearea\**" />
+    <Content Remove="wwwroot\lib\toastr.js\**" />
+    <EmbeddedResource Remove="wwwroot\lib\emojionearea\**" />
+    <EmbeddedResource Remove="wwwroot\lib\toastr.js\**" />
+    <None Remove="wwwroot\lib\emojionearea\**" />
+    <None Remove="wwwroot\lib\toastr.js\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Migrations\20190610023936_Application.cs" />
     <Compile Remove="Migrations\20190610023936_Application.Designer.cs" />
   </ItemGroup>

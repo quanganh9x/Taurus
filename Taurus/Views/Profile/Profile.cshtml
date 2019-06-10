@@ -28,7 +28,7 @@
                     Update Profile
                 </button>
                 <button style="display: none;" id="launchBook" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBookRoom">
-                    Launch demo modal
+                    Book Room
                 </button>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -41,7 +41,8 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="/" method="post">
+                            <form action="@Url.Action("UpdateProfile","Profile")" method="post" id="update-profile-form">
+                                <input type="hidden" name="Id" value="@Model.UserId" />
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="fullname">Name</label>
@@ -49,30 +50,11 @@
                                                name="FullName" />
                                     </div>
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" id="email" class="form-control" value="@Model.User.Email"
-                                               name="Email" />
-                                    </div>
-                                    <div class="form-group">
                                         <label for="gender">Gender</label>
                                         <select class="form-control" id="gender" name="Gender">
-                                            <option value="1">Male</option>
+                                            <option value="1" selected>Male</option>
                                             <option value="2">Female</option>
-                                            <option value="0">@Model.User.Gender</option>
                                         </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="dob">DOB</label>
-                                        <input type="datetime-local" id="dob" class="form-control"
-                                               name="DateOfBirth" value="@Model.User.DateOfBirth" />
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="phone">Phone</label>
-                                        <input type="tel" id="phone" class="form-control" value="@Model.User.PhoneNumber"
-                                               name="PhoneNumber" />
                                     </div>
                                     <div class="form-group">
                                         <label for="address">Address</label>
@@ -81,22 +63,20 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="city">City</label>
-                                        <select class="form-control" id="city" name="City">
-                                            <option value="0">@Model.User.City</option>
-                                        </select>
+                                        <input type="text" id="city" class="form-control" value="@Model.User.City"
+                                               name="City" />
                                     </div>
                                     <div class="form-group">
                                         <label for="country">Country</label>
-                                        <select class="form-control" id="country" name="Country">
-                                            <option value="0">@Model.User.Country</option>
-                                        </select>
+                                        <input type="text" id="country" class="form-control" value="@Model.User.Country"
+                                               name="Country" />
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Update Profile.</button>
+                            <button type="button" class="btn btn-primary" id="update-user-btn">Update</button>
                         </div>
                     </div>
                 </div>
@@ -135,7 +115,7 @@
 <script src='~/lib/fullcalendar/interaction/main.min.js'></script>
 <script>
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         var calendarEl = document.getElementById('calendar');
 
         window.calendar = new FullCalendar.Calendar(calendarEl, {
@@ -167,15 +147,25 @@
         $("#book-room-btn").click(function () {
             $.post($("#book-room-form").attr('action'), $("#book-room-form").serialize())
                 .done(function (data) {
-                    console.log(data.estimateTimeStart);
                     window.calendar.addEvent(data.data);
+                    window.toast.success("Success!");
                 })
                 .fail(function (data) {
                     console.log(data);
                 });
             $("#book-room-form").trigger("reset");
             $("#modalBookRoom").modal('hide');
+        });
 
+        $("#update-user-btn").click(function () {
+            $.post($("#update-profile-form").attr('action'), $("#update-profile-form").serialize())
+                .done(function (data) {
+                    window.toast.success("Success!");
+                })
+                .fail(function (data) {
+                    console.log(data);
+                });
+            $("#modalExample").modal('hide');
         });
     });
 
@@ -185,7 +175,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalBookRoomTitle">Modal title</h5>
+                <h5 class="modal-title" id="modalBookRoomTitle">Book Room</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -216,7 +206,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="book-room-btn" type="button" class="btn btn-primary">Save changes</button>
+                <button id="book-room-btn" type="button" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
