@@ -46,14 +46,9 @@ namespace Taurus.Controllers
         [HttpGet("/profile/{id}")]
         public async Task<IActionResult> ViewProfile(int id)
         {
-            if (User.IsInRole("Doctor"))
-            {
-                return View("../Profile/ProfileGlobal", await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == id));
-            }
-            else
-            {
-                return View("../Profile/ProfileGlobal", await _context.Customers.FirstOrDefaultAsync(p => p.UserId == id));
-            }
+            
+                return View("../Profile/ProfileGlobal", await _context.Users.FirstOrDefaultAsync(p => p.Id == id));
+            
         }
 
         [Route("/pendingSessions")]
