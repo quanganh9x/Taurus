@@ -116,7 +116,7 @@
 
             var ourVideo = document.getElementById("our-video");
             var theirVideo = document.getElementById('their-video');
-            
+            var listSession = $('#listsession');
 
             // shim
             window.adapter = true;
@@ -338,7 +338,7 @@
 
             function handleError(error) {
                 clearTimeout(requestTimeout);
-                clearIntẻval(updateHeartbeat);
+                clearInterval(updateHeartbeat);
                 endRoom();
                 console.error(error);
             }
@@ -380,12 +380,13 @@
             }
 
             function getSessions () {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("GetSessions", "Room")',
-                    async: false,
-                    data: { id: connection.roomid }
-                });
+                $.post('@Url.Action("GetSessions", "Room")', { id: connection.roomid })
+                    .done(function (data) {
+                        data = JSON.Parse(data);
+                        for (var i = 0; i < data.length; i++) {
+                            listSession.append(`<li class="list-group-items"><span>${data[i].UserName}</span><span>${data[i].Status}</span></li>`);
+                        }
+                    });
             }
 
             function updateRoom() {
@@ -399,7 +400,24 @@
 
             var sec = 0;
             function pad ( val ) { return val > 9 ? val : "0" + val; }
-            
+
+            $("#add-quota-btn").click(function (e) {
+                e.preventDefault();
+                $.post($("#add-quota-form").attr('action'), $("#add-quota-form").serialize())
+                .done(function (data) {
+
+                })
+                .fail(function (data) {
+
+                });
+                $("#add-quota-form").trigger("reset");
+                $("#modalAddQuota").modal('hide');
+
+            });
+
+            $("#end-button").on("click", function() {
+                endRoom();
+            });
         });
     </script>
 
@@ -426,8 +444,10 @@
                         </style>
                         <ul class="list-group" style="overflow: scroll; max-height: 200px;" id="listsession"></ul>
                         <h5>Controls</h5>
-                        <button class="btn btn-secondary">Add Quota</button>
-                        <button class="btn btn-danger">End Room</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddQuota">
+                            Add Quota
+                        </button>
+                        <button class="btn btn-danger" id="end-button">End Room</button>
                     </div>
             </div>
         </div>
@@ -448,5 +468,30 @@
 
         </section>
     </div>
+    <div class="modal fade" id="modalAddQuota" tabindex="-1" role="dialog" aria-labelledby="modalAddQuotaTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAddQuotaTitle">Add Quota</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="add-quota-form" action="@Url.Action("AddRoomQuota", "Room")" method="post">
+                    <input type="hidden" name="id" value="@r.Id"/>
+                    <div class="form-group">
+                        <label for="quota" class="col-form-label">Quota</label>
+                        <input class="form-control" type="number" name="Quota" id="quota" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="add-quota-btn" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

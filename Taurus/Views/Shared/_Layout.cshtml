@@ -257,15 +257,7 @@
                     }
                 });
 
-
-                connection.start().then(() => {
-                    init();
-                })
-
-                function init() {
-                    connection.invoke("GetPendingNotifications");
-                    connection.invoke("GetPendingSessions");
-                }               
+                connection.start();                
             });
         </script>
     }
