@@ -34,13 +34,13 @@ namespace Taurus.Hubs
 
         public async Task GetPendingSessions()
         {
-            var sessions = await _context.Sessions.Where(s => (s.Room.Status != RoomStatus.DONE && s.Room.Status != RoomStatus.PENDING && s.Room.Status != RoomStatus.BOOKED) && s.Customer.UserId == int.Parse(Context.UserIdentifier)).ToListAsync();
+            var sessions = await _context.Sessions.Where(s => s.Room.Status != RoomStatus.DONE && s.Customer.UserId == int.Parse(Context.UserIdentifier)).ToListAsync();
             List<dynamic> ts = new List<dynamic>();
             foreach (Session s in sessions)
             {
                 if (s.Status == SessionStatus.PENDING)
                 {
-                    ts.Add(new { Message = "You have subscribed to room [" + s.Room.Title + "]. Your # in the queue is " + s.Room.Sessions.IndexOf(s) + " / " + s.Room.Quota, Url = "" });
+                    ts.Add(new { Message = "You have subscribed to room [" + s.Room.Title + "]. Your number in the queue is " + s.Room.Sessions.IndexOf(s) + " / " + s.Room.Quota, Url = "" });
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {

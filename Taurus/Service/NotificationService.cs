@@ -53,12 +53,7 @@ namespace Taurus.Service
         }
 
         public async Task NotifyCustomerTurnIsReady(Session s) {
-
-            Notification noti = new Notification(s.Customer.UserId, "It is your turn", "You have 60s to join \"" + s.Room.Title + "\"");
-            _context.Notifications.Add(noti);
-            _context.SaveChanges();
-
-            await fireNotification(s.Customer.UserId, "BookMarkMessage", noti);
+            await NotifyPendingSessions(s.Customer.UserId);
         }
 
         public async Task NotifyCustomerConsume(Session s)
@@ -67,7 +62,7 @@ namespace Taurus.Service
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 
-            await fireNotification(s.Customer.UserId, "BookMarkMessage", noti);
+            await fireNotification(s.Customer.UserId, "CustomerConsume", noti);
         }
 
         public async Task NotifyDoctorEarned(Room r)
@@ -76,7 +71,7 @@ namespace Taurus.Service
             _context.Notifications.Add(noti);
             _context.SaveChanges();
 
-            await fireNotification(r.Doctor.UserId, "BookMarkMessage", noti);
+            await fireNotification(r.Doctor.UserId, "DoctorEarned", noti);
         }
 
         public async Task NotifyPendingNotifications(int userId)
@@ -88,7 +83,7 @@ namespace Taurus.Service
 
         public async Task NotifyPendingSessions(int userId)
         {
-            var sessions = await _context.Sessions.Where(s => (s.Room.Status != RoomStatus.DONE && s.Room.Status != RoomStatus.PENDING && s.Room.Status != RoomStatus.BOOKED) && s.Customer.UserId == userId).ToListAsync();
+            var sessions = await _context.Sessions.Where(s => s.Room.Status != RoomStatus.DONE && s.Customer.UserId == userId).ToListAsync();
             List<dynamic> ts = new List<dynamic>();
             foreach (Session s in sessions)
             {
@@ -106,7 +101,7 @@ namespace Taurus.Service
 
         private async Task fireNotification(int userId, string eventName, Notification n)
         {
-            await _hubContext.Clients.User(userId.ToString()).SendAsync("BookmarkMessage", Newtonsoft.Json.JsonConvert.SerializeObject(n));
+            await _hubContext.Clients.User(userId.ToString()).SendAsync(eventName, Newtonsoft.Json.JsonConvert.SerializeObject(n));
             await NotifyPendingNotifications(userId);
             await NotifyPendingSessions(userId);
         }
