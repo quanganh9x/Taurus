@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css'>
     <link rel="stylesheet" href="~/css/room.css">
+    <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css"/>
 
 
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
@@ -376,16 +377,30 @@
                     type: 'POST',
                     url: '@Url.Action("EndRoom", "Room")',
                     async: false,
-                    data: { id: connection.roomid }
+                    data: { id: connection.roomid }                   
                 });
             }
 
             function getSessions () {
-                $.post('@Url.Action("GetSessions", "Room")', { id: connection.roomid })
+                $.get('@Url.Action("GetSessions", "Room")', { id: connection.roomid })
                     .done(function (data) {
-                        data = JSON.Parse(data);
+                        
+                        data = JSON.parse(data.data);
+                        listSession.html("");
                         for (var i = 0; i < data.length; i++) {
-                            listSession.append(`<li class="list-group-items"><span>${data[i].UserName}</span><span>${data[i].Status}</span></li>`);
+                            var clazz;
+                            switch (data[i].Status) {
+                                case "DONE": clazz = "badge-success";
+                                    break;
+                                case "PENDING": clazz = "badge-primary";
+                                    break;
+                                case "PROCESSING": clazz = "badge-warning";
+                                    break;
+                                default: clazz = "badge-info"
+                                    break;
+                            }
+                            listSession.append(`<li class="list-group-item"><span class="float-left">${data[i].UserName}</span>
+                            <span class="float-right badge ` + clazz + `">${data[i].Status}</span></li>`);
                         }
                     });
             }
@@ -393,6 +408,7 @@
             function updateRoom() {
                 $.post("@Url.Action("HbUpdateRoom", "Room")", { id: connection.roomid })
                     .done(function (data) {
+                        getSessions();
                     })
                     .fail(function (data) {
                         handleError("update-room-failed");
@@ -418,6 +434,28 @@
 
             $("#end-button").on("click", function() {
                 endRoom();
+                var options = {                    
+                    classname: "toast",                   
+                    transition: "fade",                    
+                    insertBefore: true,                    
+                    duration: 3000,                    
+                    enableSounds: true,                    
+                    autoClose: true,                    
+                    progressBar: true,                    
+                    sounds: {                        
+                        info: "/lib/toasty.js/dist/sounds/info/1.mp3",                        
+                        success: "/lib/toasty.js/dist/sounds/success/1.mp3",                        
+                        warning: "/lib/toasty.js/dist/sounds/warning/1.mp3",                       
+                        error: "/lib/toasty.js/dist/sounds/error/1.mp3",
+                    },
+                    onShow: function (type) { },
+                    onHide: function (type) {
+                        window.location.reload();
+                    },                    
+                    prependTo: document.body.childNodes[0]
+                };
+                var toast = new Toasty(options);
+                toast.warning("Your room will be closed after 3 seconds");
             });
         });
     </script>
@@ -494,5 +532,6 @@
         </div>
     </div>
 </div>
+    <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>

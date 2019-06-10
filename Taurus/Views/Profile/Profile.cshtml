@@ -16,12 +16,15 @@
                         <li class="list-group-item"><b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i></b> @Model.User.Coins</li>
                     </ul>
                     @*<div class="card-body">
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                </div>*@
+                <a href="#" class="card-link">Card link</a>
+                <a href="#" class="card-link">Another link</a>
+            </div>*@
                 </div>
                 <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#exampleModal">
                     Update Profile
+                </button>
+                <button style="display: none;" id="launchBook" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBookRoom">
+                    Launch demo modal
                 </button>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -131,7 +134,7 @@
     $(document).ready(function() {
         var calendarEl = document.getElementById('calendar');
 
-        var calendar = new FullCalendar.Calendar(calendarEl, {
+        window.calendar = new FullCalendar.Calendar(calendarEl, {
             plugins: ['dayGrid', 'interaction', 'timeGrid'],
             selectable: true,
             header: {
@@ -155,19 +158,13 @@
             ]
         });
 
-        calendar.render();
+        window.calendar.render();
 
         $("#book-room-btn").click(function () {            
             $.post($("#book-room-form").attr('action'), $("#book-room-form").serialize())
                 .done(function (data) {
-                    console.log(data);                    
-                    calendar.addEvent(
-                        {
-                            title: data.data.title,
-                            start: data.data.estimateTimeStart,
-                            end: data.data.estimateTimeEnd
-                        }
-                    );
+                    console.log(data.estimateTimeStart);
+                    window.calendar.addEvent(data.data);
                 })
                 .fail(function (data) {
                     console.log(data);

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Hangfire;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Models;
@@ -66,11 +63,15 @@ namespace Taurus.Controllers
                 _context.Rooms.Add(room);
                 await _context.SaveChangesAsync();
 
-                BackgroundJob.Schedule(
-                () => _notiService.NotifyBookedRoomStartSoon(room),
-                EstimateTimeStart.AddMinutes(-10));
+                //BackgroundJob.Schedule(
+                //() => _notiService.NotifyBookedRoomStartSoon(room),
+                //EstimateTimeStart.AddMinutes(-10));
 
-                return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = new {
+                                            title = room.Title,
+                                            start = room.EstimateTimeStart,
+                                            end = room.EstimateTimeEnd
+                } });
             }
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }
@@ -271,7 +272,7 @@ namespace Taurus.Controllers
         }
 
         [HttpGet("sessionlist")]
-        public async Task<IActionResult> GetSessions([FromForm] int id)
+        public async Task<IActionResult> GetSessions(int id)
         {
             if (User.IsInRole("Doctor"))
             {

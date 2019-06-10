@@ -99,6 +99,11 @@
       "provider": "cdnjs",
       "library": "moment.js@2.24.0",
       "destination": "wwwroot/lib/moment.js/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "RecordRTC@5.5.4",
+      "destination": "wwwroot/lib/RecordRTC/"
     }
   ]
 }

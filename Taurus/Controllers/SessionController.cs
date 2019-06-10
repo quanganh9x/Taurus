@@ -45,10 +45,10 @@ namespace Taurus.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateSession([Bind("RoomId")] Session s)
         {
-            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == s.RoomId && m.Sessions.Count < m.Quota);
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == s.RoomId && m.Status!= RoomStatus.DONE && m.Sessions.Count < m.Quota);
             if (r == null)
             {
-                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Room is not exist or full" });
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Room is not exist, full or closed" });
             }
             if (await GetTimeRemainingOfUser(r.Price) <= 2) // tối thiểu 2 phút
             {
