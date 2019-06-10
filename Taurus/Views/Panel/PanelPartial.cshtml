@@ -86,7 +86,7 @@
             $.post("@Url.Action("CreateSession", "Session")", { RoomId: roomId })
                 .done(function (resp) {                                        
                     toast.success("Successfully added to queue");
-                    @*$.post("@Url.Action("CheckRoom", "Room")", { id: roomId, sessionId: resp.data })
+                    $.post("@Url.Action("CheckRoom", "Room")", { id: roomId, sessionId: resp.data })
                         .done(function (res) {
                             var roomUrl = '@Url.Action("EnterRoom", "Video", new { id = "noId" })';
                             roomUrl = roomUrl.replace("noId", roomId);                            
@@ -98,7 +98,7 @@
                                 //Browser has blocked it
                                 alert('Please allow popups for this website');
                             }
-                        });*@
+                        });
                 })
                 .fail(function (resp) {                    
                     toast.error(resp.responseJSON.data);

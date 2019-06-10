@@ -57,7 +57,7 @@
                                 @if (SignInManager.IsSignedIn(User)) {
                                 <div class="dropdown show">
                                     <li class="dropdown-toggle" href="#" role="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-bell"></i>&nbsp;(<span id="notificationCount"></span>)
+                                        <i class="fa fa-bell" id="notification-icon"></i>&nbsp;<span id="notificationCount"></span>
                                     </li>
 
                                     <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -84,7 +84,7 @@
                                 {
                                     <div class="dropdown show">
                                         <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-bookmark"></i>&nbsp;(<span id="bookmarkCount"></span>)
+                                            <i class="fa fa-bookmark" id="bookmark-icon"></i>&nbsp;<span id="bookmarkCount"></span>
                                         </li>
 
                                         <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink" id="bookmark">
@@ -204,7 +204,12 @@
                 var connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
                 connection.on("ReceiveNotifications", (data) => {
                     data = JSON.parse(data);
-                    $('#notificationCount').text(`${data.length}`)
+                    $('#notificationCount').text(`(${data.length})`)
+                    if (data.length > 0) {
+                        $('#notification-icon').addClass('text-danger')
+                    } else {
+                        $('#notification-icon').removeClass('text-danger')
+                    }
                     $("#notificationsContainer").html("");
                     for (var i = 0; i < data.length; i++) {
                         $("#notificationsContainer").prepend(
@@ -219,33 +224,16 @@
                                     </a>`
                         );
                     }
-                });
-                @*var notificationHeartbeat = function () {
-                    $.get('@Url.Action("GetPendingNotifications", "Profile")')
-                        .done(function (data) {
-                            data = data.data;
-                            data = JSON.parse(data);
-                            $('#notificationCount').text(`${data.length}`)
-                            $("#notificationsContainer").html("");
-                            for (var i = 0; i < data.length; i++) {
-                                $("#notificationsContainer").prepend(
-                                    `<a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
-                                        <div class="notifications-body">
-                                            <p class="notification-texte"><b>${data[i].Title}</b></p>
-                                            <p class="notification-texte">${data[i].Description}</p>
-                                            <p class="notification-date text-muted">
-                                                <i class="fa fa-clock-o" aria-hidden="true"></i> ${moment(data[i].CreatedAt).format('dddd, DD MMMM, hh:mm ')}
-                                            </p>
-                                        </div>
-                                    </a>`
-                                );
-                            }
-                        });
-                }*@
+                });                
 
                 connection.on("receiveSessions", (data) => {
                     data = JSON.parse(data);
-                    $('#bookmarkCount').text(`${data.length}`)
+                    $('#bookmarkCount').text(`(${data.length})`)
+                    if (data.length > 0) {
+                        $('#bookmark-icon').addClass('text-danger')
+                    } else {
+                        $('#bookmark-icon').removeClass('text-danger')
+                    }
                     $('#bookmarksContainer').html('');
                     for (var i = 0; i < data.length; i++) {
                         if (data[i].Url == "") {
@@ -269,53 +257,15 @@
                     }
                 });
 
+
                 connection.start().then(() => {
-                    setInterval(init, 5000);
+                    init();
                 })
 
                 function init() {
                     connection.invoke("GetPendingNotifications");
                     connection.invoke("GetPendingSessions");
-                }
-                @*var bookmarkHeartbeat = function () {
-                    $.get('@Url.Action("GetPendingSessions", "Profile")')
-                        .done(function (data) {
-                            data = data.data;
-                            data = JSON.parse(data);
-                            $('#bookmarkCount').text(`${data.length}`)
-                            $('#bookmarksContainer').html('');
-                            for (var i = 0; i < data.length; i++) {
-                                if (data[i].Url == "") {
-                                    $("#bookmarksContainer").prepend(
-                                        `<a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
-                                        <div class="notifications-body">
-                                            <p class="notification-texte">${data[i].Message}</p>
-                                        </div>
-                                    </a>`
-                                    )
-                                }
-                                else {
-                                    $("#bookmarksContainer").prepend(
-                                        `<a target="_blank" class="dropdown-item dropdown-notification notification-unread" style="color: black" href="${data[i].Url}">
-                                        <div class="notifications-body">
-                                            <p class="notification-texte">${data[i].Message}</p>
-                                        </div>
-                                    </a>`
-                                    )
-                                }
-                            }
-                        });
-                }
-                
-                
-                function heartBeat() {
-                    notificationHeartbeat();
-                    bookmarkHeartbeat();
-                }
-
-                heartBeat();
-                setInterval(heartBeat, 10000);*@
-                
+                }               
             });
         </script>
     }
