@@ -1,4 +1,9 @@
-﻿@model Question
+﻿@{
+    ViewData["Title"] = "Topic";
+}
+
+
+@model Question
 @using System.Security.Claims;
 <!-- Custom -->
 <link href="~/css/qa.css" rel="stylesheet">
@@ -214,6 +219,7 @@
                 fullWidth: "on"
             });
 
+<<<<<<< HEAD
         toast = new Toasty();
     });	//ready
 
@@ -222,6 +228,22 @@
     function voteDoctor(e, doctorId, questionId) {
         $.post("@Url.Action("DoctorVote", "Vote")", { doctorId: doctorId, questionId: questionId })
                 .done(function (resp) {                                        
+=======
+        $@*('.vote-btn').click(function () {
+            $.post("@Url.Action("CreateSession", "Session")", { doctorId:  })
+                .done(function (resp) {
+
+                })
+                .fail(function (resp) {
+
+                });
+        })*@
+    });	//ready
+
+    function voteDoctor(e, doctorId) {
+        $.post("@Url.Action("DoctorVote", "Vote")", { doctorId: doctorId })
+                .done(function (resp) {
+>>>>>>> 21ece44774b49719f287ce21d08234a614ae8820
                     $(e).addClass("voted");
                     $(e).next().addClass("disabled");
                 })
@@ -230,9 +252,15 @@
                 });
     }
 
+<<<<<<< HEAD
     function flagDoctor(e, doctorId, questionId) {        
         $.post("@Url.Action("DoctorFlag", "Vote")", { doctorId: doctorId, questionId: questionId })
                 .done(function (resp) {                                        
+=======
+    function flagDoctor(e, doctorId) {
+        $.post("@Url.Action("DoctorFlag", "Vote")", { doctorId: doctorId })
+                .done(function (resp) {
+>>>>>>> 21ece44774b49719f287ce21d08234a614ae8820
                     $(e).addClass("flagged");
                     $(e).prev().addClass("disabled");
                 })

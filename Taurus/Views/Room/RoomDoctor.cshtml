@@ -1,4 +1,10 @@
 ﻿@{
+    ViewData["Title"] = "Room Doctor";
+}
+
+
+
+@{
     Layout = null;
     Doctor u = ViewData["User"] as Doctor;
     Room r = ViewData["Room"] as Room;
@@ -466,28 +472,28 @@
         <div class="row video-container">
             <div class="col-9">
                 <video autoplay id="their-video"></video>
-                
+
             </div>
             <div class="col-3">
                 <video autoplay id="our-video"></video>
-                    <div class="card card-body">
-                        <h5>Timer</h5>
-                        <p>
-                            <span id="minutes"></span>:<span id="seconds"></span>
-                        </p>
-                        <h5>Sessions</h5>
-                        <style>
-                            .list-group::-webkit-scrollbar {
-                                display: none;
-                            }
-                        </style>
-                        <ul class="list-group" style="overflow: scroll; max-height: 200px;" id="listsession"></ul>
-                        <h5>Controls</h5>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddQuota">
-                            Add Quota
-                        </button>
-                        <button class="btn btn-danger" id="end-button">End Room</button>
-                    </div>
+                <div class="card card-body">
+                    <h5>Timer</h5>
+                    <p>
+                        <span id="minutes"></span>:<span id="seconds"></span>
+                    </p>
+                    <h5>Sessions</h5>
+                    <style>
+                        .list-group::-webkit-scrollbar {
+                            display: none;
+                        }
+                    </style>
+                    <ul class="list-group" style="overflow: scroll; max-height: 200px;" id="listsession"></ul>
+                    <h5>Controls</h5>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddQuota">
+                        Add Quota
+                    </button>
+                    <button class="btn btn-danger" id="end-button">End Room</button>
+                </div>
             </div>
         </div>
         <section class="avenue-messenger">
@@ -508,26 +514,27 @@
         </section>
     </div>
     <div class="modal fade" id="modalAddQuota" tabindex="-1" role="dialog" aria-labelledby="modalAddQuotaTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalAddQuotaTitle">Add Quota</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="add-quota-form" action="@Url.Action("AddRoomQuota", "Room")" method="post">
-                    <input type="hidden" name="id" value="@r.Id"/>
-                    <div class="form-group">
-                        <label for="quota" class="col-form-label">Quota</label>
-                        <input class="form-control" type="number" name="Quota" id="quota" />
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="add-quota-btn" type="button" class="btn btn-primary">Save changes</button>
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAddQuotaTitle">Add Quota</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-quota-form" action="@Url.Action("AddRoomQuota", "Room")" method="post">
+                        <input type="hidden" name="id" value="@r.Id" />
+                        <div class="form-group">
+                            <label for="quota" class="col-form-label">Quota</label>
+                            <input class="form-control" type="number" name="Quota" id="quota" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="add-quota-btn" type="button" class="btn btn-primary">Save changes</button>
+                </div>
             </div>
         </div>
     </div>

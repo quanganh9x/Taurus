@@ -1,4 +1,8 @@
-﻿@model Doctor
+﻿@{
+    ViewData["Title"] = "Profile";
+}
+
+@model Doctor
 <div class="the-profile">
     <div class="container">
         <div class="row">
@@ -16,9 +20,9 @@
                         <li class="list-group-item"><b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i></b> @Model.User.Coins</li>
                     </ul>
                     @*<div class="card-body">
-                <a href="#" class="card-link">Card link</a>
-                <a href="#" class="card-link">Another link</a>
-            </div>*@
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>*@
                 </div>
                 <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#exampleModal">
                     Update Profile
@@ -153,14 +157,14 @@
                     type: 'GET',
                     error: function () {
                     },
-                    textColor: 'white' 
+                    textColor: 'white'
                 }
             ]
         });
 
         window.calendar.render();
 
-        $("#book-room-btn").click(function () {            
+        $("#book-room-btn").click(function () {
             $.post($("#book-room-form").attr('action'), $("#book-room-form").serialize())
                 .done(function (data) {
                     console.log(data.estimateTimeStart);
@@ -171,7 +175,7 @@
                 });
             $("#book-room-form").trigger("reset");
             $("#modalBookRoom").modal('hide');
-            
+
         });
     });
 
