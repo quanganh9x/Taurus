@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190609071644_DbApplication.cs" />
-    <Compile Remove="Migrations\20190609071644_DbApplication.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\lib\fullcalendar\interaction\main.js" />
     <None Include="wwwroot\lib\fullcalendar\interaction\main.min.js" />
     <None Include="wwwroot\lib\fullcalendar\timegrid\main.js" />

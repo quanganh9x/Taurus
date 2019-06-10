@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "ProfileGlobal";
+}
+
+@using Taurus.Areas.Identity.Models;
+
+<div class="the-profile">
+    <div class="container">
+        <div class="row ">
+            <div class="col-4"></div>
+            <div class="col-4 text-center">
+                <div class="card" style="width: auto;">
+                    <img src="@Model.Avatar" class="card-img-top" alt="avatar">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@Model.FullName</h5>
+                        <p class="card-text">@Model.Address</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">@Model.Gender.ToString()</li>
+                        <li class="list-group-item"><b>Upvotes:</b> @Model.CustomerVotes.Count</li>
+                        <li class="list-group-item"><b>Downvotes:</b>@Model.CustomerFlags.Count</li>
+                    </ul>
+                    @*<div class="card-body">
+                            <a href="#" class="card-link">card link</a>
+                            <a href="#" class="card-link">another link</a>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

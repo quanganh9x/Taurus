@@ -10,8 +10,8 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190609183735_DbApp")]
-    partial class DbApp
+    [Migration("20190610023936_Application")]
+    partial class Application
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
