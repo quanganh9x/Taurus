@@ -7,36 +7,47 @@ using Microsoft.Extensions.Logging;
 using PayPal.Core;
 using PayPal.v1.Payments;
 using BraintreeHttp;
+using Taurus.Service;
+using Taurus.Areas.Identity.Models;
+using Microsoft.AspNetCore.Identity;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Taurus.Controllers
 {
+    [Route("payment")]
     public class PaymentController : Controller
     {
-        private readonly ILogger _logger;
+        private readonly ApplicationContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly INotificationService _notiService;
 
-        // GET: /<controller>/
-        public IActionResult Index()
+        public PaymentController(ApplicationContext context, UserManager<User> userManager, INotificationService notiService)
         {
-            return View();
+            _context = context;
+            _userManager = userManager;
+            _notiService = notiService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CheckoutFailed(int id)
+        [HttpGet("checkoutfailed")]
+        public async Task<IActionResult> CheckoutFailed()
         {            
             return Redirect("/Profile");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> CheckoutSuccess(int id)
+        [HttpGet("checkoutsuccess/{amount}")]
+        public async Task<IActionResult> CheckoutSuccess(int amount)
         {
+            User u = await _userManager.FindByIdAsync(_userManager.GetUserId(User));
+            u.Coins += amount / 1000;
+            await _userManager.UpdateAsync(u);
             return Redirect("/Profile");
         }
 
+        [HttpGet("checkout/{amount}")]
         public async Task<IActionResult> Checkout(int amount) {
-            var environment = new SandboxEnvironment("Ac1tPYNg6lh1cU6krgaSDv9LikB5ccq6KhtjpCKSkG5dUrTeHj1iBhZ1JQ4vSee0L9ck9AS-mCv4w5VO", "EErMSvuNbHAE8Se3gMHzLS4CX5KCp28fHmWIBaZ5oC1VJIyVGfitPUs8tmEQFSKpX6OYBGNK1qFoLn1h");
-            var client = new PayPalHttpClient(environment);
+            SandboxEnvironment environment = new SandboxEnvironment("Ac1tPYNg6lh1cU6krgaSDv9LikB5ccq6KhtjpCKSkG5dUrTeHj1iBhZ1JQ4vSee0L9ck9AS-mCv4w5VO", "EErMSvuNbHAE8Se3gMHzLS4CX5KCp28fHmWIBaZ5oC1VJIyVGfitPUs8tmEQFSKpX6OYBGNK1qFoLn1h");
+            PayPalHttpClient client = new PayPalHttpClient(environment);
 
             var payment = new Payment()
             {
@@ -47,15 +58,17 @@ namespace Taurus.Controllers
                     {
                         Amount = new Amount()
                         {
-                            Total = (amount/23000).ToString(), // hehe convert xD
+                            Total = ((int)amount/23000).ToString(), // hehe convert xD
                             Currency = "USD"
                         }
                     }
                 },
                 RedirectUrls = new RedirectUrls()
                 {
-                    CancelUrl = Url.Action("CheckoutFailed", "Payment"),
-                    ReturnUrl = Url.Action("CheckoutSuccess", "Payment")
+                    //CancelUrl = Url.Action("CheckoutFailed", "Payment"),
+                    //ReturnUrl = Url.Action("CheckoutSuccess", "Payment")
+                    CancelUrl = "https://localhost:44375/payment/checkoutfailed",
+                    ReturnUrl = "https://localhost:44375/payment/checkoutsuccess/" + amount
                 },
                 Payer = new Payer()
                 {
@@ -82,7 +95,7 @@ namespace Taurus.Controllers
 
                 if (redirectUrl == null)
                 {
-                    return RedirectToAction("/Profile");
+                    return LocalRedirect("/Profile");
                 }
                 else
                 {
@@ -93,8 +106,8 @@ namespace Taurus.Controllers
             {
                 var statusCode = httpException.StatusCode;
                 var debugId = httpException.Headers.GetValues("PayPal-Debug-Id").FirstOrDefault();
-                _logger.LogInformation(statusCode + " - " + debugId);
-                return RedirectToAction("/Profile");
+                Console.WriteLine("failed " + debugId);
+                return LocalRedirect("/Profile");
             }            
         }
     }
