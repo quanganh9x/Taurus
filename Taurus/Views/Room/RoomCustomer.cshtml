@@ -38,6 +38,7 @@
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/lib/socket.io/socket.io.js"></script>
     <script src="~/js/FileBufferReader.min.js"></script>
+    <script src="~/lib/RecordRTC/RecordRTC.min.js"></script>
     <script>
         $(document).ready(function () {
             var $messages = $('.messages-content'),
@@ -240,10 +241,12 @@
                 }
             };
 
+            var myStream;
             connection.onstream = function (event) {
                 var element = null;
 
                 if (event.type == 'local') {
+                    myStream = event.stream;
                     element = ourVideo;
                     element.muted = true;
                     element.volume = 0;
@@ -407,7 +410,7 @@
 
             var recorder;
             var videoOnlyStream;
-
+            window.blobs = [];
             function moderationProcess() {
                 var form = new FormData();
                 form.append("blob", window.blobs[0]); // ensure we dont miss any scenes
@@ -419,7 +422,10 @@
                     contentType: false,
                     type: 'POST',
                     success: function (data) {
-                        console.log(data);
+                        data = JSON.parse(data);
+                        if (data.adult > 0.5 && data.wad > 0.5 && data.scam > 0.2) {
+                            endSession();
+                        }
                     }
                 });
             }
@@ -454,7 +460,7 @@
             var sec = 0;
             function pad(val) { return val > 9 ? val : "0" + val; }
 
-            $("#end-room").click(function () {
+            $("#end-room-btn").on("click", function () {
                 endSession();
                 var options = {
                     classname: "toast",
@@ -487,18 +493,18 @@
 <body>
     <div class="container-fluid">
         <div class="row video-container">
-            <div class="col-9">
+            <div class="col-md-9 col-12" style="height: 75%">
                 <video autoplay id="their-video"></video>
 
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-12" style="height: 25%">
                 <video autoplay id="our-video"></video>
                 <h5>Timer</h5>
                 <h3>
                     <span id="minutes"></span>:<span id="seconds"></span>
                 </h3>
                 <h5>Controls</h5>
-                <button class="btn btn-danger" id="end-room">End Room</button>
+                <button class="btn btn-danger" id="end-room-btn">End Room</button>
             </div>
         </div>
         <section class="avenue-messenger">

@@ -467,7 +467,7 @@
 
             var recorder;
             var videoOnlyStream;
-
+            window.blobs = [];
             function moderationProcess() {
                 var form = new FormData();
                 form.append("blob", window.blobs[0]); // ensure we dont miss any scenes
@@ -559,11 +559,11 @@
 <body>
     <div class="container-fluid">
         <div class="row video-container">
-            <div class="col-9">
+            <div class="col-md-9 col-12" style="height: 75%">
                 <video autoplay id="their-video"></video>
 
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-12" style="height: 25%">
                 <video autoplay id="our-video"></video>
                 <div class="card card-body">
                     <h5>Timer</h5>
