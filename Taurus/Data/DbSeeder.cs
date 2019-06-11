@@ -78,7 +78,8 @@ namespace Taurus.Data
             {
                 UserId = 1,
                 FacilityId = 1,
-                SpecialistId = 1
+                SpecialistId = 1,
+                IsDoctorOfTheMonth = true
             };
             context.Doctors.Add(doctor);
             await context.SaveChangesAsync();

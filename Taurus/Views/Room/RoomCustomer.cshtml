@@ -456,28 +456,7 @@
 
             $("#end-room").click(function () {
                 endSession();
-                var options = {
-                    classname: "toast",
-                    transition: "fade",
-                    insertBefore: true,
-                    duration: 3000,
-                    enableSounds: true,
-                    autoClose: true,
-                    progressBar: true,
-                    sounds: {
-                        info: "/lib/toasty.js/dist/sounds/info/1.mp3",
-                        success: "/lib/toasty.js/dist/sounds/success/1.mp3",
-                        warning: "/lib/toasty.js/dist/sounds/warning/1.mp3",
-                        error: "/lib/toasty.js/dist/sounds/error/1.mp3",
-                    },
-                    onShow: function (type) { },
-                    onHide: function (type) {
-                        location.href = "/";
-                    },
-                    prependTo: document.body.childNodes[0]
-                };
-                var toast = new Toasty(options);
-                toast.warning("You will be redirected back in 3 seconds");
+                window.toast.warning("You will be redirected back in 3 seconds");
             });
         });
 
@@ -487,11 +466,11 @@
 <body>
     <div class="container-fluid">
         <div class="row video-container">
-            <div class="col-9">
+            <div class="col-md-9 col-12">
                 <video autoplay id="their-video"></video>
 
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-12">
                 <video autoplay id="our-video"></video>
                 <h5>Timer</h5>
                 <h3>
