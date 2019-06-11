@@ -26,7 +26,7 @@
     <script src='~/js/jquery.barfiller.js'></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/moment-with-locales.js"></script>
-
+    <script src='~/js/custom.js'></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -132,7 +132,7 @@
                         <div class="foot-about">
                             <h2><a href="#"><img src="/images/logo.png" alt=""></a></h2>
 
-                            <p>WelCome to Us</p>
+                            <p>Welcome to Taurus</p>
                             <p class="copyright">
                                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                 Copyright &copy;
@@ -147,9 +147,9 @@
                             <h2>Contact</h2>
 
                             <ul class="p-0 m-0">
-                                <li><span>Address:</span>So 8 Ton That Thuyet, Cau Giay, Ha Noi</li>
-                                <li><span>Phone:</span>+84 989 789 999 . </li>
-                                <li><span>Email:</span>support@gmail.com</li>
+                                <li><span>Address: </span>8 Ton That Thuyet, Cau Giay, Ha Noi</li>
+                                <li><span>Phone: </span>+84 33 664 3363</li>
+                                <li><span>Email: </span>admin@taurus</li>
                             </ul>
                         </div>
                     </div><!-- .col -->
@@ -178,16 +178,13 @@
                 window.connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
                 window.connection.on("ReceiveNotifications", (data) => {
                     data = JSON.parse(data);
-
-                    if (data.length > 0) {
-                        $('#notification-icon').addClass('text-danger')
-                    } else {
-                        $('#notification-icon').removeClass('text-danger')
-                    }
+                    var hasUnread = false;
+                    
                     $("#notificationsContainer").html("");
                     for (var i = 0; i < data.length; i++) {
+                        if (data[i].Status === "UNREAD") hasUnread = true;
                         $("#notificationsContainer").prepend(
-                            `<a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
+                            `<a class="dropdown-item dropdown-notification ${data[i].Status === "UNREAD" ? "notification-unread" : "notification-read"}" style="color: black" href="#">
                                         <div class="notifications-body">
                                             <p class="notification-texte"><b>${data[i].Title}</b></p>
                                             <p class="notification-texte">${data[i].Description}</p>
@@ -197,6 +194,11 @@
                                         </div>
                                     </a>`
                         );
+                    }
+                    if (hasUnread) {
+                        $('#notification-icon').addClass('text-danger')
+                    } else {
+                        $('#notification-icon').removeClass('text-danger')
                     }
                 });                
 
@@ -213,7 +215,7 @@
                     for (var i = 0; i < data.length; i++) {
                         if (data[i].Url == "") {
                             $("#bookmarksContainer").prepend(
-                                `<a class="dropdown-item dropdown-notification notification-unread" style="color: black" href="#">
+                                `<a class="dropdown-item dropdown-notification notification-read" style="color: black" href="#">
                                         <div class="notifications-body">
                                             <p class="notification-texte">${data[i].Message}</p>
                                         </div>
@@ -223,7 +225,7 @@
                         else {
                             window.toast.success(data[i].Message);
                             $("#bookmarksContainer").prepend(
-                                `<a target="_blank" class="dropdown-item dropdown-notification notification-unread" style="color: black" href="${data[i].Url}">
+                                `<a target="_blank" class="dropdown-item dropdown-notification notification-read" style="color: black" href="${data[i].Url}">
                                         <div class="notifications-body">
                                             <p class="notification-texte">${data[i].Message}</p>
                                         </div>
@@ -233,12 +235,14 @@
                     }
                 });
 
-                window.connection.start();                
+                window.connection.start().then(function () {
+                    $("#notification").on("click", function () {
+                        window.connection.invoke("SetReadNotifications");
+                    })
+                });
             });
         </script>
     }
-
-    <script src='~/js/custom.js'></script>
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>

@@ -24,7 +24,7 @@ namespace Taurus.Areas.Identity.Models
         [PersonalData]
         public string Country { get; set; }
         [PersonalData, Url]
-        public string Avatar { get; set; }
+        public string Avatar { get; set; } = "https://cdn3.iconfinder.com/data/icons/iconset-1-1/24/icon_set_outlinder-05-512.png";
         [PersonalData]
         public Gender Gender { get; set; }
         // currencies

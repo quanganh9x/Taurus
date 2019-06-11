@@ -41,6 +41,7 @@
     <script src="~/lib/RecordRTC/RecordRTC.min.js"></script>
     <script>
         $(document).ready(function () {
+            window.toast = new Toasty();
             var $messages = $('.messages-content'),
                 d, h, m,
                 i = 0;
@@ -189,9 +190,8 @@
                 },
                 video: {
                     mandatory: {
-                        minFrameRate: 30,
-                        maxFrameRate: 60,
-                        minAspectRatio: 1.77
+                        minFrameRate: 15,
+                        maxFrameRate: 60
                     },
                     optional: []
                 }
@@ -242,17 +242,22 @@
             };
 
             var myStream;
+            var theirStream;
+
             connection.onstream = function (event) {
                 var element = null;
 
                 if (event.type == 'local') {
+                    event.stream.mute();
                     myStream = event.stream;
                     element = ourVideo;
                     element.muted = true;
                     element.volume = 0;
+                    element.controls = false;
                 } else {
+                    theirStream = event.stream;
                     element = theirVideo;
-                    element.controls = true;
+                    element.controls = false;
                     addModeration();
                 }
                 element.srcObject = event.stream;
@@ -264,10 +269,9 @@
 
             connection.onstreamended = function (event) {
                 console.log(event);
-                var element = $(`video[streamid=${event.streamid}]`);
-                video.removeAttribute('srcObject');
-                video.removeAttribute('streamid');
-                endModeration()
+                var element = $(`video[streamid='${event.streamid}']`);
+                element.removeAttribute('srcObject');
+                element.removeAttribute('streamid');
 
                 connection.onUserStatusChanged(event);
                 return;
@@ -367,7 +371,7 @@
             function handleError(error) {
                 clearInterval(updateHeartbeat);
                 endSession();
-                window.toast.danger(error);
+                window.toast.error(error);
                 setTimeout(function () {
                     location.href = "/";
                 }, 3000);
@@ -460,9 +464,20 @@
             var sec = 0;
             function pad(val) { return val > 9 ? val : "0" + val; }
 
-            $("#end-room-btn").on("click", function () {
+            $("#end-room").on("click", function () {
                 endSession();
                 window.toast.warning("You will be redirected back in 3 seconds");
+                setTimeout(function () {
+                    location.href = "/";
+                }, 3000);
+            });
+
+            $("#mute-room").on("click", function () {
+                theirStream.getAudioTracks()[0].enabled = false;
+            });
+
+            $("#unmute-room").on("click", function () {
+                theirStream.getAudioTracks()[0].enabled = true;
             });
         });
 
@@ -477,15 +492,29 @@
 
             </div>
             <div class="col-md-3 col-12">
-                <video autoplay id="our-video"></video>
-                <h5>Timer</h5>
-                <h3>
-                    <span id="minutes"></span>:<span id="seconds"></span>
-                </h3>
-                <h5>Controls</h5>
-                <button class="btn btn-danger" id="end-room-btn">End Room</button>
+                <video autoplay id="our-video" muted></video>
+                <div class="card card-body">
+                    <h5>Room</h5>
+                    <p>
+                        <label>ID: </label>
+                        <span>@r.Id</span>
+                    </p>
+                    <p>
+                        <label>Price: </label>
+                        <span>@r.Price</span>
+                    </p>
+                    <h5>Timer</h5>
+                    <h3>
+                        <span id="minutes"></span>:<span id="seconds"></span>
+                    </h3>
+                    <h5 class="mt-2">Controls</h5>
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-warning" id="mute-room">Mute Doctor</button>
+                        <button class="btn btn-warning" id="unmute-room">Unmute Doctor</button>
+                    </div>
+                    <button class="btn btn-danger" id="end-room">End Room</button>
+                </div>
             </div>
-        </div>
         <section class="avenue-messenger">
             <div class="menu">
 
@@ -504,6 +533,7 @@
 
         </section>
     </div>
+        </div>
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>

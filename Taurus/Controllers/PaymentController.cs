@@ -18,11 +18,11 @@ namespace Taurus.Controllers
     [Route("payment")]
     public class PaymentController : Controller
     {
-        private readonly ApplicationContext _context;
+        private readonly Taurus.Data.ApplicationContext _context;
         private readonly UserManager<User> _userManager;
         private readonly INotificationService _notiService;
 
-        public PaymentController(ApplicationContext context, UserManager<User> userManager, INotificationService notiService)
+        public PaymentController(Taurus.Data.ApplicationContext context, UserManager<User> userManager, INotificationService notiService)
         {
             _context = context;
             _userManager = userManager;
@@ -71,8 +71,8 @@ namespace Taurus.Controllers
                 {
                     //CancelUrl = Url.Action("CheckoutFailed", "Payment"),
                     //ReturnUrl = Url.Action("CheckoutSuccess", "Payment")
-                    CancelUrl = "https://localhost:44375/payment/checkoutfailed",
-                    ReturnUrl = "https://localhost:44375/payment/checkoutsuccess/" + amount
+                    CancelUrl = "https://taurus-quanganh9x.azurewebsites.net/payment/checkoutfailed",
+                    ReturnUrl = "https://taurus-quanganh9x.azurewebsites.net/payment/checkoutsuccess/" + amount
                 },
                 Payer = new Payer()
                 {

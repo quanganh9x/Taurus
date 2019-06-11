@@ -1,13 +1,14 @@
 ﻿@{
     ViewData["Title"] = "Profile Customer";
+    List<Session> sessions = ViewData["Sessions"] as List<Session>;
 }
 
 
 @model Customer
 <div class="the-profile">
-    <div class="container">
+    <div class="container" style="min-height: 550px;">
         <div class="row">
-            <div class="col-3" style="text-align:center">
+            <div class="col-md-3 col-12" style="text-align:center">
                 <div class="card" style="width: auto;">
                     <img src="@Model.User.Avatar" class="card-img-top" alt="avatar">
                     <div class="card-body text-center">
@@ -20,9 +21,6 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
-                        <li class="list-group-item">
-                            
-                        </li>
                     </ul>
                     <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -43,16 +41,18 @@
                                         </ul> <!-- tab-content .// -->
                                             <div class="tab-content">
                                                 <div class="tab-pane fade show active" id="nav-tab-paypal">
-                                                    <form action="@Url.Action("Proceed", "Payment")" method="get">
+                                                    <form action="@Url.Action("Checkout","Payment")" method="get">
                                                         <p>
                                                             <label for="amount">Amount to deposit (in VND)</label>
-                                                            <input type="number" class="form-control" placeholder="Amount" id="amount" name="amount" aria-describedby="currency" />
-                                                            <div class="input-group-append">
-                                                                <span class="input-group-text" id="currency">VND</span>
+                                                            <div class="input-group">
+                                                                <input type="number" class="form-control" placeholder="Amount" id="amount" name="amount" aria-describedby="currency" />
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text" id="currency">VND</span>
+                                                                </div>
                                                             </div>
                                                         </p>
                                                         <p>
-                                                            <input type="button" class="subscribe btn btn-primary btn-block mt-4" id="confirmTransfer" value="Confirm"/>
+                                                            <input type="submit" class="subscribe btn btn-primary btn-block mt-4" id="confirmTransfer" value="Confirm"/>
                                                             <strong>Conversion rate: </strong>1.000 VND = 1 C
                                                         </p>
                                                     </form>
@@ -76,10 +76,7 @@
                             </div>
                         </div>
                     </div>
-                    @*<div class="card-body">
-            <a href="#" class="card-link">Card link</a>
-            <a href="#" class="card-link">Another link</a>
-        </div>*@
+                    
                 </div>
                 <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#exampleModal">
                     Update Profile
@@ -136,10 +133,10 @@
                 </div>
             </div>
 
-            <div class="col-9">
+            <div class="col-md-9 col-12">
                 <div class="appointment-box the-profile-wrap p-3" id="accordion">
-                    <h2 class="d-flex align-items-center">Stats!</h2>
-                    @foreach (Session s in (List<Session>)ViewData["Sessions"])
+                    <h2 class="d-flex align-items-center">Analytics</h2>
+                    @foreach (Session s in sessions)
                     {
                         <div class="card">
                             <div class="card-header" style="padding: 0;" id="heading_@s.Id">

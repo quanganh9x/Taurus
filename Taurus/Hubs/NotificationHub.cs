@@ -27,9 +27,23 @@ namespace Taurus.Hubs
 
         public async Task GetPendingNotifications()
         {
-            var notifications = await _context.Notifications.Where(s => s.UserId == int.Parse(Context.UserIdentifier)).Select(m => new { Title = m.Title, Description = m.Description, CreatedAt = m.CreatedAt }).ToListAsync();
+            var notifications = await _context.Notifications.Where(s => s.UserId == int.Parse(Context.UserIdentifier)).Select(m => new { Title = m.Title, Description = m.Description, Status = m.Status.ToString(), CreatedAt = m.CreatedAt }).ToListAsync();
             notifications = notifications.TakeLast(7).ToList();
             await Clients.User(Context.UserIdentifier).SendAsync("ReceiveNotifications", Newtonsoft.Json.JsonConvert.SerializeObject(notifications));
+        }
+
+        public async Task SetReadNotifications()
+        {
+            var notifications = await _context.Notifications.Where(s => s.UserId == int.Parse(Context.UserIdentifier) && s.Status == NotificationStatus.UNREAD).ToListAsync();
+            if (notifications.Count() > 0)
+            {
+                foreach (Notification n in notifications)
+                {
+                    n.Status = NotificationStatus.READ;
+                    _context.Notifications.Update(n);
+                }
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task GetPendingSessions()

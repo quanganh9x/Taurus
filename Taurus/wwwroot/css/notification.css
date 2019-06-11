@@ -49,13 +49,7 @@
 }
 
 .notification-read {
-    margin: 0;
-    height: 48px;
-    vertical-align: top;
-    line-height: 48px;
-    padding-left: 15px;
-    color: white;
-    float: right;
+    text-decoration: none;
 }
 
 .notification-date {

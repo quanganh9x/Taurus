@@ -83,7 +83,7 @@ namespace Taurus.Controllers
             {
                 try
                 {
-                    HttpResponseMessage response = await client.GetAsync("https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad&stream_url=" + "https://localhost:44375/upload/" + name + "&api_user=" + _configuration["SightEngine:Key"] + "&api_secret=" + _configuration["SightEngine:Secret"]);
+                    HttpResponseMessage response = await client.GetAsync("https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad&stream_url=" + "https://taurus-quanganh9x.azurewebsites.net/upload/" + name + "&api_user=" + _configuration["SightEngine:Key"] + "&api_secret=" + _configuration["SightEngine:Secret"]);
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
@@ -108,7 +108,6 @@ namespace Taurus.Controllers
                     return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
                 }
             }
-            return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(new { adult = 0.1, wad = 0.1, scam = 0.2 }) });
         }
     }
 }
