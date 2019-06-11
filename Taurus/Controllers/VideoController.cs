@@ -70,44 +70,44 @@ namespace Taurus.Controllers
         [HttpPost("moderation")]
         public async Task<IActionResult> Moderation(IFormFile blob)
         {
-            //if (blob == null || blob.Length == 0) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
-            //var name = Guid.NewGuid().ToString().Replace("-", "").ToLower() + ".webm";
-            //var path = Path.Combine(_hostingEnvironment.WebRootPath, "upload", name);
+            if (blob == null || blob.Length == 0) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
+            var name = Guid.NewGuid().ToString().Replace("-", "").ToLower() + ".webm";
+            var path = Path.Combine(_hostingEnvironment.WebRootPath, "upload", name);
 
-            //using (var stream = new FileStream(path, FileMode.OpenOrCreate))
-            //{
-            //    await blob.CopyToAsync(stream);
-            //}
+            using (var stream = new FileStream(path, FileMode.OpenOrCreate))
+            {
+                await blob.CopyToAsync(stream);
+            }
 
-            //using (HttpClient client = new HttpClient())
-            //{
-            //    try
-            //    {
-            //        HttpResponseMessage response = await client.GetAsync("https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad&stream_url=" + "https://localhost:44375/upload/" + name + "&api_user=" + _configuration["SightEngine:Key"] + "&api_secret=" + _configuration["SightEngine:Secret"]);
-            //        response.EnsureSuccessStatusCode();
-            //        string responseBody = await response.Content.ReadAsStringAsync();
-            //        dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
-            //        List<dynamic> frames = obj.data.frames.ToObject<List<dynamic>>();
-            //        int c = frames.Count();
-            //        if (c == 0)
-            //        {
-            //            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "cant fetch data" });
-            //        }
-            //        float adult = 0, wad = 0, scam = 0;
-            //        foreach (dynamic frame in frames)
-            //        {
-            //            adult += frame.nudity.raw.ToObject<float>();
-            //            scam += frame.scam.prob.ToObject<float>();
-            //            wad += (frame.weapon.ToObject<float>() + frame.alcohol.ToObject<float>() + frame.drugs.ToObject<float>()) / 3;
-            //        }
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync("https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad&stream_url=" + "https://localhost:44375/upload/" + name + "&api_user=" + _configuration["SightEngine:Key"] + "&api_secret=" + _configuration["SightEngine:Secret"]);
+                    response.EnsureSuccessStatusCode();
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+                    List<dynamic> frames = obj.data.frames.ToObject<List<dynamic>>();
+                    int c = frames.Count();
+                    if (c == 0)
+                    {
+                        return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "cant fetch data" });
+                    }
+                    float adult = 0, wad = 0, scam = 0;
+                    foreach (dynamic frame in frames)
+                    {
+                        adult += frame.nudity.raw.ToObject<float>();
+                        scam += frame.scam.prob.ToObject<float>();
+                        wad += (frame.weapon.ToObject<float>() + frame.alcohol.ToObject<float>() + frame.drugs.ToObject<float>()) / 3;
+                    }
 
-            //        return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(new { adult = adult / c, wad = wad / c, scam = scam / c }) });
-            //    }
-            //    catch (HttpRequestException e)
-            //    {
-            //        return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
-            //    }
-            //}
+                    return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(new { adult = adult / c, wad = wad / c, scam = scam / c }) });
+                }
+                catch (HttpRequestException e)
+                {
+                    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
+                }
+            }
             return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(new { adult = 0.1, wad = 0.1, scam = 0.2 }) });
         }
     }
