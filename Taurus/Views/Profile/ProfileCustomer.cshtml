@@ -12,17 +12,16 @@
                     <img src="@Model.User.Avatar" class="card-img-top" alt="avatar">
                     <div class="card-body text-center">
                         <h5 class="card-title">@Model.User.FullName</h5>
-                        <p class="card-text">@Model.User.Address</p>
+                        <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i></b> @Model.User.Coins
+                        <button type="button" class="btn btn-sm btn-primary ml-4" data-toggle="modal" data-target="#exampleModal2">
+                            Deposit
+                        </button>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">@Model.User.Gender.ToString()</li>
                         <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
                         <li class="list-group-item">
-                            <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i>@Model.User.Coins</b>
-                            <button type="button" class="btn btn-sm btn-primary ml-4" data-toggle="modal" data-target="#exampleModal2">
-                                Deposit
-                            </button>
+                            
                         </li>
                     </ul>
                     <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -44,28 +43,29 @@
                                         </ul> <!-- tab-content .// -->
                                             <div class="tab-content">
                                                 <div class="tab-pane fade show active" id="nav-tab-paypal">
-                                                    <p>Enter the amount to transfer.</p>
-                                                    <p class="mt-1">
-                                                        <input style="text" class="form-control" placeholder=" Enter number money" />
-                                                    </p>
-                                                    <p>
-                                                        <button class="subscribe btn btn-primary btn-block mt-4" type="button"> Confirm  </button>
-                                                        <strong>Conversion rate :</strong> 1.000 = 1 coin.
-                                                    </p>
+                                                    <form action="@Url.Action("Proceed", "Payment")" method="get">
+                                                        <p>
+                                                            <label for="amount">Amount to deposit (in VND)</label>
+                                                            <input type="number" class="form-control" placeholder="Amount" id="amount" name="amount" aria-describedby="currency" />
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text" id="currency">VND</span>
+                                                            </div>
+                                                        </p>
+                                                        <p>
+                                                            <input type="button" class="subscribe btn btn-primary btn-block mt-4" id="confirmTransfer" value="Confirm"/>
+                                                            <strong>Conversion rate: </strong>1.000 VND = 1 C
+                                                        </p>
+                                                    </form>
                                                 </div>
                                                 <div class="tab-pane fade" id="nav-tab-bank">
-                                                    <p>Bank accaunt details</p>
+                                                    <p>Transfer with the following details. Coins will be deposited in few minutes</p>
                                                     <dl class="param">
-                                                        <dt>Account Number: </dt>
-                                                        <dd><input type="text" class="form-control" placeholder="Enter name Bank" /></dd>
+                                                        <dt>Account Number</dt>
+                                                        <dd><input type="text" class="form-control" value="Về bờ trong ngày #000" readonly/></dd>
                                                     </dl>
                                                     <dl class="param">
-                                                        <dt>Message: </dt>
-                                                        <dd><input style="text" class="form-control" placeholder=" Enter Accaunt number" /></dd>
-                                                    </dl>
-                                                    <dl class="param">
-                                                        <dt>Amount: </dt>
-                                                        <dd><input style="text" class="form-control" placeholder="Iban number" /></dd>
+                                                        <dt>Message</dt>
+                                                        <dd><input type="text" class="form-control" value="Nạp tiền cho tài khoản <username> với <username> là tên đăng nhập của bạn" readonly/></dd>
                                                     </dl>
                                                     <button class="subscribe btn btn-primary btn-block" type="button"> Confirm  </button>
                                                     
@@ -95,7 +95,8 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="/" method="post">
+                            <form action="@Url.Action("UpdateProfile","Profile")" method="post" id="update-profile-form">
+                                <input type="hidden" name="Id" value="@Model.UserId" />
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="fullname">Name</label>
@@ -103,30 +104,11 @@
                                                name="FullName" />
                                     </div>
                                     <div class="form-group">
-                                        <label for="email">Email</label>
-                                        <input type="email" id="email" class="form-control" value="@Model.User.Email"
-                                               name="Email" />
-                                    </div>
-                                    <div class="form-group">
                                         <label for="gender">Gender</label>
                                         <select class="form-control" id="gender" name="Gender">
-                                            <option value="1">Male</option>
+                                            <option value="1" selected>Male</option>
                                             <option value="2">Female</option>
-                                            <option value="0">@Model.User.Gender</option>
                                         </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="dob">DOB</label>
-                                        <input type="datetime-local" id="dob" class="form-control"
-                                               name="DateOfBirth" value="@Model.User.DateOfBirth"/>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="phone">Phone</label>
-                                        <input type="tel" id="phone" class="form-control" value="@Model.User.PhoneNumber"
-                                               name="PhoneNumber" />
                                     </div>
                                     <div class="form-group">
                                         <label for="address">Address</label>
@@ -135,22 +117,20 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="city">City</label>
-                                        <select class="form-control" id="city" name="City">
-                                            <option value="0">@Model.User.City</option>
-                                        </select>
+                                        <input type="text" id="city" class="form-control" value="@Model.User.City"
+                                               name="City" />
                                     </div>
                                     <div class="form-group">
                                         <label for="country">Country</label>
-                                        <select class="form-control" id="country" name="Country">
-                                            <option value="0">@Model.User.Country</option>
-                                        </select>
+                                        <input type="text" id="country" class="form-control" value="@Model.User.Country"
+                                               name="Country" />
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Update Profile.</button>
+                            <button type="button" class="btn btn-primary">Update</button>
                         </div>
                     </div>
                 </div>

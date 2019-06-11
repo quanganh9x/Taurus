@@ -163,7 +163,7 @@ namespace Taurus.Controllers
         [HttpPost("end")]
         public async Task<IActionResult> EndRoom([FromForm] int id)
         {
-            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)));
+            Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id && m.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != RoomStatus.DONE);
             if (r == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });

@@ -298,7 +298,7 @@ a {
     position: fixed;
     top: 0;
     left: -320px;
-    z-index: 9999;
+    z-index: 99;
     width: 320px;
     max-width: calc(100% - 120px);
     height: 100%;
@@ -859,6 +859,7 @@ ul.tabs-nav {
     .opening-hours > h2,
     .emergency-box h2,
     .appointment-box h2,
+    .calendar-border h2,
     .contact-info h2 {
         position: absolute;
         top: -24px;
@@ -988,6 +989,10 @@ ul.tabs-nav {
 
 .our-departments-cont {
     margin-bottom: 64px;
+}
+
+.index-carousel-header {
+    margin-bottom: 200px;
 }
 
     .our-departments-cont .entry-header {

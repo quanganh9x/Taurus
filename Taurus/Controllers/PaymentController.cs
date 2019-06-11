@@ -44,8 +44,12 @@ namespace Taurus.Controllers
             return Redirect("/Profile");
         }
 
-        [HttpGet("checkout/{amount}")]
-        public async Task<IActionResult> Checkout(int amount) {
+        [HttpGet("checkout")]
+        public async Task<IActionResult> Checkout(int? amount) {
+            if (amount == null)
+            {
+                return LocalRedirect("/Profile");
+            }
             SandboxEnvironment environment = new SandboxEnvironment("Ac1tPYNg6lh1cU6krgaSDv9LikB5ccq6KhtjpCKSkG5dUrTeHj1iBhZ1JQ4vSee0L9ck9AS-mCv4w5VO", "EErMSvuNbHAE8Se3gMHzLS4CX5KCp28fHmWIBaZ5oC1VJIyVGfitPUs8tmEQFSKpX6OYBGNK1qFoLn1h");
             PayPalHttpClient client = new PayPalHttpClient(environment);
 

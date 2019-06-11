@@ -174,6 +174,35 @@
                 data: true
             };
 
+            connection.mediaConstraints = {
+                audio: {
+                    mandatory: {
+                        echoCancellation: true,
+                        googAutoGainControl: true,
+                        googNoiseSuppression: true,
+                        googHighpassFilter: true,
+                        googTypingNoiseDetection: true,
+                        //googAudioMirroring: true
+                    },
+                    optional: []
+                },
+                video: {
+                    mandatory: {
+                        minFrameRate: 30,
+                        maxFrameRate: 60,
+                        minAspectRatio: 1.77
+                    },
+                    optional: []
+                }
+            };
+
+            if (connection.DetectRTC.browser.name == "Firefox") {
+                connection.mediaConstraints = {
+                    audio: true,
+                    video: true
+                };
+            }
+
             connection.sdpConstraints.mandatory = {
                 OfferToReceiveAudio: true,
                 OfferToReceiveVideo: true
@@ -221,6 +250,7 @@
                 } else {
                     element = theirVideo;
                     element.controls = true;
+                    addModeration();
                 }
                 element.srcObject = event.stream;
                 element.setAttribute("streamid", event.streamid);
@@ -234,6 +264,7 @@
                 var element = $(`video[streamid=${event.streamid}]`);
                 video.removeAttribute('srcObject');
                 video.removeAttribute('streamid');
+                endModeration()
 
                 connection.onUserStatusChanged(event);
                 return;
@@ -333,7 +364,10 @@
             function handleError(error) {
                 clearInterval(updateHeartbeat);
                 endSession();
-                console.error(error);
+                window.toast.danger(error);
+                setTimeout(function () {
+                    location.href = "/";
+                }, 3000);
             }
 
             var updateHeartbeat;
@@ -371,8 +405,80 @@
                 });
             }
 
+            var recorder;
+            var videoOnlyStream;
+
+            function moderationProcess() {
+                var form = new FormData();
+                form.append("blob", window.blobs[0]); // ensure we dont miss any scenes
+                window.blobs.shift();
+                $.ajax({
+                    url: '@Url.Action("Moderation","Video")',
+                    data: form,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+
+            function addModeration() {
+                videoOnlyStream = new MediaStream();
+                myStream.getVideoTracks().forEach(function (track) {
+                    videoOnlyStream.addTrack(track);
+                })
+                recorder = RecordRTC(videoOnlyStream, {
+                    type: 'video',
+                    recorderType: MediaStreamRecorder,
+                    mimeType: 'video/webm',
+                    timeSlice: 30000, // slice the blob
+                    ondataavailable: function (blob) {
+                        window.blobs.push(blob);
+                        moderationProcess();
+                    }
+                });
+                recorder.startRecording();
+            }
+
+            function endModeration() {
+                // recording
+                recorder.stopRecording();
+                videoOnlyStream.stop();
+                videoOnlyStream = null;
+                recorder = null;
+                window.blobs.length = 0;
+            }
+
             var sec = 0;
-            function pad ( val ) { return val > 9 ? val : "0" + val; }
+            function pad(val) { return val > 9 ? val : "0" + val; }
+
+            $("#end-room").click(function () {
+                endSession();
+                var options = {
+                    classname: "toast",
+                    transition: "fade",
+                    insertBefore: true,
+                    duration: 3000,
+                    enableSounds: true,
+                    autoClose: true,
+                    progressBar: true,
+                    sounds: {
+                        info: "/lib/toasty.js/dist/sounds/info/1.mp3",
+                        success: "/lib/toasty.js/dist/sounds/success/1.mp3",
+                        warning: "/lib/toasty.js/dist/sounds/warning/1.mp3",
+                        error: "/lib/toasty.js/dist/sounds/error/1.mp3",
+                    },
+                    onShow: function (type) { },
+                    onHide: function (type) {
+                        location.href = "/";
+                    },
+                    prependTo: document.body.childNodes[0]
+                };
+                var toast = new Toasty(options);
+                toast.warning("You will be redirected back in 3 seconds");
+            });
         });
 
     </script>
@@ -388,11 +494,11 @@
             <div class="col-3">
                 <video autoplay id="our-video"></video>
                 <h5>Timer</h5>
-                <p>
+                <h3>
                     <span id="minutes"></span>:<span id="seconds"></span>
-                </p>
+                </h3>
                 <h5>Controls</h5>
-                <button class="btn btn-danger">End Room</button>
+                <button class="btn btn-danger" id="end-room">End Room</button>
             </div>
         </div>
         <section class="avenue-messenger">
@@ -413,5 +519,6 @@
 
         </section>
     </div>
+    <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>

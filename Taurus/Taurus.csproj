@@ -46,6 +46,7 @@
 
   <ItemGroup>
     <Folder Include="Views\Room\" />
+    <Folder Include="wwwroot\upload\" />
   </ItemGroup>
 
 </Project>

@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css'>
     <link rel="stylesheet" href="~/css/room.css">
-    <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css"/>
+    <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css" />
 
 
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
@@ -35,14 +35,18 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js'></script>
 
 
+
+
     <script src="~/lib/webrtc-adapter/adapter.min.js"></script>
     <script src="~/lib/rtcmulticonnection/dist/RTCMultiConnection.min.js"></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/lib/socket.io/socket.io.js"></script>
     <script src="~/js/FileBufferReader.min.js"></script>
+    <script src="~/lib/RecordRTC/RecordRTC.min.js"></script>
     <script>
+        
         $(document).ready(function () {
-
+            window.toast = new Toasty();
 
             var $messages = $('.messages-content'),
                 d, h, m,
@@ -143,8 +147,8 @@
             connection.socketMessageEvent = "event-" + connection.roomid;
 
             connection.DetectRTC.load(function () {
-                if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
-                    // alert('You dont fulfill requirements or your browser doesnt support WebRTC');
+                if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
+                    alert('You dont fulfill requirements or your browser doesnt support WebRTC');
                     handleError("not-supported");
                     return;
                 }
@@ -176,6 +180,35 @@
                 video: true,
                 data: true
             };
+
+            connection.mediaConstraints = {
+                audio: {
+                    mandatory: {
+                        echoCancellation: true,
+                        googAutoGainControl: true,
+                        googNoiseSuppression: true,
+                        googHighpassFilter: true,
+                        googTypingNoiseDetection: true,
+                        //googAudioMirroring: true
+                    },
+                    optional: []
+                },
+                video: {
+                    mandatory: {
+                        minFrameRate: 30,
+                        maxFrameRate: 60,
+                        minAspectRatio: 1.77
+                    },
+                    optional: []
+                }
+            };
+
+            if (connection.DetectRTC.browser.name == "Firefox") {
+                connection.mediaConstraints = {
+                    audio: true,
+                    video: true
+                };
+            }
 
             connection.sdpConstraints.mandatory = {
                 OfferToReceiveAudio: true,
@@ -228,16 +261,20 @@
                 }
             };
 
+            var myStream;
+
             connection.onstream = function (event) {
                 var element = null;
 
                 if (event.type == 'local') {
+                    myStream = event.stream;
                     element = ourVideo;
                     element.muted = true;
                     element.volume = 0;
                 } else {
                     element = theirVideo;
                     element.controls = true;
+                    addModeration();
                 }
                 element.srcObject = event.stream;
                 element.setAttribute("streamid", event.streamid);
@@ -248,10 +285,13 @@
 
             connection.onstreamended = function (event) {
                 var element = $(`video[streamid='${event.streamid}']`);
+                element.removeAttr('src');
                 element.removeAttr('srcObject');
                 element.removeAttr('streamid');
+                endModeration()
 
                 connection.onUserStatusChanged(event);
+                window.toast.info("User left the room");
                 return;
             };
 
@@ -348,7 +388,10 @@
                 clearTimeout(requestTimeout);
                 clearInterval(updateHeartbeat);
                 endRoom();
-                console.error(error);
+                window.toast.danger(error);
+                setTimeout(function () {
+                    location.href = "/";
+                }, 3000);
             }
 
             var requestTimeout;
@@ -378,19 +421,20 @@
                     });
             }
 
-            function endRoom () {
+            function endRoom() {
+                endModeration();
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("EndRoom", "Room")',
                     async: false,
-                    data: { id: connection.roomid }                   
+                    data: { id: connection.roomid }
                 });
             }
 
             function getSessions () {
                 $.get('@Url.Action("GetSessions", "Room")', { id: connection.roomid })
                     .done(function (data) {
-                        
+
                         data = JSON.parse(data.data);
                         listSession.html("");
                         for (var i = 0; i < data.length; i++) {
@@ -421,6 +465,52 @@
                     });
             }
 
+            var recorder;
+            var videoOnlyStream;
+
+            function moderationProcess() {
+                var form = new FormData();
+                form.append("blob", window.blobs[0]); // ensure we dont miss any scenes
+                window.blobs.shift();
+                $.ajax({
+                    url: '@Url.Action("Moderation","Video")',
+                    data: form,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+
+            function addModeration() {
+                videoOnlyStream = new MediaStream();
+                myStream.getVideoTracks().forEach(function (track) {
+                    videoOnlyStream.addTrack(track);
+                })
+                recorder = RecordRTC(videoOnlyStream, {
+                    type: 'video',
+                    recorderType: MediaStreamRecorder,
+                    mimeType: 'video/webm',
+                    timeSlice: 30000, // slice the blob
+                    ondataavailable: function (blob) {
+                        window.blobs.push(blob);
+                        moderationProcess();
+                    }
+                });
+                recorder.startRecording();
+            }
+
+            function endModeration() {
+                // recording
+                recorder.stopRecording();
+                videoOnlyStream.stop();
+                videoOnlyStream = null;
+                recorder = null;
+                window.blobs.length = 0;
+            }
+
             var sec = 0;
             function pad ( val ) { return val > 9 ? val : "0" + val; }
 
@@ -435,29 +525,28 @@
                 });
                 $("#add-quota-form").trigger("reset");
                 $("#modalAddQuota").modal('hide');
-
             });
 
             $("#end-button").on("click", function() {
                 endRoom();
-                var options = {                    
-                    classname: "toast",                   
-                    transition: "fade",                    
-                    insertBefore: true,                    
-                    duration: 3000,                    
-                    enableSounds: true,                    
-                    autoClose: true,                    
-                    progressBar: true,                    
-                    sounds: {                        
-                        info: "/lib/toasty.js/dist/sounds/info/1.mp3",                        
-                        success: "/lib/toasty.js/dist/sounds/success/1.mp3",                        
-                        warning: "/lib/toasty.js/dist/sounds/warning/1.mp3",                       
+                var options = {
+                    classname: "toast",
+                    transition: "fade",
+                    insertBefore: true,
+                    duration: 3000,
+                    enableSounds: true,
+                    autoClose: true,
+                    progressBar: true,
+                    sounds: {
+                        info: "/lib/toasty.js/dist/sounds/info/1.mp3",
+                        success: "/lib/toasty.js/dist/sounds/success/1.mp3",
+                        warning: "/lib/toasty.js/dist/sounds/warning/1.mp3",
                         error: "/lib/toasty.js/dist/sounds/error/1.mp3",
                     },
                     onShow: function (type) { },
                     onHide: function (type) {
-                        window.location.reload();
-                    },                    
+                        location.href = "/";
+                    },
                     prependTo: document.body.childNodes[0]
                 };
                 var toast = new Toasty(options);
@@ -538,7 +627,7 @@
             </div>
         </div>
     </div>
-</div>
+
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>

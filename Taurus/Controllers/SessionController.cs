@@ -126,7 +126,7 @@ namespace Taurus.Controllers
         [HttpPost("end")]
         public async Task<IActionResult> EndSession([FromForm] int id)
         {
-            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)));
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != SessionStatus.DONE);
             if (s == null)
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Không save" });

@@ -11,18 +11,45 @@
                     <img src="@Model.User.Avatar" class="card-img-top" alt="avatar">
                     <div class="card-body text-center">
                         <h5 class="card-title">@Model.User.FullName</h5>
-                        <p class="card-text">@Model.User.Address</p>
+                        <p>
+                            <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i></b> @Model.User.Coins
+                            <button type="button" class="btn btn-sm btn-primary ml-4" data-toggle="modal" data-target="#exampleModal2">
+                                Withdraw
+                            </button>
+                        </p>
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">@Model.User.Gender.ToString()</li>
+                        @if (Model.IsDoctorOfTheMonth)
+                        {
+                        <li class="list-group-item"><img src="https://futhead.cursecdn.com/static/img/fm/17/resources/program_17_MOTM.png" width="64" height="64" /></li>
+                        }
                         <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
-                        <li class="list-group-item"><b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i></b> @Model.User.Coins</li>
                     </ul>
-                    @*<div class="card-body">
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                    </div>*@
+                    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <article class="card">
+                                    <div class="card-body p-5">
+                                        <ul class="nav bg-light nav-pills rounded nav-fill mb-3" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link" data-toggle="pill" href="#nav-tab-bank">
+                                                    <i class="fa fa-university"></i>  Bank Transfer
+                                                </a>
+                                            </li>
+                                        </ul> <!-- tab-content .// -->
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade show active" id="nav-tab-bank">
+                                                <p>Submit a request to our mail admin@taurus. Money will be withdrawn to your bank account in few minutes</p>
+                                                <button class="subscribe btn btn-primary btn-block" type="button"> Confirm  </button>
+
+                                            </div> <!-- tab-pane.// -->
+                                        </div>
+                                    </div> <!-- card-body.// -->
+                                </article>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#exampleModal">
                     Update Profile
@@ -96,8 +123,8 @@
                         <input class="button gradient-bg" type="submit" value="Create">
                     </form>
                 </div>
-                <div class="calendar-border the-profile-wrap">
-                    <h3 class="d-flex align-items-center">Reserve a Room</h3>
+                <div class="calendar-border the-profile-wrap mt-5">
+                    <h2 class="d-flex align-items-center">Reserve a Room</h2>
                     <div id="calendar" class="p-3"></div>
                 </div>
             </div>

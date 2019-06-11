@@ -21,6 +21,8 @@ namespace Taurus.Service
         Task NotifyCustomerTurnIsReady(Session s);
         Task NotifyDoctorEarned(Room r);
         Task NotifyCustomerConsume(Session s);
+        Task NotifyPendingNotifications(int userId);
+        Task NotifyPendingSessions(int userId);
     }
 
     public class NotificationService : INotificationService
