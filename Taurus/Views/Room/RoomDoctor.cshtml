@@ -563,6 +563,19 @@
         <div class="row video-container">
             <div class="col-md-9 col-12">
                 <video autoplay id="their-video"></video>
+                <div class="col-4">
+                    <div class="card card-body" style="height:20%; padding: 10px;">
+                        <h5 class="mt-2">Controls</h5>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-warning" id="mute-room">Mute Customer</button>
+                            <button class="btn btn-warning" id="unmute-room">Unmute Customer</button>
+                        </div>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddQuota">
+                            Add Quota
+                        </button>
+                        <button class="btn btn-danger" id="end-button">End Room</button>
+                    </div>
+                </div>
             </div>
             <div class="col-md-3 col-12">
                 <video autoplay id="our-video"></video>
@@ -592,15 +605,7 @@
                         }
                     </style>
                     <ul class="list-group" style="overflow: scroll; max-height: 200px;" id="listsession"></ul>
-                    <h5 class="mt-2">Controls</h5>
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-warning" id="mute-room">Mute Customer</button>
-                        <button class="btn btn-warning" id="unmute-room">Unmute Customer</button>
-                    </div>
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddQuota">
-                        Add Quota
-                    </button>
-                    <button class="btn btn-danger" id="end-button">End Room</button>
+                    
                 </div>
             </div>
         </div>

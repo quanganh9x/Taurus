@@ -1,10 +1,23 @@
 ﻿@{
     ViewData["Title"] = "Room";
 }
+<link href="~/css/simple-sidebar.css" rel="stylesheet">
+<link href="~/css/Panel.css" rel="stylesheet">
 
-<div class="container-fluid" style="margin-top:-25px; min-height: 500px;">
-    <div class="container">
-        <div class="row">
+<div id="wrapper" class="container-fluid toggled" style="margin-top:-25px; min-height: 500px;">
+    <div id="sidebar-wrapper" style="float:right">
+        <div class="sidebar-heading">Queue List </div>
+        <div class="list-group list-group-flush">
+            <a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Shortcuts</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Overview</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
+        </div>
+    </div>
+    <div class="container" id="page-content-wrapper">
+        <div class="row" >
             <div class="col-12 col-lg-3">
                 <div class="sidebar" style="padding-top: 10px;">
 
@@ -63,7 +76,15 @@
     </div>
 </div>
 
+<span id="queue-list" class="float">
+    <i class="fa fa-list my-float"></i>
+</span>
+
 <script>
+    $("#queue-list").on("click", function () {       
+        $("#wrapper").toggleClass("toggled");
+    });
+
     var loadUrl;
     $(document).ready(function () {
         loadUrl = '@Url.Action("GetListActiveRoom", "Panel")';
@@ -71,8 +92,6 @@
         setInterval(function () {
             $("#list-room").load(loadUrl);
         }, 30000);
-
-
     })
 
     function getParameterByName(name, url) {
