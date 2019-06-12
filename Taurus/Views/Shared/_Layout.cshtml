@@ -48,7 +48,7 @@
                         <span class="badge badge-light">2</span>
                         <span>More to your turn</span>
                     </button>
-                    <i class="fa fa-times cancel-queue-btn" aria-hidden="true"></i>
+                    <i class="fa fa-times cancel-queue-btn" onclick="cancelQueue(1)" aria-hidden="true"></i>
                     <h6>Room "Tro chuyen cung bac si Trang"</h6>
                 </a>
             </div>
@@ -195,13 +195,24 @@
         </footer><!-- .site-footer -->
 
         @if (SignInManager.IsSignedIn(User))
-        {
+        {            
             <script>
+                function cancelQueue(sessionId) {
+                    $.post("@Url.Action("CancelSession", "Session")", { id: sessionId })
+                        .done(function (res) {
+                            window.toast.success(res.data.data);
+                        })
+                        .fail(function (resp) {
+                            window.toast.error("Something is wrong");
+                        });
+                }
 
                 $(document).ready(function () {
                     $("#queue-list").on("click", function () {
                         $("#wrapper").toggleClass("toggled");
                     });
+
+                    
 
                     window.toast = new Toasty();
                     window.connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
@@ -252,7 +263,7 @@
                                                         <span class="badge badge-light">${data[i].NumberLeft}</span>
                                                         <span>More to your turn</span>
                                                     </button>
-                                                    <i class="fa fa-times cancel-queue-btn" aria-hidden="true" style="float:right"></i>
+                                                    <i class="fa fa-times cancel-queue-btn" onclick="cancelQueue(${data[i].Id})" aria-hidden="true" style="float:right"></i>
                                                     <h6>${data[i].Title}</h6>
                                                 </a>`
                                 )

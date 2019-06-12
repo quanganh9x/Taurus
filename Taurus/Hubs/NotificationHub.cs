@@ -56,7 +56,7 @@ namespace Taurus.Hubs
                 {
                     ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) - s.Room.Sessions.Count(m => m.Status == SessionStatus.DONE)) + " / " + s.Room.Quota,
                         NumberLeft = (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) - s.Room.Sessions.Count(m => m.Status == SessionStatus.DONE)),
-                        Title = s.Room.Title ,Url = "" });
+                        Title = s.Room.Title, Id = s.Id ,Url = "" });
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {

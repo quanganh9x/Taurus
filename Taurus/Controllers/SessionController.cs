@@ -128,6 +128,20 @@ namespace Taurus.Controllers
             return Ok(new APIResponse { Status = APIStatus.Success, Data = estimatedtime });
         }
 
+        [HttpPost("cancel/{id}")]
+        public async Task<IActionResult> CancelSession([FromForm] int id) {
+            Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != SessionStatus.DONE);
+            var roomTitle = s.Room.Title;
+            if (s == null)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Session is not exist or already DONE" });
+            }
+            _context.Remove(s);
+            await _context.SaveChangesAsync();
+
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = "Your have canceled queue in room \"" + roomTitle +  "\"" });
+        }
+
         [HttpPost("end")]
         public async Task<IActionResult> EndSession([FromForm] int id)
         {
