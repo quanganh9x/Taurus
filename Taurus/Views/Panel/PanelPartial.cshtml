@@ -5,7 +5,9 @@
 @model PaginatedList<Room>
 @if (Model.Count() == 0)
 {
-    <div class="text-center">No room in here :(</div>
+    <div class="col-12">
+        <div class="text-center">No room in here :(</div>
+    </div>
 }
 @foreach (Room r in Model)
 {
@@ -26,15 +28,15 @@
                                 <div class="posted-date"><label>Date: </label>@r.EstimateTimeStart.Value.ToString("dd/MM HH:mm") - @r.EstimateTimeEnd.Value.ToString("dd/MM HH:mm")</div>
                             }
 
-                            <div class="posted-by"><label>By:    </label><a href="#">@r.Doctor.User.FullName</a></div>
+                            <div class="posted-by"><label>By:</label>&nbsp;<a href="/Profile/@r.Doctor.UserId">@r.Doctor.User.FullName</a></div>
 
-                            <div class="post-comments"><label>Queue:   </label>@r.Sessions.Count / @r.Quota</div>
+                            <div class="post-comments"><label>Queue:</label>&nbsp;@r.Sessions.Count / @r.Quota</div>
                         </div>
                     </header>
                 </div>
                 <div class="col-12 col-md-2 d-flex justify-content-center border-left" style="margin: auto;">
                     <footer class="entry-footer">
-                        <p style="font-size: 2rem;">@r.Price C</p>
+                        <p style="font-size: 2rem;">@r.Price</p>
                     </footer>
                 </div>
             </div>
