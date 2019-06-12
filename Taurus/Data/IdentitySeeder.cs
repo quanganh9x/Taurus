@@ -31,12 +31,12 @@ namespace Taurus.Data
                     UserName = "Admin",
                     Email = "admin@taurus",
                     PhoneNumber = "0999999999",
-                    FullName = "Admin",
+                    FullName = "Doctor Manhattan",
                     DateOfBirth = DateTime.Parse("1987/01/01"),
-                    Address = "Admin",
-                    City = "Hà Nội",
-                    Country = "Việt Nam",
-                    Avatar = "https://previews.123rf.com/images/anwarsikumbang/anwarsikumbang1502/anwarsikumbang150200445/36649700-man-avatar-user-picture-cartoon-character-vector-illustration.jpg",
+                    Address = "12 Ton Duc Thang Street",
+                    City = "Ha Noi City",
+                    Country = "Viet Nam",
+                    Avatar = "https://cdn1.vectorstock.com/i/1000x1000/14/80/doctor-web-icon-therapist-avatar-vector-18531480.jpg",                    
                     Gender = Gender.MALE,
                     Coins = 999999
                 };
@@ -49,14 +49,34 @@ namespace Taurus.Data
                 user = new User
                 {
                     UserName = "Doctor",
+                    Email = "DoctorStrange@gmail.com",
+                    PhoneNumber = "0997829629",
+                    FullName = "Doctor Strange",
+                    DateOfBirth = DateTime.Parse("1984/03/08"),
+                    Address = "221 Truong Chinh Street",
+                    City = "Ho Chi Minh City",
+                    Country = "Viet Nam",
+                    Avatar = "https://cdn4.iconfinder.com/data/icons/user-avatar-flat-icons/512/User_Avatar-28-512.png",
+                    Gender = Gender.MALE,
+                    Coins = 1000030
+                };
+                await userManager.CreateAsync(user, "Abc/123456");
+                await userManager.AddToRoleAsync(user, "Doctor");
+            }
+
+            if (await userManager.FindByNameAsync("Doctor1") == null)
+            {
+                user = new User
+                {
+                    UserName = "Doctor1",
                     Email = "Doctor@gmail.com",
                     PhoneNumber = "0997829629",
-                    FullName = "Witch Doctor",
+                    FullName = "Doctor Who",
                     DateOfBirth = DateTime.Parse("1984/03/08"),
-                    Address = "Nhà gần bệnh viện",
-                    City = "Thành phố Hồ Chí Minh",
-                    Country = "Việt Nam",
-                    Avatar = "https://previews.123rf.com/images/anwarsikumbang/anwarsikumbang1502/anwarsikumbang150200445/36649700-man-avatar-user-picture-cartoon-character-vector-illustration.jpg",
+                    Address = "88 Hoang Van Thu Street",
+                    City = "Ho Chi Minh City",
+                    Country = "Viet Nam",
+                    Avatar = "https://cdn1.iconfinder.com/data/icons/diversity-avatars-volume-01-v2/64/doctor-who-eleven-512.png",
                     Gender = Gender.MALE,
                     Coins = 1000030
                 };
@@ -73,7 +93,7 @@ namespace Taurus.Data
                     PhoneNumber = "0666666666",
                     FullName = "Im Tester",
                     DateOfBirth = DateTime.Parse("1978/01/01"),
-                    Address = "nimdA Admin nimdA",
+                    Address = "190 De La Thanh",
                     City = "Hà Nội",
                     Country = "Việt Nam",
                     Avatar = "https://banner2.kisspng.com/20180626/fhs/kisspng-avatar-user-computer-icons-software-developer-5b327cc98b5780.5684824215300354015708.jpg",

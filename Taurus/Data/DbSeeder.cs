@@ -89,7 +89,7 @@ namespace Taurus.Data
             var doctor = new Doctor()
             {
                 UserId = 1,
-                FacilityId = 1,
+                FacilityId = 1,            
                 SpecialistId = 1,
                 IsDoctorOfTheMonth = true
             };
@@ -100,7 +100,16 @@ namespace Taurus.Data
             {
                 UserId = 2,
                 FacilityId = 2,
-                SpecialistId = 2
+                SpecialistId = 2,
+            };
+            context.Doctors.Add(doctor);
+            await context.SaveChangesAsync();
+
+            doctor = new Doctor()
+            {
+                UserId = 3,
+                FacilityId = 3,
+                SpecialistId = 3
             };
             context.Doctors.Add(doctor);
             await context.SaveChangesAsync();
