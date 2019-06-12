@@ -10,7 +10,7 @@ body {
 #sidebar-wrapper {
     position: fixed;
     right: 10px;
-    margin-top: 35px;
+    top: 20%;
     border: solid 2px #dde4ea;
     border-radius: 20px;
     margin-left: -15rem;
@@ -18,12 +18,14 @@ body {
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
-    z-index: 1;
+    z-index: 9;
+    background-color: white;
 }
 
 #sidebar-wrapper .sidebar-heading h2{
   padding: 0.875rem 1.25rem;
   font-size:24px;
+  border-radius: 20px;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -48,19 +50,19 @@ body {
   margin-left: 0;
 }
 
-@media (min-width: 768px) {
-  #sidebar-wrapper {
-    margin-right: 0;
-  }
+@media (min-width: 481px) {
+    #sidebar-wrapper {
+        margin-right: 0;
+    }
 
-  #page-content-wrapper {
-    min-width: 0;
-    width: 100%;
-  }
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
 
-  #wrapper.toggled #sidebar-wrapper {
-    margin-right: -23rem;
-  }
+    #wrapper.toggled #sidebar-wrapper {
+        margin-right: -23rem;
+    }
 }
 .item-sidebar-wrapper{
     list-style:none;

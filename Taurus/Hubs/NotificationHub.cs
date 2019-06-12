@@ -48,17 +48,19 @@ namespace Taurus.Hubs
 
         public async Task GetPendingSessions()
         {
-            var sessions = await _context.Sessions.Where(s => s.Room.Status != RoomStatus.DONE && s.Customer.UserId == int.Parse(Context.UserIdentifier)).ToListAsync();
-            List<dynamic> ts = new List<dynamic>();
+            var sessions = await _context.Sessions.Where(s => s.Room.Status != RoomStatus.DONE && s.Customer.UserId == int.Parse(Context.UserIdentifier)).ToListAsync();            
+            List <dynamic> ts = new List<dynamic>();
             foreach (Session s in sessions)
             {                
                 if (s.Status == SessionStatus.PENDING)
                 {
-                    ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) + 1) + " / " + s.Room.Quota, Url = "" });
+                    ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) - s.Room.Sessions.Count(m => m.Status == SessionStatus.DONE)) + " / " + s.Room.Quota,
+                        NumberLeft = (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) - s.Room.Sessions.Count(m => m.Status == SessionStatus.DONE)),
+                        Title = s.Room.Title ,Url = "" });
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {
-                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Url = "/Video/" + s.RoomId });
+                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Title = s.Room.Title, Url = "/Video/" + s.RoomId });
                 }
             }
             await Clients.User(Context.UserIdentifier).SendAsync("ReceiveSessions", Newtonsoft.Json.JsonConvert.SerializeObject(ts));
