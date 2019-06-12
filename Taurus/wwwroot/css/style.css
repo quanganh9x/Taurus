@@ -367,6 +367,10 @@ a {
         .site-navigation ul li a {
             padding: 30px 0;
         }
+        .homepage-boxes iframe{
+            width:100%;
+            height:500px;
+        }
 }
 
 .site-navigation ul li a:hover,
@@ -455,6 +459,7 @@ a {
         width: 30px;
         margin-left: 15px;
     }
+    
 }
 /*Slide show page home*/
 
@@ -1149,6 +1154,10 @@ ul.tabs-nav {
     .swiper-pagination-wrap {
         bottom: 30px;
     }
+    .homepage-boxes iframe{
+        width:100%;
+        height:390px;
+    }
 }
 
 .testimonial-slider .swiper-pagination-bullet {
@@ -1182,12 +1191,12 @@ ul.tabs-nav {
 # News
 --------------------------------*/
 .the-news {
-    padding: 100px 0 40px;
+    padding: 35px 0px 0px 0px;
 }
 
     .the-news h1,
     .testimonial-section h2 {
-        margin-bottom: 80px;
+        margin-bottom: 35px;
         font-size: 48px;
         font-weight: 600;
         text-align: center;
@@ -1468,8 +1477,18 @@ ul.tabs-nav {
     .pagination {
         margin-bottom: 100px;
     }
+    
 }
+@media screen and (max-width: 992px) {
+    .pagination {
+        margin-bottom: 100px;
+    }
 
+    .homepage-boxes iframe {
+        width: 100%;
+        height: 390px;
+    }
+}
 .pagination a {
     margin-right: 16px;
     font-size: 16px;
@@ -1488,7 +1507,7 @@ ul.tabs-nav {
 # Sidebar
 --------------------------------------------------------------*/
 .sidebar {
-    margin-top: 100px;
+    margin-top: 35px;
     position: relative;
     padding: 16px;
     border-radius: 20px;
@@ -1776,4 +1795,14 @@ ul.tabs-nav {
     border-radius: 20px;
     border: 2px solid #dde4ea;
     border-color: #18a3eb;
+}
+
+@media screen and (max-width: 576px) {
+    .homepage-boxes iframe {
+        width: 100%;
+        height: 210px;
+    }
+    .the-news h1{
+        font-size:24px;
+    }
 }

@@ -65,9 +65,9 @@
                                                     </dl>
                                                     <dl class="param">
                                                         <dt>Message</dt>
-                                                        <dd><input type="text" class="form-control" value="Nạp tiền cho tài khoản <username> với <username> là tên đăng nhập của bạn" readonly/></dd>
+                                                        <dd><input type="text" class="form-control" value="Nạp tiền cho tài khoản <username>" readonly/></dd>
                                                     </dl>
-                                                    <button class="subscribe btn btn-primary btn-block" type="button"> Confirm  </button>
+                                                    <button class="subscribe btn btn-primary btn-block" data-dismiss="modal" type="button"> Confirm  </button>
                                                     
                                                 </div> <!-- tab-pane.// -->
                                             </div>
@@ -136,6 +136,12 @@
             <div class="col-md-9 col-12">
                 <div class="appointment-box the-profile-wrap p-3" id="accordion">
                     <h2 class="d-flex align-items-center">Analytics</h2>
+                    @if (sessions.Count() == 0)
+                    {
+                        <div>
+                            <p>No analytics :( Seems this user hasnt created any sessions</p>
+                        </div>
+                    }
                     @foreach (Session s in sessions)
                     {
                         <div class="card">

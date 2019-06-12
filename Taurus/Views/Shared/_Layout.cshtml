@@ -26,7 +26,6 @@
     <script src='~/js/jquery.barfiller.js'></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/moment-with-locales.js"></script>
-    <script src='~/js/custom.js'></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -38,69 +37,70 @@
     <link rel="stylesheet" href="~/css/notification.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="nav-bar">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 d-flex flex-wrap justify-content-between align-items-center">
-                        <div class="site-branding d-flex align-items-center">
-                            <a class="d-block" href="/" rel="home"><img class="d-block" src="/images/logo.png" alt="logo"></a>
-                        </div><!-- .site-branding -->
+    <div class="content">
+        <header class="site-header">
+            <div class="nav-bar">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 d-flex flex-wrap justify-content-between align-items-center">
+                            <div class="site-branding d-flex align-items-center">
+                                <a class="d-block" href="/" rel="home"><img class="d-block" src="/images/logo.png" alt="logo"></a>
+                            </div><!-- .site-branding -->
 
-                        <nav class="site-navigation d-flex justify-content-end align-items-center">
-                            <ul class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-center">
-                                <li class="current-menu-item"><a href="/">Home</a></li>
-                                <li><a href="/Panel">Rooms</a></li>
-                                <li><a href="/Question">Questions</a></li>
+                            <nav class="site-navigation d-flex justify-content-end align-items-center">
+                                <ul class="d-flex flex-column flex-lg-row justify-content-lg-end align-items-center">
+                                    <li class="current-menu-item"><a href="/">Home</a></li>
+                                    <li><a href="/Panel">Rooms</a></li>
+                                    <li><a href="/Question">Questions</a></li>
 
-                                @if (SignInManager.IsSignedIn(User))
-                                {
-                                    <div class="dropdown show">
-                                        <li class="dropdown-toggle" href="#" role="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-bell" id="notification-icon"></i>
-                                        </li>
-
-                                        <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                            <h6 style="color:black" class="dropdown-header">Notifications</h6>
-
-                                            <div id="notificationsContainer" class="notifications-container">
-
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    @if (!User.IsInRole("Doctor"))
+                                    @if (SignInManager.IsSignedIn(User))
                                     {
                                         <div class="dropdown show">
-                                            <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa fa-bookmark" id="bookmark-icon"></i>&nbsp;<span id="bookmarkCount"></span>
+                                            <li class="dropdown-toggle" href="#" role="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-bell" id="notification-icon"></i>
                                             </li>
 
-                                            <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink" id="bookmark">
-                                                <h6 style="color:black" class="dropdown-header">Bookmarks</h6>
+                                            <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <h6 style="color:black" class="dropdown-header">Notifications</h6>
 
-                                                <div id="bookmarksContainer" class="notifications-container">
+                                                <div id="notificationsContainer" class="notifications-container">
 
                                                 </div>
+
                                             </div>
                                         </div>
+                                        @if (!User.IsInRole("Doctor"))
+                                        {
+                                            <div class="dropdown show">
+                                                <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-bookmark" id="bookmark-icon"></i>&nbsp;<span id="bookmarkCount"></span>
+                                                </li>
+
+                                                <div class="dropdown-menu notification-dropdown-menu" aria-labelledby="dropdownMenuLink" id="bookmark">
+                                                    <h6 style="color:black" class="dropdown-header">Bookmarks</h6>
+
+                                                    <div id="bookmarksContainer" class="notifications-container">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
                                     }
-                                }
 
 
-                                @if (SignInManager.IsSignedIn(User))
-                                {
-                                    <li>
-                                        <a href="/Profile">@User.Identity.Name</a>
-                                    </li>
-                                    <li>
-                                        <a href="/Logout">Logout</a>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li>
-                                        <a class="d-flex justify-content-center" href="/Login">Login</a>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <li>
+                                            <a href="/Profile">@User.Identity.Name</a>
+                                        </li>
+                                        <li>
+                                            <a href="/Logout">Logout</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a class="d-flex justify-content-center" href="/Login">Login</a>
 
                                     </li>
                                     <li>
@@ -111,142 +111,174 @@
                             </ul>
                         </nav><!-- .site-navigation -->
 
-                        <div class="hamburger-menu d-lg-none">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div><!-- .hamburger-menu -->
-                    </div><!-- .col -->
-                </div><!-- .row -->
-            </div><!-- .container -->
-        </div><!-- .nav-bar -->
+                            <div class="hamburger-menu d-lg-none">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div><!-- .hamburger-menu -->
+                        </div><!-- .col -->
+                    </div><!-- .row -->
+                </div><!-- .container -->
+            </div><!-- .nav-bar -->
 
 
 
-    </header><!-- .site-header -->
+        </header><!-- .site-header -->
 
-    @RenderBody()
+        @RenderBody()
 
-    <footer class="site-footer">
-        <div class="footer-widgets">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="foot-about">
-                            <h2><a href="#"><img src="/images/logo.png" alt=""></a></h2>
+        <footer class="site-footer">
+            <div class="footer-widgets">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="foot-about">
+                                <h2><a href="#"><img src="/images/logo.png" alt=""></a></h2>
 
-                            <p>Welcome to Taurus</p>
-                            <p class="copyright">
-                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                Copyright &copy;
-                                <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                            </p>
-                        </div><!-- .foot-about -->
-                    </div><!-- .col -->
+                                <p>Welcome to Taurus</p>
+                                <p class="copyright">
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    Copyright &copy;
+                                    <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                </p>
+                            </div><!-- .foot-about -->
+                        </div><!-- .col -->
 
-                    <div class="col-12 col-md-6 col-lg-4 mt-5 mt-md-0">
-                        <div class="foot-contact">
-                            <h2>Contact</h2>
+                        <div class="col-12 col-md-6 col-lg-4 mt-5 mt-md-0">
+                            <div class="foot-contact">
+                                <h2>Contact</h2>
 
-                            <ul class="p-0 m-0">
-                                <li><span>Address: </span>8 Ton That Thuyet, Cau Giay, Ha Noi</li>
-                                <li><span>Phone: </span>+84 33 664 3363</li>
-                                <li><span>Email: </span>admin@taurus</li>
-                            </ul>
-                        </div>
-                    </div><!-- .col -->
+                                <ul class="p-0 m-0">
+                                    <li><span>Address: </span>8 Ton That Thuyet, Cau Giay, Ha Noi</li>
+                                    <li><span>Phone: </span>+84 33 664 3363</li>
+                                    <li><span>Email: </span>admin@taurus</li>
+                                </ul>
+                            </div>
+                        </div><!-- .col -->
 
-                    <div class="col-12 col-md-6 col-lg-4 mt-5 mt-md-0">
-                        <div class="foot-links">
-                            <h2>Useful Links</h2>
-                            <ul class="p-0 m-0">
-                                <li><a href="/">Home</a></li>
-                                <li><a href="/Panel">Rooms</a></li>
-                                <li><a href="/Question">Questions</a></li>
-                            </ul>
-                        </div><!-- .foot-links -->
-                    </div><!-- .col -->
-                </div><!-- .row -->
-            </div><!-- .container -->
-        </div><!-- .footer-widgets -->
-    </footer><!-- .site-footer -->
+                        <div class="col-12 col-md-6 col-lg-4 mt-5 mt-md-0">
+                            <div class="foot-links">
+                                <h2>Useful Links</h2>
+                                <ul class="p-0 m-0">
+                                    <li><a href="/">Home</a></li>
+                                    <li><a href="/Panel">Rooms</a></li>
+                                    <li><a href="/Question">Questions</a></li>
+                                </ul>
+                            </div><!-- .foot-links -->
+                        </div><!-- .col -->
+                    </div><!-- .row -->
+                </div><!-- .container -->
+            </div><!-- .footer-widgets -->
+        </footer><!-- .site-footer -->
 
-    @if (SignInManager.IsSignedIn(User))
-    {
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <script>
+
+                $(document).ready(function () {
+                    window.toast = new Toasty();
+                    window.connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
+                    window.connection.on("ReceiveNotifications", (data) => {
+                        data = JSON.parse(data);
+                        var hasUnread = false;
+
+                        $("#notificationsContainer").html("");
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].Status === "UNREAD") hasUnread = true;
+                            $("#notificationsContainer").prepend(
+                                `<a class="dropdown-item dropdown-notification ${data[i].Status === "UNREAD" ? "notification-unread" : "notification-read"}" style="color: black" href="#">
+                                                                        <div class="notifications-body">
+                                                                            <p class="notification-texte"><b>${data[i].Title}</b></p>
+                                                                            <p class="notification-texte">${data[i].Description}</p>
+                                                                            <p class="notification-date text-muted">
+                                                                                <i class="fa fa-clock-o" aria-hidden="true"></i> ${moment(data[i].CreatedAt).format('dddd, DD MMMM, hh:mm ')}
+                                                                            </p>
+                                                                        </div>
+                                                                    </a>`
+                            );
+                        }
+                        if (hasUnread) {
+                            $('#notification-icon').addClass('text-danger')
+                        } else {
+                            $('#notification-icon').removeClass('text-danger')
+                        }
+                    });
+
+                    window.connection.on("receiveSessions", (data) => {
+                        data = JSON.parse(data);
+
+                        if (data.length > 0) {
+                            $('#bookmarkCount').text(`(${data.length})`)
+                            $('#bookmark-icon').addClass('text-danger')
+                        } else {
+                            $('#bookmark-icon').removeClass('text-danger')
+                        }
+                        $('#bookmarksContainer').html('');
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].Url == "") {
+                                $("#bookmarksContainer").prepend(
+                                    `<a class="dropdown-item dropdown-notification notification-read" style="color: black" href="#">
+                                                                        <div class="notifications-body">
+                                                                            <p class="notification-texte">${data[i].Message}</p>
+                                                                        </div>
+                                                                    </a>`
+                                )
+                            }
+                            else {
+                                window.toast.success(data[i].Message);
+                                $("#bookmarksContainer").prepend(
+                                    `<a target="_blank" class="dropdown-item dropdown-notification notification-read" style="color: black" href="${data[i].Url}">
+                                                                        <div class="notifications-body">
+                                                                            <p class="notification-texte">${data[i].Message}</p>
+                                                                        </div>
+                                                                    </a>`
+                                )
+                            }
+                        }
+                    });
+
+                    window.connection.start().then(function () {
+                        $("#notification").on("click", function () {
+                            window.connection.invoke("SetReadNotifications");
+                        })
+                    });
+                });
+            </script>
+        }
+
+        <script src='~/js/custom.js'></script>
+        <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
+        <script src="~/js/ajax-loading.js"></script>
         <script>
-            
-            $(document).ready(function () {
-                window.toast = new Toasty();
-                window.connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
-                window.connection.on("ReceiveNotifications", (data) => {
-                    data = JSON.parse(data);
-                    var hasUnread = false;
-                    
-                    $("#notificationsContainer").html("");
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i].Status === "UNREAD") hasUnread = true;
-                        $("#notificationsContainer").prepend(
-                            `<a class="dropdown-item dropdown-notification ${data[i].Status === "UNREAD" ? "notification-unread" : "notification-read"}" style="color: black" href="#">
-                                        <div class="notifications-body">
-                                            <p class="notification-texte"><b>${data[i].Title}</b></p>
-                                            <p class="notification-texte">${data[i].Description}</p>
-                                            <p class="notification-date text-muted">
-                                                <i class="fa fa-clock-o" aria-hidden="true"></i> ${moment(data[i].CreatedAt).format('dddd, DD MMMM, hh:mm ')}
-                                            </p>
-                                        </div>
-                                    </a>`
-                        );
-                    }
-                    if (hasUnread) {
-                        $('#notification-icon').addClass('text-danger')
-                    } else {
-                        $('#notification-icon').removeClass('text-danger')
-                    }
-                });                
+            var loading = $.loading({
+                ajax: true,
+                id: 'ajaxLoading',
+                zIndex: '1000',
 
-                window.connection.on("receiveSessions", (data) => {
-                    data = JSON.parse(data);
-                    
-                    if (data.length > 0) {
-                        $('#bookmarkCount').text(`(${data.length})`)
-                        $('#bookmark-icon').addClass('text-danger')
-                    } else {
-                        $('#bookmark-icon').removeClass('text-danger')
-                    }
-                    $('#bookmarksContainer').html('');
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i].Url == "") {
-                            $("#bookmarksContainer").prepend(
-                                `<a class="dropdown-item dropdown-notification notification-read" style="color: black" href="#">
-                                        <div class="notifications-body">
-                                            <p class="notification-texte">${data[i].Message}</p>
-                                        </div>
-                                    </a>`
-                            )
-                        }
-                        else {
-                            window.toast.success(data[i].Message);
-                            $("#bookmarksContainer").prepend(
-                                `<a target="_blank" class="dropdown-item dropdown-notification notification-read" style="color: black" href="${data[i].Url}">
-                                        <div class="notifications-body">
-                                            <p class="notification-texte">${data[i].Message}</p>
-                                        </div>
-                                    </a>`
-                            )
-                        }
-                    }
-                });
+                // background color
+                background: 'rgba(232, 236, 241, 1)',
 
-                window.connection.start().then(function () {
-                    $("#notification").on("click", function () {
-                        window.connection.invoke("SetReadNotifications");
-                    })
-                });
+                // minimum duration
+                minTime: 200,
+
+                // CSS styles
+                radius: '4px',
+                width: '90px',
+                height: '90px',
+
+                // loading spinner
+                imgPath: '/images/ajax-loader.gif',
+                imgWidth: '30px',
+                imgHeight: '30px',
+
+                // loading text
+                tip: 'Loading',
+                fontSize: '14px',
+                fontColor: '#000000'
             });
+
         </script>
-    }
-    <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>
