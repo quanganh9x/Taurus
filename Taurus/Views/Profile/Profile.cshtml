@@ -13,11 +13,13 @@
                         <h5 class="card-title">@Model.User.FullName</h5>
                         <p>
                             <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i></b> @Model.User.Coins
-                            <button type="button" class="btn btn-sm btn-primary ml-4" data-toggle="modal" data-target="#exampleModal2">
+                        <br />
+                            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal2">
                                 Withdraw
                             </button>
                         </p>
                     </div>
+                    
                     <ul class="list-group list-group-flush">
                         @if (Model.IsDoctorOfTheMonth)
                         {
@@ -51,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary mt-1" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" class="btn btn-primary mt-1 mb-4" data-toggle="modal" data-target="#exampleModal">
                     Update Profile
                 </button>
                 <button style="display: none;" id="launchBook" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBookRoom">
@@ -123,8 +125,8 @@
                         <input class="button gradient-bg" type="submit" value="Create">
                     </form>
                 </div>
-                <div class="calendar-border the-profile-wrap mt-5">
-                    <h2 class="d-flex align-items-center">Reserve a Room</h2>
+                <div class="calendar-border the-profile-wrap mt-5 d-none d-md-block">
+                    <h3 class="d-flex align-items-center">Reserve a Room</h3>
                     <div id="calendar" class="p-3"></div>
                 </div>
             </div>
