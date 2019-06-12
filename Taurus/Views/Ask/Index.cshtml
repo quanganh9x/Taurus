@@ -38,8 +38,42 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-md-8">
-                    @if(Model.Count() == 0)
+                <div class="col-12 col-md-3">
+
+                    <button type="button" style="width:100%" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalSubmitQuestion">
+                        Wanna ask ?
+                    </button>
+                    <!-- -->
+                    <div class="sidebarblock">
+                        <h3>Specialists</h3>
+                        <div class="divline"></div>
+                        <div class="blocktxt">
+                            <ul class="cats">
+                                @foreach (Specialist sp in ViewData["Specialists"] as List<Specialist>)
+                                {
+                                    <li><a href="#">@sp.Name<span class="badge pull-right">@sp.Questions.Count</span></a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- -->
+                    <!-- -->
+                    <div class="sidebarblock">
+                        <h3>Active Threads</h3>
+                        @foreach (Question qq in ViewData["ActiveThreads"] as List<Question>)
+                        {
+                            <div class="divline"></div>
+                            <div class="blocktxt">
+                                <a href="#">@qq.Title</a>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+                <div class="col-12 col-md-9">
+                    @if (Model.Count() == 0)
                     {
                         <div>No question in here. Be the first one to ask!</div>
                     }
@@ -73,40 +107,6 @@
                             <div class="clearfix"></div>
                         </div><!-- POST -->
                     }
-
-                </div>
-                <div class="col-lg-4 col-md-4">
-
-                    <button type="button" style="width:100%" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalSubmitQuestion">
-                        Wanna ask ?
-                    </button>
-                    <!-- -->
-                    <div class="sidebarblock">
-                        <h3>Specialists</h3>
-                        <div class="divline"></div>
-                        <div class="blocktxt">
-                            <ul class="cats">
-                                @foreach (Specialist sp in ViewData["Specialists"] as List<Specialist>)
-                                {
-                                    <li><a href="#">@sp.Name<span class="badge pull-right">@sp.Questions.Count</span></a></li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- -->
-                    <!-- -->
-                    <div class="sidebarblock">
-                        <h3>Active Threads</h3>
-                        @foreach (Question qq in ViewData["ActiveThreads"] as List<Question>)
-                        {
-                            <div class="divline"></div>
-                            <div class="blocktxt">
-                                <a href="#">@qq.Title</a>
-                            </div>
-                        }
-                    </div>
-
 
                 </div>
             </div>
