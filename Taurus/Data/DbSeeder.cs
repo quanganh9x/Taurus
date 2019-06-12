@@ -119,13 +119,6 @@ namespace Taurus.Data
         {
             var customer = new Customer()
             {
-                UserId = 3
-            };
-            context.Customers.Add(customer);
-            await context.SaveChangesAsync();
-
-            customer = new Customer()
-            {
                 UserId = 4
             };
             context.Customers.Add(customer);
@@ -134,6 +127,13 @@ namespace Taurus.Data
             customer = new Customer()
             {
                 UserId = 5
+            };
+            context.Customers.Add(customer);
+            await context.SaveChangesAsync();
+
+            customer = new Customer()
+            {
+                UserId = 6
             };
             context.Customers.Add(customer);
             await context.SaveChangesAsync();
