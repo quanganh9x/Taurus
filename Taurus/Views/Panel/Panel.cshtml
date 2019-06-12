@@ -4,49 +4,7 @@
 <link href="~/css/simple-sidebar.css" rel="stylesheet">
 <link href="~/css/Panel.css" rel="stylesheet">
 
-<div id="wrapper" class="container-fluid toggled" style="margin-top:-25px; min-height: 550px;">
-    <div id="sidebar-wrapper" class="d-none d-sm-block">
-        <div class="sidebar-heading"><h2>Queue List </h2></div>
-        <div class="list-group list-group-flush">
-            @*<a href="#" class="list-group-item list-group-item-action bg-light">Dashboard</a>*@
-            <a href="#" class="list-group-item list-group-item-action bg-light" data-toggle="collapse"
-               data-target="#collapseE" aria-expanded="true" aria-controls="collapseE" id="headingE">Overview1 <i class="fa fa-times" aria-hidden="true" style="float:right;margin-top:8px;"></i></a>
-            <div id="collapseE" class="collapse" aria-labelledby="headingE"
-                 data-parent="#accordionExample">
-                <ul class="item-sidebar-wrapper p-0 m-1" style="margin-left:0px;">
-                    <li class="bg-light" style="word-break: break-all;">
-                        <button type="button" class="btn btn-primary btn-sm my-2">
-                            <span class="badge badge-light">1</span>
-                            Profile
-                        </button>
-                        <br />
-                        <h6 href="#" class="">Mguyen thanh tung tung lung bung</h6>
-                    </li>
-                    <li class="bg-light" style="word-break: break-all;">
-                        <button type="button" class="btn btn-primary btn-sm my-2">
-                            <span class="badge badge-light">1</span>
-                            Profile
-                        </button>
-                        <br />
-                        <h6 href="#" class="">Mguyen thanh tung tung lung bung</h6>
-                    </li>
-                    <li class="bg-light" style="word-break: break-all;">
-                        <button type="button" class="btn btn-primary btn-sm my-2">
-                            <span class="badge badge-light">1</span>
-                            Profile 
-                        </button>
-                        <br />
-                        <h6 href="#" class="">Mguyen thanh tung tung lung bung</h6>
-                    </li>
-                </ul>
-            </div>
-
-            <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
-        </div>
-        
-    </div>
+<div class="container-fluid toggled" style="margin-top:-25px; min-height: 500px;">    
     <div class="container" id="page-content-wrapper">
         <div class="row">
             <div class="col-12 col-lg-3">
@@ -105,14 +63,7 @@
     </div>
 </div>
 
-<span id="queue-list" class="float d-none d-sm-block">
-    <i class="fa fa-list my-float"></i>
-</span>
-
-<script>
-    $("#queue-list").on("click", function () {
-        $("#wrapper").toggleClass("toggled");
-    });
+<script>   
 
     var loadUrl;
     $(document).ready(function () {

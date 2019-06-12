@@ -117,8 +117,8 @@
                 $('.avenue-messenger').fadeOut(300);
             });
 
-            var ourVideo = document.getElementById("our-video");
-            var theirVideo = document.getElementById('their-video');
+            var ourVideo = document.getElementById("our-video-mb");
+            var theirVideo = document.getElementById('their-video-mb');
             var id = $('#id');
             var status = $('#status');
 
@@ -143,7 +143,7 @@
 
             connection.DetectRTC.load(function () {
                 //if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
-                //    // alert('You dont fulfill requirements or your browser doesnt support WebRTC');
+                //     alert('You dont fulfill requirements or your browser doesnt support WebRTC');
                 //    handleError("not-supported");
                 //    return;
                 //}
@@ -485,70 +485,42 @@
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row video-container">
-            <div class="col-md-9 col-12">
-                <video autoplay playsinline id="their-video"></video>
-
+        <div class="row video-container" style="height:100%;">
+            <div class="col-12 p-2" style="height: 50%; width: 100%;">
+                <video autoplay id="their-video-mb"></video>
             </div>
-            <div class="col-md-3 col-12">
-                <video autoplay playsinline id="our-video" muted></video>
-                <style>
-                    .control-box::-webkit-scrollbar {
-                        display: none;
-                    }
-                </style>
-                <div class="card card-body control-box" style="height:75%; overflow:scroll">
-                    <h5>Room</h5>
-                    <p>
-                        <label>ID: </label>
-                        <span>@r.Id</span>
-                    </p>
-                    <p>
-                        <label>Price: </label>
-                        <span>@r.Price</span>
-                    </p>
-                    <h5>Timer</h5>
-                    <h3>
-                        <span id="minutes"></span>:<span id="seconds"></span>
-                    </h3>
-                    <h5 class="mt-2">Controls</h5>
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-warning" id="mute-room">Mute Doctor</button>
-                        <button class="btn btn-warning" id="unmute-room">Unmute Doctor</button>
-                    </div>
-                    <button class="btn btn-danger" id="end-room">End Room</button>
-                </div>
+            <div class="col-12 p-2" style="height: 50%; width: 100%;">
+                <video autoplay id="our-video-mb"></video>
             </div>
-            <section id="chat-box" class="avenue-messenger">
-                <div class="menu">
-
-                    <div class="button" id="fade-button">&mdash;</div>
-                </div>
-                <div class="chat">
-                    <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
-                        <h1 class="chat-username">Chat Box</h1>
-                    </div>
-                    <div class="messages">
-                        <div class="messages-content"></div>
-                    </div>
-                    <div class="message-box">
-                        <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
-                        <button type="submit" class="message-submit">Send</button>
-                        <button class="message-submit message-upload"><i class="fa fa-upload"></i></button>
-                    </div>
-                </div>
-
-            </section>
-
-            <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.5;">
-                <div class="chat">
-                    <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
-                        <h1 class="chat-username">Chat Box</h1>
-                    </div>
-                </div>
-            </section>
         </div>
-    </div>
+        <section id="chat-box" class="avenue-messenger">
+            <div class="menu">
+
+                <div class="button" id="fade-button">&mdash;</div>
+            </div>
+            <div class="chat">
+                <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
+                    <h1 class="chat-username">Chat Box</h1>
+                </div>
+                <div class="messages">
+                    <div class="messages-content"></div>
+                </div>
+                <div class="message-box">
+                    <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
+                    <button type="submit" class="message-submit">Send</button>
+                    <button class="message-submit message-upload"><i class="fa fa-upload"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="chat-bar" class="avenue-messenger-widget-mb" style="display: none;">
+            <div class="chat">
+                <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
+                    <h1 class="chat-username">Chat Box</h1>
+                </div>
+            </div>
+        </section>
+    </div>    
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>

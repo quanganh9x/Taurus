@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
+using Taurus.Helper;
 using Taurus.Models;
 using Taurus.Models.Enums;
 using Taurus.Models.Formats;
@@ -52,7 +53,13 @@ namespace Taurus.Controllers
                 {
                     ViewData["User"] = await _context.Doctors.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
                     ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
-                    return View("../Room/RoomDoctor");
+                    if (Utils.fBrowserIsMobile(Request.Headers["User-Agent"].ToString()))
+                    {
+                        return View("../Mobile/RoomDoctor");
+                    }
+                    else {
+                        return View("../Room/RoomDoctor");
+                    }                   
                 }
                 return LocalRedirect("/Profile");
             }
@@ -62,7 +69,14 @@ namespace Taurus.Controllers
                 ViewData["User"] = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
                 ViewData["Room"] = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
                 ViewData["Session"] = await _context.Sessions.FirstOrDefaultAsync(m => m.RoomId == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)) && (m.Status == SessionStatus.WAITING || m.Status == SessionStatus.PENDING));
-                return View("../Room/RoomCustomer");
+                if (Utils.fBrowserIsMobile(Request.Headers["User-Agent"].ToString()))
+                {
+                    return View("../Mobile/RoomCustomer");
+                }
+                else
+                {
+                    return View("../Room/RoomCustomer");
+                }
             }
             return LocalRedirect("/Panel");
         }

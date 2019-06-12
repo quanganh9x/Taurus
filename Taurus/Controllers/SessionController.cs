@@ -55,6 +55,11 @@ namespace Taurus.Controllers
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Your account doesn't have enough coins to join room at least 2 minutes" });
             }
             var customer = await _context.Customers.FirstOrDefaultAsync(m => m.UserId == int.Parse(_userManager.GetUserId(User)));
+            if(customer == null)
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Customer error" });
+
+            }
             foreach (Session session in r.Sessions)
             {
                 if (session.CustomerId == customer.Id && session.Status == SessionStatus.PENDING)

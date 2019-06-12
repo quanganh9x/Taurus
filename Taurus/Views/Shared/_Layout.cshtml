@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Taurus.Areas.Identity.Models
+@using Taurus.Helper;
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
@@ -11,11 +12,12 @@
     <link rel="icon" href="~/images/logo_medart.png">
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no ">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css" />
+    <link href="~/css/simple-sidebar.css" rel="stylesheet">
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src='~/js/jquery.collapsible.min.js'></script>
@@ -37,7 +39,22 @@
     <link rel="stylesheet" href="~/css/notification.css">
 </head>
 <body>
-    <div class="content">
+    <div class="content toggled" id="wrapper">
+        <div id="sidebar-wrapper" class="d-none d-sm-block toggled">
+            <div class="sidebar-heading"><h2>Queue List </h2></div>
+            <div id="queueing-rooms" class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action bg-light" id="headingE">
+                    <button type="button" class="btn btn-primary btn-sm my-2">
+                        <span class="badge badge-light">2</span>
+                        <span>More to your turn</span>
+                    </button>
+                    <i class="fa fa-times cancel-queue-btn" aria-hidden="true"></i>
+                    <h6>Room "Tro chuyen cung bac si Trang"</h6>
+                </a>
+            </div>
+
+        </div>
+
         <header class="site-header">
             <div class="nav-bar">
                 <div class="container">
@@ -71,7 +88,7 @@
                                         </div>
                                         @if (!User.IsInRole("Doctor"))
                                         {
-                                            <div class="dropdown show">
+                                            <div id="bookmark-dropdown" class="dropdown show">
                                                 <li class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fa fa-bookmark" id="bookmark-icon"></i>&nbsp;<span id="bookmarkCount"></span>
                                                 </li>
@@ -102,14 +119,14 @@
                                         <li>
                                             <a class="d-flex justify-content-center" href="/Login">Login</a>
 
-                                    </li>
-                                    <li>
-                                        <a class="d-flex justify-content-center" href="/Register">Register</a>
+                                        </li>
+                                        <li>
+                                            <a class="d-flex justify-content-center" href="/Register">Register</a>
 
-                                    </li>
-                                }
-                            </ul>
-                        </nav><!-- .site-navigation -->
+                                        </li>
+                                    }
+                                </ul>
+                            </nav><!-- .site-navigation -->
 
                             <div class="hamburger-menu d-lg-none">
                                 <span></span>
@@ -127,6 +144,10 @@
         </header><!-- .site-header -->
 
         @RenderBody()
+
+        <span id="queue-list" class="float d-none d-sm-block">
+            <i class="fa fa-list my-float"></i>
+        </span>
 
         <footer class="site-footer">
             <div class="footer-widgets">
@@ -178,6 +199,10 @@
             <script>
 
                 $(document).ready(function () {
+                    $("#queue-list").on("click", function () {
+                        $("#wrapper").toggleClass("toggled");
+                    });
+
                     window.toast = new Toasty();
                     window.connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
                     window.connection.on("ReceiveNotifications", (data) => {
@@ -189,14 +214,14 @@
                             if (data[i].Status === "UNREAD") hasUnread = true;
                             $("#notificationsContainer").prepend(
                                 `<a class="dropdown-item dropdown-notification ${data[i].Status === "UNREAD" ? "notification-unread" : "notification-read"}" style="color: black" href="#">
-                                                                        <div class="notifications-body">
-                                                                            <p class="notification-texte"><b>${data[i].Title}</b></p>
-                                                                            <p class="notification-texte">${data[i].Description}</p>
-                                                                            <p class="notification-date text-muted">
-                                                                                <i class="fa fa-clock-o" aria-hidden="true"></i> ${moment(data[i].CreatedAt).format('dddd, DD MMMM, hh:mm ')}
-                                                                            </p>
-                                                                        </div>
-                                                                    </a>`
+                                                                                                            <div class="notifications-body">
+                                                                                                                <p class="notification-texte"><b>${data[i].Title}</b></p>
+                                                                                                                <p class="notification-texte">${data[i].Description}</p>
+                                                                                                                <p class="notification-date text-muted">
+                                                                                                                    <i class="fa fa-clock-o" aria-hidden="true"></i> ${moment(data[i].CreatedAt).format('dddd, DD MMMM, hh:mm ')}
+                                                                                                                </p>
+                                                                                                            </div>
+                                                                                                        </a>`
                             );
                         }
                         if (hasUnread) {
@@ -208,6 +233,9 @@
 
                     window.connection.on("receiveSessions", (data) => {
                         data = JSON.parse(data);
+                        console.log(data);
+                        $('#bookmarksContainer').html('');
+                        $('#queueing-rooms').html('');
 
                         if (data.length > 0) {
                             $('#bookmarkCount').text(`(${data.length})`)
@@ -215,25 +243,46 @@
                         } else {
                             $('#bookmark-icon').removeClass('text-danger')
                         }
-                        $('#bookmarksContainer').html('');
+
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].Url == "") {
+                                $('#queueing-rooms').append(
+                                    `<a href="${data[i].Url}" class="list-group-item list-group-item-action bg-light" id="headingE">
+                                                    <button type="button" class="btn btn-primary btn-sm my-2">
+                                                        <span class="badge badge-light">${data[i].NumberLeft}</span>
+                                                        <span>More to your turn</span>
+                                                    </button>
+                                                    <i class="fa fa-times cancel-queue-btn" aria-hidden="true" style="float:right"></i>
+                                                    <h6>${data[i].Title}</h6>
+                                                </a>`
+                                )
+
                                 $("#bookmarksContainer").prepend(
                                     `<a class="dropdown-item dropdown-notification notification-read" style="color: black" href="#">
-                                                                        <div class="notifications-body">
-                                                                            <p class="notification-texte">${data[i].Message}</p>
-                                                                        </div>
-                                                                    </a>`
+                                                                                                            <div class="notifications-body">
+                                                                                                                <p class="notification-texte">${data[i].Message}</p>
+                                                                                                            </div>
+                                                                                                        </a>`
                                 )
                             }
                             else {
                                 window.toast.success(data[i].Message);
+                                $('#queueing-rooms').append(
+                                    `<a href="${data[i].Url}" class="list-group-item list-group-item-action bg-light" id="headingE">
+                                                    <button type="button" class="btn btn-primary btn-sm my-2">
+                                                        <span class="badge badge-success">0</span>
+                                                        <span>Click here to enter your room</span>
+                                                    </button>
+                                                    <h6>${data[i].Title}</h6>
+                                                </a>`
+                                )
+
                                 $("#bookmarksContainer").prepend(
                                     `<a target="_blank" class="dropdown-item dropdown-notification notification-read" style="color: black" href="${data[i].Url}">
-                                                                        <div class="notifications-body">
-                                                                            <p class="notification-texte">${data[i].Message}</p>
-                                                                        </div>
-                                                                    </a>`
+                                                                                                            <div class="notifications-body">
+                                                                                                                <p class="notification-texte">${data[i].Message}</p>
+                                                                                                            </div>
+                                                                                                        </a>`
                                 )
                             }
                         }

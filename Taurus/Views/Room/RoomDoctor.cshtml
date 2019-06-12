@@ -155,11 +155,11 @@
             connection.socketMessageEvent = "event-" + connection.roomid;
 
             connection.DetectRTC.load(function () {
-                if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
-                    alert('You dont fulfill requirements or your browser doesnt support WebRTC');
-                    handleError("not-supported");
-                    return;
-                }
+                // if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
+                //    alert('You dont fulfill requirements or your browser doesnt support WebRTC');
+                //    handleError("not-supported");
+                //    return;
+                // }
 
                 connection.checkPresence(connection.roomid, function (isRoomExist, roomid, error) {
                     if (isRoomExist) {
@@ -561,8 +561,8 @@
 <body>
     <div class="container-fluid">
         <div class="row video-container">
-            <div class="col-md-9 col-12">
-                <video autoplay id="their-video"></video>
+            <div class="col-md-9 col-12" style="max-height:75%;">
+                <video autoplay playsinline id="their-video"></video>
                 <div class="col-4">
                     <div class="card card-body" style="height:20%; padding: 10px;">
                         <h5 class="mt-2">Controls</h5>
@@ -578,7 +578,7 @@
                 </div>
             </div>
             <div class="col-md-3 col-12">
-                <video autoplay id="our-video"></video>
+                <video autoplay playsinline id="our-video"></video>
                 <style>
                     .control-box::-webkit-scrollbar {
                         display: none;
@@ -615,7 +615,7 @@
             </div>
             <div class="chat">
                 <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
-                    <h1 class="chat-username">Customer</h1>
+                    <h1 class="chat-username">Chat Box</h1>
                 </div>
                 <div class="messages">
                     <div class="messages-content"></div>
@@ -632,7 +632,7 @@
         <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.5;">
             <div class="chat">
                 <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
-                    <h1 class="chat-username">Customer</h1>
+                    <h1 class="chat-username">Chat Box</h1>
                 </div>
             </div>
         </section>
