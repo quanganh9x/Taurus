@@ -597,6 +597,29 @@ Bounce
         color: #232323;
     }
 
+.avenue-messenger-widget {
+    opacity: 1;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    //height: calc(100% - 60px) !important;
+    width: 320px;
+    /*  transform: translateY(0);
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+  */
+    background: rgba(255, 255, 255, 0.9);
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    margin: auto;
+    z-index: 10;
+    box-shadow: 2px 10px 40px rgba(22,20,19,0.4);
+    /*  transform: translateX(300px);*/
+    -webkit-transition: 0.3s all ease-out 0.1s, transform 0.2s ease-in;
+    -moz-transition: 0.3s all ease-out 0.1s, transform 0.2s ease-in;
+}
+
 .close {
     display: block;
     width: 100px;

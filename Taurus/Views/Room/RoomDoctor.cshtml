@@ -44,7 +44,7 @@
     <script src="~/js/FileBufferReader.min.js"></script>
     <script src="~/lib/RecordRTC/RecordRTC.min.js"></script>
     <script>
-        
+
         $(document).ready(function () {
             window.toast = new Toasty();
 
@@ -122,8 +122,16 @@
 
             $('#fade-button').click(function (e) {
                 e.preventDefault();
-                $('.avenue-messenger').fadeOut(300);
+                $('#chat-box').fadeOut( "fast", function() {
+                    $('#chat-bar').fadeIn("fast");
+                });
             });
+
+            $('#chat-bar').on("click", function(){
+                $('#chat-bar').fadeOut( "fast", function() {
+                    $('#chat-box').fadeIn("fast");
+                });
+            })
 
             var ourVideo = document.getElementById("our-video");
             var theirVideo = document.getElementById('their-video');
@@ -221,9 +229,12 @@
 
             connection.onNewParticipant = function (participantId, userPreferences) {
                 clearTimeout(requestTimeout); // no more timeout
+
                 updateRoom();
                 updateHeartbeat = setInterval(updateRoom, 15000);
+
                 connection.acceptParticipationRequest(participantId, userPreferences);
+
             };
 
             connection.onopen = function (event) {
@@ -266,7 +277,6 @@
                 var element = null;
 
                 if (event.type == 'local') {
-                    event.stream.mute();
                     myStream = event.stream;
                     element = ourVideo;
                     element.muted = true;
@@ -325,11 +335,12 @@
                 insertMessage();
             });
 
-            function getFullName(userid) {
-                var _userFullName = userid;
-                if (connection.peers[userid] && connection.peers[userid].extra.userFullName) {
-                    _userFullName = connection.peers[userid].extra.userFullName;
+            function getFullName() {
+                if (connection.peers[0].extra.userFullName) {
+                    _userFullName = connection.peers[0].extra.userFullName;
                 }
+        console.log(connection.peers[0]);
+        console.log(connection.peers[0].extra.userFullName);
                 return _userFullName;
             }
 
@@ -555,12 +566,13 @@
             </div>
             <div class="col-md-3 col-12">
                 <video autoplay id="our-video"></video>
-                <div class="card card-body">
+                <style>
+                    .control-box::-webkit-scrollbar {
+                        display: none;
+                    }
+                </style>
+                <div class="card card-body control-box" style="height:75%; overflow:scroll">
                     <h5>Room</h5>
-                    <p>
-                        <label>ID: </label>
-                        <span>@r.Id</span>
-                    </p>
                     <p>
                         <label>Title: </label>
                         <span>@r.Title</span>
@@ -568,10 +580,6 @@
                     <p>
                         <label>Quota: </label>
                         <span>@r.Quota</span>
-                    </p>
-                    <p>
-                        <label>Served: </label>
-                        <span>@r.Sessions.Count()</span>
                     </p>
                     <h5>Timer</h5>
                     <h3>
@@ -585,9 +593,9 @@
                     </style>
                     <ul class="list-group" style="overflow: scroll; max-height: 200px;" id="listsession"></ul>
                     <h5 class="mt-2">Controls</h5>
-                    <div class="d-flex justify-content-center">
-                        <button class="btn btn-warning" id="mute-room">Mute Doctor</button>
-                        <button class="btn btn-warning" id="unmute-room">Unmute Doctor</button>
+                    <div class="d-flex justify-content-between">
+                        <button class="btn btn-warning" id="mute-room">Mute Customer</button>
+                        <button class="btn btn-warning" id="unmute-room">Unmute Customer</button>
                     </div>
                     <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddQuota">
                         Add Quota
@@ -596,11 +604,14 @@
                 </div>
             </div>
         </div>
-        <section class="avenue-messenger">
+        <section id="chat-box" class="avenue-messenger">
             <div class="menu">
                 <div class="button" id="fade-button">&mdash;</div>
             </div>
             <div class="chat">
+                <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
+                    <h1 class="chat-username">Customer</h1>
+                </div>
                 <div class="messages">
                     <div class="messages-content"></div>
                 </div>
@@ -611,6 +622,14 @@
                 </div>
             </div>
 
+        </section>
+
+        <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.5;">
+            <div class="chat">
+                <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
+                    <h1 class="chat-username">Customer</h1>
+                </div>
+            </div>
         </section>
     </div>
     <div class="modal fade" id="modalAddQuota" tabindex="-1" role="dialog" aria-labelledby="modalAddQuotaTitle" aria-hidden="true">
@@ -623,7 +642,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="add-quota-form" action="@Url.Action("AddRoomQuota", "Room")" method="post">
+                    <form id="add-quota-form" action="@Url.Action(" AddRoomQuota", "Room" )" method="post">
                         <input type="hidden" name="id" value="@r.Id" />
                         <div class="form-group">
                             <label for="quota" class="col-form-label">Quota</label>
@@ -638,6 +657,8 @@
             </div>
         </div>
     </div>
+
+    
 
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>

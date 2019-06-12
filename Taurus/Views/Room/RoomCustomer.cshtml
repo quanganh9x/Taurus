@@ -161,6 +161,7 @@
                         }
                         else {
                             activeSession();
+                            
                         }
                     });
                 });
@@ -248,7 +249,6 @@
                 var element = null;
 
                 if (event.type == 'local') {
-                    event.stream.mute();
                     myStream = event.stream;
                     element = ourVideo;
                     element.muted = true;
@@ -306,10 +306,9 @@
                 insertMessage();
             });
 
-            function getFullName(userid) {
-                var _userFullName = userid;
-                if (connection.peers[userid] && connection.peers[userid].extra.userFullName) {
-                    _userFullName = connection.peers[userid].extra.userFullName;
+            function getFullName() {
+                if (connection.peers[0].extra.userFullName) {
+                    _userFullName = connection.peers[0].extra.userFullName;
                 }
                 return _userFullName;
             }
@@ -493,7 +492,12 @@
             </div>
             <div class="col-md-3 col-12">
                 <video autoplay id="our-video" muted></video>
-                <div class="card card-body">
+                <style>
+                    .control-box::-webkit-scrollbar {
+                        display: none;
+                    }
+                </style>
+                <div class="card card-body control-box" style="height:75%; overflow:scroll">
                     <h5>Room</h5>
                     <p>
                         <label>ID: </label>
@@ -508,31 +512,42 @@
                         <span id="minutes"></span>:<span id="seconds"></span>
                     </h3>
                     <h5 class="mt-2">Controls</h5>
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-between">
                         <button class="btn btn-warning" id="mute-room">Mute Doctor</button>
                         <button class="btn btn-warning" id="unmute-room">Unmute Doctor</button>
                     </div>
                     <button class="btn btn-danger" id="end-room">End Room</button>
                 </div>
             </div>
-        <section class="avenue-messenger">
-            <div class="menu">
+            <section id="chat-box" class="avenue-messenger">
+                <div class="menu">
 
-                <div class="button" id="fade-button">&mdash;</div>
-            </div>
-            <div class="chat">
-                <div class="messages">
-                    <div class="messages-content"></div>
+                    <div class="button" id="fade-button">&mdash;</div>
                 </div>
-                <div class="message-box">
-                    <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
-                    <button type="submit" class="message-submit">Send</button>
-                    <button class="message-submit message-upload"><i class="fa fa-upload"></i></button>
+                <div class="chat">
+                    <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
+                        <h1 class="chat-username">Doctor</h1>
+                    </div>
+                    <div class="messages">
+                        <div class="messages-content"></div>
+                    </div>
+                    <div class="message-box">
+                        <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
+                        <button type="submit" class="message-submit">Send</button>
+                        <button class="message-submit message-upload"><i class="fa fa-upload"></i></button>
+                    </div>
                 </div>
-            </div>
 
-        </section>
-    </div>
+            </section>
+
+            <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.5;">
+                <div class="chat">
+                    <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
+                        <h1 class="chat-username">Doctor</h1>
+                    </div>
+                </div>
+            </section>
+        </div>
         </div>
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
