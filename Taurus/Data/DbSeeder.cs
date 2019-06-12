@@ -30,19 +30,31 @@ namespace Taurus.Data
         {
             context.Specialists.Add(new Specialist()
             {
-                Name = "Phụ Khoa"
+                Name = "Cardioology"
             });
             context.Specialists.Add(new Specialist()
             {
-                Name = "Sản Khoa"
+                Name = "Dental Care"
             });
             context.Specialists.Add(new Specialist()
             {
-                Name = "Nội Khoa"
+                Name = "Surgery"
             });
             context.Specialists.Add(new Specialist()
             {
-                Name = "Ngoại Khoa"
+                Name = "Neurology"
+            });
+            context.Specialists.Add(new Specialist()
+            {
+                Name = "Orthopaedy"
+            });
+            context.Specialists.Add(new Specialist()
+            {
+                Name = "Pediatry"
+            });
+            context.Specialists.Add(new Specialist()
+            {
+                Name = "Ophthalmology"
             });
             await context.SaveChangesAsync();
         }
@@ -51,23 +63,23 @@ namespace Taurus.Data
         {
             context.Facilities.Add(new Facility()
             {
-                Name = "Siêu Bệnh viện",
-                Address = "8 Tôn Thất Thuyết, Cầu Giấy, Hà Nội"
+                Name = "BACHH MAI HOSPITAL",
+                Address = "78 Giai Phong Street, Phuong Mai, Dong Da, Hanoi"
             });
             context.Facilities.Add(new Facility()
             {
-                Name = "Bệnh viện Neymar",
-                Address = "10 Neymar, Paris, France"
+                Name = "VIET DUC HOSPITAL",
+                Address = "40 Trang Thi, Hoan Kiem, Hanoi"
             });
             context.Facilities.Add(new Facility()
             {
-                Name = "Bệnh viện Messi",
-                Address = "10 Messi, Messi, Barcelona"
+                Name = "CENTRAL CHILDREN'S HOSPITAL",
+                Address = "18/879 La Thanh, Dong Da, Hanoi"
             });
             context.Facilities.Add(new Facility()
             {
-                Name = "Bệnh viện Ronaldo",
-                Address = "7 Juv, Torino, Italy"
+                Name = "CENTRAL MEDICINE HOSPITAL",
+                Address = "Thon Bau, Kim Chung commune, Dong Anh district, Hanoi city."
             });
             await context.SaveChangesAsync();
         }
