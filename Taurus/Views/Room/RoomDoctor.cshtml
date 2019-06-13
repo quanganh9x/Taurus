@@ -44,7 +44,7 @@
             var $messages = $('.messages-content'),
                 d, h, m,
                 i = 0;
-            
+
             $messages.mCustomScrollbar();
 
 
@@ -95,7 +95,7 @@
                     return false;
                 }
             })
-            
+
 
             $('#fade-button').click(function (e) {
                 e.preventDefault();
@@ -132,11 +132,25 @@
             connection.socketMessageEvent = "event-" + connection.roomid;
 
             connection.DetectRTC.load(function () {
-                 if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
+                if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
                     alert('You dont fulfill requirements or your browser doesnt support WebRTC');
                     handleError("not-supported");
                     return;
-                 }
+                }
+
+                if (navigator.connection &&
+                    navigator.connection.type === 'cellular' &&
+                    navigator.connection.downlinkMax <= 0.115) {
+                    alert('Your connection is too slow for WebRTC to operate');
+                    handleError("low-bandwidth");
+                    return;
+                }
+
+                if (connection.DetectRTC.browser.name == "Safari") {
+                    alert('You are using an unsupported browser. Please switch to Chrome or Firefox for the best performance');
+                    handleError("unsupported");
+                    return;
+                }
 
                 connection.checkPresence(connection.roomid, function (isRoomExist, roomid, error) {
                     if (isRoomExist) {
@@ -178,13 +192,7 @@
                     },
                     optional: []
                 },
-                video: {
-                    mandatory: {
-                        minFrameRate: 15,
-                        maxFrameRate: 60
-                    },
-                    optional: []
-                }
+                video: true
             };
 
             if (connection.DetectRTC.browser.name == "Firefox") {
@@ -205,12 +213,13 @@
 
             connection.onNewParticipant = function (participantId, userPreferences) {
                 clearTimeout(requestTimeout); // no more timeout
-                
-                if (confirm("An user joined. Confirm ?")) {
+
+                $('#modalConfirmJoin').trigger('show');
+                $('#join-btn').on('click', function() {
                     updateRoom();
                     updateHeartbeat = setInterval(updateRoom, 15000);
                     connection.acceptParticipationRequest(participantId, userPreferences);
-                }
+                })
             };
 
             connection.onopen = function (event) {
@@ -282,7 +291,7 @@
                 _userFullName = connection.peers[0].extra.userFullName;
                 return _userFullName;
             }
-            
+
             $('.message-upload').on("click", function () {
                 var file = new FileSelector();
                 file.selectSingleFile(function (file) {
@@ -340,7 +349,7 @@
                         }, 1000);
                     })
                     .fail(function (data) {
-
+                        handleError("api-error")
                     });
             }
 
@@ -350,7 +359,7 @@
                         requestTimeout = setTimeout(requestSession, 60000);
                     })
                     .fail(function (data) {
-
+                        handleError("api-error");
                     });
             }
 
@@ -451,10 +460,10 @@
                 e.preventDefault();
                 $.post($("#add-quota-form").attr('action'), $("#add-quota-form").serialize())
                 .done(function (data) {
-
+                    window.toast.success("Success");
                 })
                 .fail(function (data) {
-
+                    window.toast.error("An error occurred");
                 });
                 $("#add-quota-form").trigger("reset");
                 $("#modalAddQuota").modal('hide');
@@ -600,6 +609,158 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalConfirmJoin" tabindex="-1" role="dialog" aria-labelledby="modalConfirmJoinTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalConfirmJoinTitle">Confirm join ?</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Do you allow user to join ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button id="join-btn" type="button" class="btn btn-primary">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalAddNotes" tabindex="-1" role="dialog" aria-labelledby="modalAddNotesTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAddNotesTitle">Add Notes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body notes-container">
+                    <form id="add-notes-form" action="@Url.Action("AddNotes","Note")" method="post">
+                        <input type="hidden" name="id" value="@r.Id" />
+                        <label>Zed</label>
+                        <div class=" controls-symptom">
+                            <div class="entry input-group">
+                                <input class="form-control" name="symptom[]" type="text" placeholder="Type something" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success btn-add" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <label>Qiyana</label>
+                        <div class="controls-diagnose">
+                            <div class="entry input-group">
+                                <input class="form-control" name="diagnose[]" type="text" placeholder="Type something" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success btn-add" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <label>Yasuo</label>
+                        <div class=" controls-medicine">
+                            <div class="entry input-group">
+                                <input class="form-control" name="medicine[]" type="text" placeholder="Type medicine" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success btn-add" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <label>Aatrox</label>
+                        <div class="entry input-group">
+                            <input class="form-control" name="note" type="text" placeholder="Note" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="add-notes-btn" type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    $(".controls-symptom").on('click', '.btn-add', function(e)
+    {
+        e.preventDefault();
+
+        var controlForm = $('.controls-symptom'),
+            currentEntry = $(this).parents('.entry:first'),
+            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        newEntry.find('input').val('');
+        controlForm.find('.entry:not(:last) .btn-add')
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<i class="fa fa-minus"></i>');
+    }).on('click', '.btn-remove', function(e)
+    {
+        $(this).parents('.entry:first').remove();
+
+        e.preventDefault();
+        return false;
+    });
+        $(".controls-diagnose").on('click', '.btn-add', function(e)
+    {
+        e.preventDefault();
+
+        var controlForm = $('.controls-diagnose'),
+            currentEntry = $(this).parents('.entry:first'),
+            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        newEntry.find('input').val('');
+        controlForm.find('.entry:not(:last) .btn-add')
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<i class="fa fa-minus"></i>');
+    }).on('click', '.btn-remove', function(e)
+    {
+        $(this).parents('.entry:first').remove();
+
+        e.preventDefault();
+        return false;
+    });
+        $(".controls-medicine").on('click', '.btn-add', function(e)
+    {
+        e.preventDefault();
+
+        var controlForm = $(".controls-medicine"),
+            currentEntry = $(this).parents('.entry:first'),
+            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        newEntry.find('input').val('');
+        controlForm.find('.entry:not(:last) .btn-add')
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<i class="fa fa-minus"></i>');
+    }).on('click', '.btn-remove', function(e)
+    {
+        $(this).parents('.entry:first').remove();
+
+        e.preventDefault();
+        return false;
+    });
+
+        $("#add-notes-btn").click(function (e) {
+                e.preventDefault();
+                $.post($("#add-notes-form").attr('action'), $("#add-notes-form").serialize())
+                .done(function (data) {
+                    window.toast.info("Save success");
+                })
+                .fail(function (data) {
+                    window.toast.error("api-error");
+                });
+                $("#add-notes-form").trigger("reset");
+                $("#modalAddNotes").modal('hide');
+            });
+        $('#modalAddNotes').on('hidden.bs.modal', function () {
+            requestSession();
+        }
+    </script>
 
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>

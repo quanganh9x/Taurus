@@ -247,7 +247,7 @@
             };
 
             connection.onleave = function (event) {
-                $('#ModalAddNotes').trigger('show');
+                $('#modalAddNotes').trigger('show');
             };
 
             connection.onmessage = function (event) {
@@ -758,7 +758,7 @@
                 $("#add-notes-form").trigger("reset");
                 $("#modalAddNotes").modal('hide');
             });
-        $('#ModalAddNotes').on('hidden.bs.modal', function () {
+        $('#modalAddNotes').on('hidden.bs.modal', function () {
             requestSession();
         }
     </script>
