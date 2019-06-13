@@ -54,7 +54,7 @@
                     scrollInertia: 10,
                     timeout: 0
                 });
-            }
+            }            
 
             function setDate() {
                 d = new Date()
@@ -440,7 +440,7 @@
 <body>
     <div class="container-fluid">
         <div class="row video-container">
-            <div class="col-md-9 col-12">
+            <div class="col-md-9 col-12" style="height: 100%;">
                 <video autoplay playsinline id="their-video"></video>
 
             </div>
@@ -470,6 +470,38 @@
                         <button class="btn btn-warning" id="mute-room">Mute Doctor</button>
                         <button class="btn btn-warning" id="unmute-room">Unmute Doctor</button>
                     </div>
+                    <div>
+                        <a onclick="voteDoctor(this, @r.DoctorId, @s.Id)" class="vote-btn"><i class="fa fa-thumbs-o-up"></i></a>
+                        <a onclick="flagDoctor(this, @r.DoctorId, @s.Id)" class="flag-btn"><i class="fa fa-flag"></i></a>
+                        <script>
+                            function voteDoctor(e, doctorId, sessionId) {
+                                if (confirm("Do you want to vote for this doctor? ")) {
+                                    $.post("@Url.Action("VoteDoctorRoom", "Vote")", { doctorId: doctorId, sessionId: sessionId })
+                                        .done(function (resp) {
+                                            $(e).addClass("voted");
+                                            $(e).next().addClass("disabled");
+                                        })
+                                        .fail(function (resp) {
+                                            window.toast.error("You have already voted")
+                                        });
+                                    return false;
+                                }                                
+                            }
+
+                            function flagDoctor(e, doctorId, sessionId) {
+                                if (confirm("Do you want to report this doctor? ")) {
+                                    $.post("@Url.Action("FlagDoctorRoom", "Vote")", { doctorId: doctorId, sessionId: sessionId })
+                                        .done(function (resp) {
+                                            $(e).addClass("flagged");
+                                            $(e).prev().addClass("disabled");
+                                        })
+                                        .fail(function (resp) {
+                                            window.toast.error("You have already voted")
+                                        });
+                                }
+                            }
+                        </script>
+                    </div>                    
                     <button class="btn btn-danger" id="end-room">End Room</button>
                 </div>
             </div>

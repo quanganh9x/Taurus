@@ -225,7 +225,7 @@
     
 
     function voteDoctor(e, doctorId, questionId) {
-        $.post("@Url.Action("DoctorVote", "Vote")", { doctorId: doctorId, questionId: questionId })
+        $.post("@Url.Action("VoteDoctorAnswer", "Vote")", { doctorId: doctorId, questionId: questionId })
                 .done(function (resp) {
                     $(e).addClass("voted");
                     $(e).next().addClass("disabled");
@@ -236,7 +236,7 @@
     }
 
     function flagDoctor(e, doctorId, questionId) {        
-        $.post("@Url.Action("DoctorFlag", "Vote")", { doctorId: doctorId, questionId: questionId })
+        $.post("@Url.Action("FlagDoctorAnswer", "Vote")", { doctorId: doctorId, questionId: questionId })
                 .done(function (resp) {
                     $(e).addClass("flagged");
                     $(e).prev().addClass("disabled");

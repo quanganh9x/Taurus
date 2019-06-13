@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Models;
+using Taurus.Models.Enums;
 using Taurus.Models.Formats;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -28,7 +29,7 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("VoteCustomer")]
-        public async Task<IActionResult> CustomerVote([Bind("CustomerId")] CustomerVote cv)
+        public async Task<IActionResult> VoteCustomerQuestion([Bind("CustomerId")] CustomerVote cv)
         {
             if (User.IsInRole("Doctor"))
             {
@@ -47,7 +48,7 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("FlagCustomer")]
-        public async Task<IActionResult> CustomerFlag([Bind("CustomerId")] CustomerFlag cv)
+        public async Task<IActionResult> FlagCustomerQuestion([Bind("CustomerId")] CustomerFlag cv)
         {
             if (User.IsInRole("Doctor"))
             {
@@ -65,8 +66,8 @@ namespace Taurus.Controllers
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }
 
-        [HttpPost("VoteDoctor")]
-        public async Task<IActionResult> DoctorVote([Bind("DoctorId")] DoctorVote dv, [FromForm] int questionId)
+        [HttpPost("VoteDoctorAnswer")]
+        public async Task<IActionResult> VoteDoctorAnswer([Bind("DoctorId")] DoctorVote dv, [FromForm] int questionId)
         {
             if (!User.IsInRole("Doctor"))
             {
@@ -82,8 +83,8 @@ namespace Taurus.Controllers
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }
 
-        [HttpPost("FlagDoctor")]
-        public async Task<IActionResult> DoctorFlag([Bind("DoctorId")] DoctorFlag dv, [FromForm] int questionId)
+        [HttpPost("FlagDoctorAnswer")]
+        public async Task<IActionResult> FlagDoctorAnswer([Bind("DoctorId")] DoctorFlag dv, [FromForm] int questionId)
         {
             if (!User.IsInRole("Doctor"))
             {
@@ -96,6 +97,36 @@ namespace Taurus.Controllers
                 
                 await _context.SaveChangesAsync();
                 return Ok(new APIResponse { Status = APIStatus.Success, Data = null });                
+            }
+            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+        }
+
+        [HttpPost("VoteDoctorRoom")]
+        public async Task<IActionResult> VoteDoctorRoom([Bind("DoctorId")] DoctorVote dv, [FromForm] int sessionId)
+        {
+            if (User.IsInRole("Customer"))
+            {
+                Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == sessionId);
+                if (s.Status == SessionStatus.PENDING) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+                dv.UserId = int.Parse(_userManager.GetUserId(User));
+                _context.DoctorVotes.Add(dv);
+                await _context.SaveChangesAsync();
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
+            }
+            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+        }
+
+        [HttpPost("FlagDoctorRoom")]
+        public async Task<IActionResult> FlagDoctorRoom([Bind("DoctorId")] DoctorFlag dv, [FromForm] int sessionId)
+        {
+            if (User.IsInRole("Customer"))
+            {
+                Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == sessionId);
+                if (s.Status == SessionStatus.PENDING) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+                dv.UserId = int.Parse(_userManager.GetUserId(User));
+                _context.DoctorFlags.Add(dv);
+                await _context.SaveChangesAsync();
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
             }
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }

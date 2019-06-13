@@ -881,3 +881,25 @@ box-shadow: 0px 0px 10px rgba(0,0,0,.8);*/
     padding: 32px;
     height: 100%;
 }
+
+a.voted {
+    color: blue !important;
+    cursor: default;
+    pointer-events: none;
+}
+
+a.flagged {
+    color: red !important;
+    cursor: default;
+    pointer-events: none;
+}
+
+.vote-btn, .flag-btn {
+    cursor: pointer;
+}
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+}
