@@ -50,7 +50,7 @@
                     scrollInertia: 10,
                     timeout: 0
                 });
-            }
+            }            
 
             function setDate() {
                 d = new Date()
@@ -423,10 +423,18 @@
 
             $("#mute-room").on("click", function () {
                 theirStream.getAudioTracks()[0].enabled = false;
+                if (($("#unmute-room").is(":hidden"))) {
+                    $("#unmute-room").prop("hidden", false);
+                    $("#mute-room").prop("hidden", true);
+                }
             });
 
             $("#unmute-room").on("click", function () {
                 theirStream.getAudioTracks()[0].enabled = true;
+                if (($("#mute-room").is(":hidden"))) {
+                    $("#mute-room").prop("hidden", false);
+                    $("#unmute-room").prop("hidden", true);
+                }
             });
         });
 
@@ -436,9 +444,56 @@
 <body>
     <div class="container-fluid">
         <div class="row video-container">
-            <div class="col-md-9 col-12">
+            <div class="col-md-9 col-12" style="height: 75%;">
                 <video autoplay playsinline id="their-video"></video>
+                <div class="row">
+                    <div class="col-md-3 col-12">
+                        <button class="btn btn-warning" id="mute-room" data-toggle="tooltip" data-placement="top" title="Mute-Room">
+                            <i style="color:white" class="fa fa-volume-up" aria-hidden="true"></i>
+                        </button>
+                        <button hidden class="btn btn-warning" id="unmute-room" data-toggle="tooltip" data-placement="top" title="Unmute-Room">
+                            <i style="color:white" class="fa fa-volume-off" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-danger" id="end-room" data-toggle="tooltip" data-placement="top" title="Close Room">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="col-9" style="text-align: right;">
+                        <a class="vote-btn" onclick="voteDoctor(this, @r.DoctorId, @s.Id)" data-toggle="tooltip" data-placement="top" title="Vote"><i class="fa fa-thumbs-o-up fa-2x text-muted"></i></a> &nbsp;
+                        <a class="flag-btn" onclick="flagDoctor(this, @r.DoctorId, @s.Id)" data-toggle="tooltip" data-placement="top" title="Flag"><i class="fa fa-flag fa-2x text-muted"></i></a>
 
+                        <script>
+                            function voteDoctor(e, doctorId, sessionId) {
+                                if (confirm("Do you want to vote for this doctor? ")) {
+                                    $.post("@Url.Action("VoteDoctorRoom", "Vote")", { doctorId: doctorId, sessionId: sessionId })
+                                        .done(function (resp) {
+                                            $(e).addClass("voted");
+                                            $(e).children().removeClass("text-muted");
+                                            $(e).next().addClass("disabled");
+                                        })
+                                        .fail(function (resp) {
+                                            window.toast.error("You have already voted")
+                                        });
+                                    return false;
+                                }
+                            }
+
+                            function flagDoctor(e, doctorId, sessionId) {
+                                if (confirm("Do you want to report this doctor? ")) {
+                                    $.post("@Url.Action("FlagDoctorRoom", "Vote")", { doctorId: doctorId, sessionId: sessionId })
+                                        .done(function (resp) {
+                                            $(e).addClass("flagged");
+                                            $(e).children().removeClass("text-muted");  
+                                            $(e).prev().addClass("disabled");
+                                        })
+                                        .fail(function (resp) {
+                                            window.toast.error("You have already voted")
+                                        });
+                                }
+                            }
+                        </script>
+                    </div>
+                </div>
             </div>
             <div class="col-md-3 col-12">
                 <video autoplay playsinline id="our-video" muted></video>
@@ -460,13 +515,7 @@
                     <h5>Timer</h5>
                     <h3>
                         <span id="minutes"></span>:<span id="seconds"></span>
-                    </h3>
-                    <h5 class="mt-2">Controls</h5>
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-warning" id="mute-room">Mute Doctor</button>
-                        <button class="btn btn-warning" id="unmute-room">Unmute Doctor</button>
-                    </div>
-                    <button class="btn btn-danger" id="end-room">End Room</button>
+                    </h3>                                       
                 </div>
             </div>
             <section id="chat-box" class="avenue-messenger">

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Room Doctor";
 }
 
-@{ 
+@{
     Layout = null;
 }
 
@@ -119,13 +119,13 @@
 
             $('#fade-button').click(function (e) {
                 e.preventDefault();
-                $('#chat-box').fadeOut( "fast", function() {
+                $('#chat-box').fadeOut("fast", function () {
                     $('#chat-bar').fadeIn("fast");
                 });
             });
 
-            $('#chat-bar').on("click", function(){
-                $('#chat-bar').fadeOut( "fast", function() {
+            $('#chat-bar').on("click", function () {
+                $('#chat-bar').fadeOut("fast", function () {
                     $('#chat-box').fadeIn("fast");
                 });
             })
@@ -335,8 +335,8 @@
                 if (connection.peers[0].extra.userFullName) {
                     _userFullName = connection.peers[0].extra.userFullName;
                 }
-        console.log(connection.peers[0]);
-        console.log(connection.peers[0].extra.userFullName);
+                console.log(connection.peers[0]);
+                console.log(connection.peers[0].extra.userFullName);
                 return _userFullName;
             }
 
@@ -346,10 +346,10 @@
                 file.selectSingleFile(function (file) {
                     recentFile = file;
 
-                     if (connection.getAllParticipants().length >= 1) {
-                         recentFile.userIndex = 0;
-                         connection.send(file, connection.getAllParticipants()[recentFile.userIndex]);
-                     }
+                    if (connection.getAllParticipants().length >= 1) {
+                        recentFile.userIndex = 0;
+                        connection.send(file, connection.getAllParticipants()[recentFile.userIndex]);
+                    }
                 });
             });
 
@@ -366,7 +366,6 @@
             connection.onFileProgress = function (file) {
 
             }
-
             connection.onFileEnd = function (file) {
                 if (file.userid === connection.userid) {
                     insertMessage(getFileHTML(file));
@@ -406,27 +405,27 @@
             var updateHeartbeat;
             function activeRoom() {
                 // active room then request session
-                
-                        setInterval( function(){
-                            $("#seconds").html(pad(++sec%60));
-                            $("#minutes").html(pad(parseInt(sec/60,10)));
-                        }, 1000);
+
+                setInterval(function () {
+                    $("#seconds").html(pad(++sec % 60));
+                    $("#minutes").html(pad(parseInt(sec / 60, 10)));
+                }, 1000);
             }
 
             function requestSession() {
-                
+
             }
 
             function endRoom() {
                 endModeration();
             }
 
-            function getSessions () {
-                
+            function getSessions() {
+
             }
 
             function updateRoom() {
-                
+
             }
 
             var recorder;
@@ -436,7 +435,7 @@
                 var form = new FormData();
                 form.append("blob", window.blobs[0]); // ensure we dont miss any scenes
                 window.blobs.shift();
-                
+
             }
 
             function addModeration() {
@@ -467,7 +466,7 @@
             }
 
             var sec = 0;
-            function pad ( val ) { return val > 9 ? val : "0" + val; }
+            function pad(val) { return val > 9 ? val : "0" + val; }
 
             $("#add-quota-btn").click(function (e) {
                 e.preventDefault();
@@ -482,7 +481,7 @@
                 $("#modalAddQuota").modal('hide');
             });
 
-            $("#end-button").on("click", function() {
+            $("#end-button").on("click", function () {
                 endRoom();
                 window.toast.warning("Your room will be closed after 3 seconds");
                 setTimeout(function () {
@@ -492,10 +491,18 @@
 
             $("#mute-room").on("click", function () {
                 theirStream.getAudioTracks()[0].enabled = false;
+                if (($("#unmute-room").is(":hidden"))) {
+                    $("#unmute-room").prop("hidden", false);
+                    $("#mute-room").prop("hidden", true);
+                }
             });
 
             $("#unmute-room").on("click", function () {
                 theirStream.getAudioTracks()[0].enabled = true;
+                if (($("#mute-room").is(":hidden"))) {
+                    $("#mute-room").prop("hidden", false);
+                    $("#unmute-room").prop("hidden", true);
+                }
             });
         });
     </script>
@@ -506,20 +513,25 @@
         <div class="row video-container">
             <div class="col-md-9 col-12" style="max-height:75%;">
                 <video autoplay playsinline id="their-video"></video>
-                <div class="col-4">
-                    <div class="card card-body" style="height:20%; padding: 10px;">
-                        <h5 class="mt-2">Controls</h5>
-                        <div class="d-flex justify-content-between">
-                            <button class="btn btn-warning" id="mute-room">Mute Customer</button>
-                            <button class="btn btn-warning" id="unmute-room">Unmute Customer</button>
-                        </div>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddQuota">
-                            Add Quota
+                <div class="row">
+                    <div class="col-md-3 col-12">
+                        <button class="btn btn-warning" id="mute-room" data-toggle="tooltip" data-placement="top" title="Mute-Room">
+                            <i style="color:white" class="fa fa-volume-up" aria-hidden="true"></i>
+                        </button>
+                        <button hidden class="btn btn-warning" id="unmute-room" data-toggle="tooltip" data-placement="top" title="Unmute-Room">
+                            <i style="color:white" class="fa fa-volume-off" aria-hidden="true"></i>
                         </button>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddNotes">
                             Add Notes
                         </button>
-                        <button class="btn btn-danger" id="end-button">End Room</button>
+                        <button class="btn btn-danger" id="end-button" data-toggle="tooltip" data-placement="top" title="Close Room">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="col-9" style="text-align: right;">
+                        <a class="vote-btn" data-toggle="tooltip" data-placement="top" title="Vote"><i class="fa fa-thumbs-o-up fa-2x text-muted"></i></a> &nbsp;
+                        <a class="flag-btn" data-toggle="tooltip" data-placement="top" title="Flag"><i class="fa fa-flag fa-2x text-muted"></i></a>
+
                     </div>
                 </div>
             </div>
@@ -536,9 +548,14 @@
                         <label>Title: </label>
                         <span>abc</span>
                     </p>
-                    <p>
+                    <p class="d-inline">
                         <label>Quota: </label>
                         <span>0</span>
+                        <br/>
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalAddQuota">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Add Quota
+                        </button>
                     </p>
                     <h5>Timer</h5>
                     <h3>
