@@ -133,8 +133,22 @@
 
             connection.DetectRTC.load(function () {
                 if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
-                    // alert('You dont fulfill requirements or your browser doesnt support WebRTC');
-                    handleError("not-supported");
+                    alert('You dont fulfill requirements or your browser doesnt support WebRTC');
+                    handleError("unsupported");
+                    return;
+                }
+
+                if (navigator.connection &&
+                    navigator.connection.type === 'cellular' &&
+                    navigator.connection.downlinkMax <= 0.115) {
+                    alert('Your connection is too slow for WebRTC to operate');
+                    handleError("low-bandwidth");
+                    return;
+                }
+
+                if (connection.DetectRTC.browser.name == "Safari") {
+                    alert('You are using an unsupported browser. Please switch to Chrome or Firefox for the best performance');
+                    handleError("unsupported");
                     return;
                 }
 
