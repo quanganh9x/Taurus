@@ -71,9 +71,7 @@
             }
 
             function insertMessage(file) {
-                console.log(file);
-                if (file) msg = file;
-                else msg = $('.message-input').val();
+                var msg = $('.message-input').val();
                 if ($.trim(msg) == '') {
                     return false;
                 }
@@ -84,9 +82,6 @@
 
                 connection.send({
                     chatMessage: msg
-                });
-                connection.send({
-                    typing: false
                 });
             }
 
@@ -230,11 +225,12 @@
             connection.onNewParticipant = function (participantId, userPreferences) {
                 clearTimeout(requestTimeout); // no more timeout
 
-                updateRoom();
-                updateHeartbeat = setInterval(updateRoom, 15000);
-
-                connection.acceptParticipationRequest(participantId, userPreferences);
-
+                var confirm = prompt("An user joined. Confirm ?");
+                if (confirm == true) {
+                    updateRoom();
+                    updateHeartbeat = setInterval(updateRoom, 15000);
+                    connection.acceptParticipationRequest(participantId, userPreferences);
+                }
             };
 
             connection.onopen = function (event) {
@@ -306,30 +302,7 @@
                 return;
             };
 
-            var keyPressTimer;
-            var numberOfKeys = 0;
-            $('.message-input').on("keyup", function (e) {
-                var chatMessage = $('.message-input').val();
-                if (!chatMessage || !chatMessage.replace(/ /g, '').length) {
-                    connection.send({
-                        typing: false
-                    });
-                }
-                clearTimeout(keyPressTimer);
-                numberOfKeys++;
 
-                if (numberOfKeys % 3 === 0) {
-                    connection.send({
-                        typing: true
-                    });
-                }
-
-                keyPressTimer = setTimeout(function () {
-                    connection.send({
-                        typing: false
-                    });
-                }, 1200);
-            });
 
             $(".message-submit").on("click", function () {
                 insertMessage();
