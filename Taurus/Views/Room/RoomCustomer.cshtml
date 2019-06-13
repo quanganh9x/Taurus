@@ -114,7 +114,9 @@
 
             $('#fade-button').click(function (e) {
                 e.preventDefault();
-                $('.avenue-messenger').fadeOut(300);
+                $('#chat-box').fadeOut("fast", function () {
+                    $('#chat-bar').fadeIn("fast");
+                });
             });
 
             var ourVideo = document.getElementById("our-video");

@@ -43,16 +43,8 @@
         <div id="sidebar-wrapper" class="d-none d-sm-block toggled">
             <div class="sidebar-heading"><h2>Queue List </h2></div>
             <div id="queueing-rooms" class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action bg-light" id="headingE">
-                    <button type="button" class="btn btn-primary btn-sm my-2">
-                        <span class="badge badge-light">2</span>
-                        <span>More to your turn</span>
-                    </button>
-                    <i class="fa fa-times cancel-queue-btn" onclick="cancelQueue(1)" aria-hidden="true"></i>
-                    <h6>Room "Tro chuyen cung bac si Trang"</h6>
-                </a>
+                
             </div>
-
         </div>
 
         <header class="site-header">
@@ -197,14 +189,19 @@
         @if (SignInManager.IsSignedIn(User))
         {            
             <script>
-                function cancelQueue(sessionId) {
-                    $.post("@Url.Action("CancelSession", "Session")", { id: sessionId })
-                        .done(function (res) {
-                            window.toast.success(res.data.data);
+                function cancelQueue(event, element, sessionId) {                    
+                    event.preventDefault();
+                    if (confirm("Do you want to cancel this queue?")) {                        
+                        $.post("@Url.Action("CancelSession", "Session")", { id: sessionId })
+                        .done(function (res) {                            
+                            window.toast.success(res.data);
+                            $(element).closest("a").replaceWith("Join a room now.")
                         })
                         .fail(function (resp) {
                             window.toast.error("Something is wrong");
-                        });
+                            });
+                        return false;
+                    }                    
                 }
 
                 $(document).ready(function () {
@@ -248,10 +245,12 @@
                         $('#bookmarksContainer').html('');
                         $('#queueing-rooms').html('');
 
-                        if (data.length > 0) {
+                        if (data.length > 0) {                            
                             $('#bookmarkCount').text(`(${data.length})`)
                             $('#bookmark-icon').addClass('text-danger')
                         } else {
+                            window.connection.invoke("GetPendingSessions");
+                            $('#queueing-rooms').html("Join a room now.")
                             $('#bookmark-icon').removeClass('text-danger')
                         }
 
@@ -263,7 +262,7 @@
                                                         <span class="badge badge-light">${data[i].NumberLeft}</span>
                                                         <span>More to your turn</span>
                                                     </button>
-                                                    <i class="fa fa-times cancel-queue-btn" onclick="cancelQueue(${data[i].Id})" aria-hidden="true" style="float:right"></i>
+                                                    <i class="fa fa-times cancel-queue-btn" onclick="cancelQueue(event, this, ${data[i].Id})" aria-hidden="true" style="float:right"></i>
                                                     <h6>${data[i].Title}</h6>
                                                 </a>`
                                 )
@@ -278,6 +277,7 @@
                             }
                             else {
                                 window.toast.success(data[i].Message);
+                                console.log(data);
                                 $('#queueing-rooms').append(
                                     `<a href="${data[i].Url}" class="list-group-item list-group-item-action bg-light" id="headingE">
                                                     <button type="button" class="btn btn-primary btn-sm my-2">

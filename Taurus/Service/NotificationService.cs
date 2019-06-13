@@ -96,7 +96,7 @@ namespace Taurus.Service
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {
-                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Url = "/Video/" + s.RoomId });
+                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Url = "/Video/" + s.RoomId, Title = s.Room.Title });
                 }
             }
             await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveSessions", Newtonsoft.Json.JsonConvert.SerializeObject(ts));

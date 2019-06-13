@@ -49,7 +49,7 @@ namespace Taurus.Hubs
         public async Task GetPendingSessions()
         {
             var sessions = await _context.Sessions.Where(s => s.Room.Status != RoomStatus.DONE && s.Customer.UserId == int.Parse(Context.UserIdentifier)).ToListAsync();            
-            List <dynamic> ts = new List<dynamic>();
+            var ts = new List<dynamic>();
             foreach (Session s in sessions)
             {                
                 if (s.Status == SessionStatus.PENDING)
@@ -60,7 +60,7 @@ namespace Taurus.Hubs
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {
-                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Title = s.Room.Title, Url = "/Video/" + s.RoomId });
+                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Url = "/Video/" + s.RoomId, Title = s.Room.Title});
                 }
             }
             await Clients.User(Context.UserIdentifier).SendAsync("ReceiveSessions", Newtonsoft.Json.JsonConvert.SerializeObject(ts));

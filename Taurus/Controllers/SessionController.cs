@@ -128,7 +128,7 @@ namespace Taurus.Controllers
             return Ok(new APIResponse { Status = APIStatus.Success, Data = estimatedtime });
         }
 
-        [HttpPost("cancel/{id}")]
+        [HttpPost("cancel")]
         public async Task<IActionResult> CancelSession([FromForm] int id) {
             Session s = await _context.Sessions.FirstOrDefaultAsync(m => m.Id == id && m.Customer.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status != SessionStatus.DONE);
             var roomTitle = s.Room.Title;
