@@ -65,7 +65,7 @@
             }
 
             function insertMessage() {
-                msg = $('.message-input').val();
+                var msg = $('.message-input').val();
                 if ($.trim(msg) == '') {
                     return false;
                 }
@@ -76,9 +76,6 @@
 
                 connection.send({
                     chatMessage: msg
-                });
-                connection.send({
-                    typing: false
                 });
             }
 
@@ -285,30 +282,7 @@
                 return;
             };
 
-            var keyPressTimer;
-            var numberOfKeys = 0;
-            $('.message-input').on("keyup", function (e) {
-                var chatMessage = $('.message-input').val();
-                if (!chatMessage || !chatMessage.replace(/ /g, '').length) {
-                    connection.send({
-                        typing: false
-                    });
-                }
-                clearTimeout(keyPressTimer);
-                numberOfKeys++;
 
-                if (numberOfKeys % 3 === 0) {
-                    connection.send({
-                        typing: true
-                    });
-                }
-
-                keyPressTimer = setTimeout(function () {
-                    connection.send({
-                        typing: false
-                    });
-                }, 1200);
-            })
 
             $(".message-submit").on("click", function () {
                 insertMessage();
@@ -320,18 +294,11 @@
                 }
                 return _userFullName;
             }
-
-
-            var recentFile;
+            
             $('.message-upload').on("click", function () {
                 var file = new FileSelector();
                 file.selectSingleFile(function (file) {
-                    recentFile = file;
-
-                     if (connection.getAllParticipants().length >= 1) {
-                         recentFile.userIndex = 0;
-                         connection.send(file, connection.getAllParticipants()[recentFile.userIndex]);
-                     }
+                    connection.send(file, connection.getAllParticipants()[0]);
                 });
             });
 
@@ -350,21 +317,8 @@
             }
 
             connection.onFileEnd = function (file) {
-                if (file.userid === connection.userid) {
-                    insertMessage(getFileHTML(file));
-                    // if (recentFile) {
-                    //     recentFile.userIndex++;
-                    //     var nextUserId = connection.getAllParticipants()[recentFile.userIndex];
-                    //     if (nextUserId) {
-                    //         connection.send(recentFile, nextUserId);
-                    //     }
-                    //     else {
-                    //         recentFile = null;
-                    //     }
-                    // }
-                    // else {
-                    //     recentFile = null;
-                    // }
+                if (file.userid != connection.userid) {
+                    appendMessage(getFileHTML(file));
                 }
             };
 
