@@ -224,9 +224,8 @@
 
             connection.onNewParticipant = function (participantId, userPreferences) {
                 clearTimeout(requestTimeout); // no more timeout
-
-                var confirm = prompt("An user joined. Confirm ?");
-                if (confirm == true) {
+                
+                if (confirm("An user joined. Confirm ?")) {
                     updateRoom();
                     updateHeartbeat = setInterval(updateRoom, 15000);
                     connection.acceptParticipationRequest(participantId, userPreferences);

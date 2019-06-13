@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css'>
     <link rel="stylesheet" href="~/css/room.css">
-
+    <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css" />
 
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -294,7 +294,7 @@
                 }
                 return _userFullName;
             }
-            
+
             $('.message-upload').on("click", function () {
                 var file = new FileSelector();
                 file.selectSingleFile(function (file) {
@@ -333,9 +333,9 @@
                 clearInterval(updateHeartbeat);
                 endSession();
                 window.toast.error(error);
-                //setTimeout(function () {
-                //    location.href = "/";
-                //}, 3000);
+                setTimeout(function () {
+                    location.href = "/";
+                }, 3000);
             }
 
             var updateHeartbeat;
@@ -365,6 +365,7 @@
             }
 
             function endSession() {
+                endModeration();
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("EndSession", "Session")',
