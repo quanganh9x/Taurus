@@ -205,11 +205,11 @@
 
             connection.onNewParticipant = function (participantId, userPreferences) {
                 clearTimeout(requestTimeout); // no more timeout
-                
+                clearVoteButtons();
                 if (confirm("An user joined. Confirm ?")) {
                     updateRoom();
                     updateHeartbeat = setInterval(updateRoom, 15000);
-                    connection.acceptParticipationRequest(participantId, userPreferences);
+                    connection.acceptParticipationRequest(participantId, userPreferences);                    
                 }
             };
 
@@ -505,8 +505,46 @@
                         </button>
                     </div>
                     <div class="col-9" style="text-align: right;">
-                        <a class="vote-btn" data-toggle="tooltip" data-placement="top" title="Vote"><i class="fa fa-thumbs-o-up fa-2x text-muted"></i></a> &nbsp;
-                        <a class="flag-btn" data-toggle="tooltip" data-placement="top" title="Flag"><i class="fa fa-flag fa-2x text-muted"></i></a>
+                        <a class="vote-btn disabled" onclick="voteCustomer(this, @r.Id)" data-toggle="tooltip" data-placement="top" title="Vote"><i class="fa fa-thumbs-o-up fa-2x text-muted"></i></a> &nbsp;
+                        <a class="flag-btn disabled" onclick="flagCustomer(this, @r.Id)" data-toggle="tooltip" data-placement="top" title="Flag"><i class="fa fa-flag fa-2x text-muted"></i></a>
+
+                        <script>
+                            function voteCustomer(e, roomId) {
+                                if (confirm("Do you want to vote for this customer? ")) {
+                                    $.post("@Url.Action("VoteCustomerRoom", "Vote")", { roomId: roomId })
+                                        .done(function (resp) {
+                                            $(e).addClass("voted");
+                                            $(e).children().removeClass("text-muted");
+                                            $(e).next().addClass("disabled");
+                                        })
+                                        .fail(function (resp) {
+                                            window.toast.error("No customer in room")
+                                        });
+                                    return false;
+                                }
+                            }
+
+                            function flagCustomer(e, roomId) {
+                                if (confirm("Do you want to report this customer? ")) {
+                                    $.post("@Url.Action("FlagCustomerRoom", "Vote")", { roomId: roomId })
+                                        .done(function (resp) {
+                                            $(e).addClass("flagged");
+                                            $(e).children().removeClass("text-muted");
+                                            $(e).prev().addClass("disabled");
+                                        })
+                                        .fail(function (resp) {
+                                            window.toast.error("No customer in room")
+                                        });
+                                }
+                            }
+
+                            function clearVoteButtons() {
+                                $('.vote-btn').removeClass('voted disabled');                               
+                                $('.flag-btn').removeClass('flagged disabled');                                
+                                $('.flag-btn').children().addClass("text-muted");
+                                $('.vote-btn').children().addClass("text-muted");                                
+                            }
+                        </script>
                     </div>
                 </div>
             </div>

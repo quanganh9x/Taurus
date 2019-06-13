@@ -130,5 +130,41 @@ namespace Taurus.Controllers
             }
             return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
         }
+
+        [HttpPost("VoteCustomerRoom")]
+        public async Task<IActionResult> VoteCustomerRoom([FromForm] int roomId)
+        {
+            if (User.IsInRole("Customer"))
+            {
+                Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == roomId);
+                Session s = r.Sessions.Where(m => m.Status == SessionStatus.PROCESSING).FirstOrDefault();
+                if (s == null) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = s.Id });
+                CustomerVote dv = new CustomerVote();
+                dv.CustomerId = s.CustomerId;
+                dv.UserId = int.Parse(_userManager.GetUserId(User));
+                _context.CustomerVotes.Add(dv);
+                await _context.SaveChangesAsync();
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
+            }
+            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+        }
+
+        [HttpPost("FlagCustomerRoom")]
+        public async Task<IActionResult> FlagCustomerRoom([FromForm] int roomId)
+        {
+            if (User.IsInRole("Customer"))
+            {
+                Room r = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == roomId);
+                Session s = r.Sessions.Where(m => m.Status == SessionStatus.PROCESSING).FirstOrDefault();
+                if (s == null) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+                CustomerFlag dv = new CustomerFlag();
+                dv.CustomerId = s.CustomerId;
+                dv.UserId = int.Parse(_userManager.GetUserId(User));
+                _context.CustomerFlags.Add(dv);
+                await _context.SaveChangesAsync();
+                return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
+            }
+            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+        }
     }
 }
