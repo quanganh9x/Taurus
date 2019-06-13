@@ -73,6 +73,13 @@
                 });
             }
 
+            function insertFile(msg) {
+                $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
+                setDate();
+                $('.message-input').val(null);
+                updateScrollbar();
+            }
+
             function appendMessage(msg) {
                 $('<div class="message new">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
                 setDate();
@@ -189,13 +196,7 @@
                     },
                     optional: []
                 },
-                video: {
-                    mandatory: {
-                        minFrameRate: 15,
-                        maxFrameRate: 60
-                    },
-                    optional: []
-                }
+                video: true
             };
 
             if (connection.DetectRTC.browser.name == "Firefox") {
@@ -262,7 +263,7 @@
                 element.removeAttribute('srcObject');
                 element.removeAttribute('streamid');
                 theirStream = null;
-                window.toast.info("User left the room");
+                handleError("doctor-left");
 
                 connection.onEvent(event);
             };
@@ -283,7 +284,8 @@
             $('.message-upload').on("click", function () {
                 var file = new FileSelector();
                 file.selectSingleFile(function (file) {
-                    connection.send(file, connection.getAllParticipants()[0]);
+                    connection.send(file);
+                    insertFile(getFileHTML(file));
                 });
             });
 
@@ -336,7 +338,7 @@
                         }, 1000);
                     })
                     .fail(function (data) {
-
+                        handleError("api-error");
                     });
             }
 

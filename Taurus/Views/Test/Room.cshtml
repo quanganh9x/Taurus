@@ -247,8 +247,7 @@
             };
 
             connection.onleave = function (event) {
-                clearInterval(updateHeartbeat);
-                requestSession();
+                $('#modalAddNotes').trigger('show');
             };
 
             connection.onmessage = function (event) {
@@ -472,12 +471,12 @@
             $("#add-quota-btn").click(function (e) {
                 e.preventDefault();
                 $.post($("#add-quota-form").attr('action'), $("#add-quota-form").serialize())
-                    .done(function (data) {
-
-                    })
-                    .fail(function (data) {
-
-                    });
+                .done(function (data) {
+                    window.toast.success("Success");
+                })
+                .fail(function (data) {
+                    window.toast.error("An error occurred");
+                });
                 $("#add-quota-form").trigger("reset");
                 $("#modalAddQuota").modal('hide');
             });
@@ -522,6 +521,9 @@
                         <button hidden class="btn btn-warning" id="unmute-room" data-toggle="tooltip" data-placement="top" title="Unmute-Room">
                             <i style="color:white" class="fa fa-volume-off" aria-hidden="true"></i>
                         </button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddNotes">
+                            Add Notes
+                        </button>
                         <button class="btn btn-danger" id="end-button" data-toggle="tooltip" data-placement="top" title="Close Room">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </button>
@@ -529,6 +531,7 @@
                     <div class="col-9" style="text-align: right;">
                         <a class="vote-btn" data-toggle="tooltip" data-placement="top" title="Vote"><i class="fa fa-thumbs-o-up fa-2x text-muted"></i></a> &nbsp;
                         <a class="flag-btn" data-toggle="tooltip" data-placement="top" title="Flag"><i class="fa fa-flag fa-2x text-muted"></i></a>
+
                     </div>
                 </div>
             </div>
@@ -622,7 +625,143 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalAddNotes" tabindex="-1" role="dialog" aria-labelledby="modalAddNotesTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAddNotesTitle">Add Notes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body notes-container">
+                    <form id="add-quota-form" action="@Url.Action("AddNotes","Note")" method="post">
+                        <input type="hidden" name="id" value="nnn" />
+                        <label>Zed</label>
+                        <div class=" controls-symptom">
+                            <div class="entry input-group">
+                                <input class="form-control" name="symptom[]" type="text" placeholder="Type something" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success btn-add" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <label>Qiyana</label>
+                        <div class="controls-diagnose">
+                            <div class="entry input-group">
+                                <input class="form-control" name="diagnose[]" type="text" placeholder="Type something" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success btn-add" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <label>Yasuo</label>
+                        <div class=" controls-medicine">
+                            <div class="entry input-group">
+                                <input class="form-control" name="medicine[]" type="text" placeholder="Type medicine" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success btn-add" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <label>Aatrox</label>
+                        <div class="entry input-group">
+                            <input class="form-control" name="note" type="text" placeholder="Note" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="add-notes-btn" type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    $(".controls-symptom").on('click', '.btn-add', function(e)
+    {
+        e.preventDefault();
 
+        var controlForm = $('.controls-symptom'),
+            currentEntry = $(this).parents('.entry:first'),
+            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        newEntry.find('input').val('');
+        controlForm.find('.entry:not(:last) .btn-add')
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<i class="fa fa-minus"></i>');
+    }).on('click', '.btn-remove', function(e)
+    {
+        $(this).parents('.entry:first').remove();
+
+        e.preventDefault();
+        return false;
+    });
+        $(".controls-diagnose").on('click', '.btn-add', function(e)
+    {
+        e.preventDefault();
+
+        var controlForm = $('.controls-diagnose'),
+            currentEntry = $(this).parents('.entry:first'),
+            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        newEntry.find('input').val('');
+        controlForm.find('.entry:not(:last) .btn-add')
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<i class="fa fa-minus"></i>');
+    }).on('click', '.btn-remove', function(e)
+    {
+        $(this).parents('.entry:first').remove();
+
+        e.preventDefault();
+        return false;
+    });
+        $(".controls-medicine").on('click', '.btn-add', function(e)
+    {
+        e.preventDefault();
+
+        var controlForm = $(".controls-medicine"),
+            currentEntry = $(this).parents('.entry:first'),
+            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        newEntry.find('input').val('');
+        controlForm.find('.entry:not(:last) .btn-add')
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<i class="fa fa-minus"></i>');
+    }).on('click', '.btn-remove', function(e)
+    {
+        $(this).parents('.entry:first').remove();
+
+        e.preventDefault();
+        return false;
+    });
+
+        $("#add-notes-btn").click(function (e) {
+                e.preventDefault();
+                $.post($("#add-notes-form").attr('action'), $("#add-notes-form").serialize())
+                .done(function (data) {
+                    window.toast.info("Save success");
+
+                })
+                .fail(function (data) {
+                    window.toast.error("api-error");
+                });
+                $("#add-notes-form").trigger("reset");
+                $("#modalAddNotes").modal('hide');
+            });
+        $('#modalAddNotes').on('hidden.bs.modal', function () {
+            requestSession();
+        }
+    </script>
 
 
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
