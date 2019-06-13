@@ -76,6 +76,16 @@
       "provider": "cdnjs",
       "library": "RecordRTC@5.5.4",
       "destination": "wwwroot/lib/RecordRTC/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jqueryui@1.12.1",
+      "destination": "wwwroot/lib/jqueryui/",
+      "files": [
+        "jquery-ui.min.js",
+        "themes/ui-lightness/jquery-ui.min.css",
+        "themes/base/jquery-ui.min.css"
+      ]
     }
   ]
 }
