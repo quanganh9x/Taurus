@@ -46,7 +46,17 @@ namespace Taurus.Controllers
             return View();
         }
 
-        
+        [Route("/Roomtest")]
+        public IActionResult Room()
+        {
+            return View("../Test/Room");
+        }
+
+        [Route("/Roomcustomertest")]
+        public IActionResult RoomCustomer()
+        {
+            return View("../Test/Room2");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

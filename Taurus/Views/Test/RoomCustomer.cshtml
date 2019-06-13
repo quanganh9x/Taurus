@@ -1,8 +1,5 @@
 ﻿@{
     Layout = null;
-    Customer u = ViewData["User"] as Customer;
-    Room r = ViewData["Room"] as Room;
-    Session s = ViewData["Session"] as Session;
 }
 
 <!DOCTYPE html>
@@ -21,12 +18,14 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css'>
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/ui-lightness/jquery-ui.min.css" />
     <link rel="stylesheet" href="~/css/room.css">
-    <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css" />
+
 
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js'></script>
+    <script src="~/lib/jqueryui/jquery-ui.min.js"></script>
 
 
     <script src="~/lib/webrtc-adapter/adapter.min.js"></script>
@@ -61,7 +60,7 @@
             }
 
             function insertMessage() {
-                var msg = $('.message-input').val();
+                msg = $('.message-input').val();
                 if ($.trim(msg) == '') {
                     return false;
                 }
@@ -72,6 +71,9 @@
 
                 connection.send({
                     chatMessage: msg
+                });
+                connection.send({
+                    typing: false
                 });
             }
 
@@ -107,16 +109,8 @@
 
             $('#fade-button').click(function (e) {
                 e.preventDefault();
-                $('#chat-box').fadeOut("fast", function () {
-                    $('#chat-bar').fadeIn("fast");
-                });
+                $('.avenue-messenger').fadeOut(300);
             });
-
-            $('#chat-bar').on("click", function () {
-                $('#chat-bar').fadeOut("fast", function () {
-                    $('#chat-box').fadeIn("fast");
-                });
-            })
 
             var ourVideo = document.getElementById("our-video");
             var theirVideo = document.getElementById('their-video');
@@ -131,13 +125,13 @@
             connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
             /* initializers */
-            connection.userid = @u.UserId;
-            connection.roomid = @r.Id;
-            connection.mysessionid = @s.Id;
+            connection.userid = "someoneother";
+            connection.roomid = "room0";
+            connection.mysessionid = "session0";
             connection.extra = {
                 userId: connection.userid,
                 roomId: connection.roomid,
-                userFullName: "@u.User.FullName",
+                userFullName: "mr Potato",
                 isRoomMaster: false
             };
             connection.socketMessageEvent = "event-" + connection.roomid;
@@ -190,13 +184,7 @@
                     },
                     optional: []
                 },
-                video: {
-                    mandatory: {
-                        minFrameRate: 15,
-                        maxFrameRate: 60
-                    },
-                    optional: []
-                }
+                video: true
             };
 
             if (connection.DetectRTC.browser.name == "Firefox") {
@@ -211,17 +199,16 @@
                 OfferToReceiveVideo: true
             };
 
-            connection.onUserStatusChanged = function (event) {
-                console.log(event);
-                console.log(connection.getAllParticipants());
+            connection.onEvent = function (event) {
+                console.log("event: " + event);
             };
 
             connection.onopen = function (event) {
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onclose = connection.onleave = connection.onerror = function (event) {
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
                 handleError("an-error-occurred");
             };
 
@@ -265,7 +252,7 @@
                 element.setAttribute("streamid", event.streamid);
                 element.play();
 
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onstreamended = function (event) {
@@ -274,11 +261,34 @@
                 element.removeAttribute('srcObject');
                 element.removeAttribute('streamid');
 
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
                 return;
             };
 
+            var keyPressTimer;
+            var numberOfKeys = 0;
+            $('.message-input').on("keyup", function (e) {
+                var chatMessage = $('.message-input').val();
+                if (!chatMessage || !chatMessage.replace(/ /g, '').length) {
+                    connection.send({
+                        typing: false
+                    });
+                }
+                clearTimeout(keyPressTimer);
+                numberOfKeys++;
 
+                if (numberOfKeys % 3 === 0) {
+                    connection.send({
+                        typing: true
+                    });
+                }
+
+                keyPressTimer = setTimeout(function () {
+                    connection.send({
+                        typing: false
+                    });
+                }, 1200);
+            })
 
             $(".message-submit").on("click", function () {
                 insertMessage();
@@ -291,10 +301,17 @@
                 return _userFullName;
             }
 
+
+            var recentFile;
             $('.message-upload').on("click", function () {
                 var file = new FileSelector();
                 file.selectSingleFile(function (file) {
-                    connection.send(file, connection.getAllParticipants()[0]);
+                    recentFile = file;
+
+                     if (connection.getAllParticipants().length >= 1) {
+                         recentFile.userIndex = 0;
+                         connection.send(file, connection.getAllParticipants()[recentFile.userIndex]);
+                     }
                 });
             });
 
@@ -313,8 +330,21 @@
             }
 
             connection.onFileEnd = function (file) {
-                if (file.userid != connection.userid) {
-                    appendMessage(getFileHTML(file));
+                if (file.userid === connection.userid) {
+                    insertMessage(getFileHTML(file));
+                    // if (recentFile) {
+                    //     recentFile.userIndex++;
+                    //     var nextUserId = connection.getAllParticipants()[recentFile.userIndex];
+                    //     if (nextUserId) {
+                    //         connection.send(recentFile, nextUserId);
+                    //     }
+                    //     else {
+                    //         recentFile = null;
+                    //     }
+                    // }
+                    // else {
+                    //     recentFile = null;
+                    // }
                 }
             };
 
@@ -329,45 +359,27 @@
                 clearInterval(updateHeartbeat);
                 endSession();
                 window.toast.error(error);
-                setTimeout(function () {
-                    location.href = "/";
-                }, 3000);
+                //setTimeout(function () {
+                //    location.href = "/";
+                //}, 3000);
             }
 
             var updateHeartbeat;
 
             function activeSession() {
-                $.post("@Url.Action("ActiveSession", "Session")", { id: connection.mysessionid })
-                    .done(function (data) {
-                        updateSession();
-                        updateHeartbeat = setInterval(updateSession, 15000);
+                
                         setInterval( function(){
                             $("#seconds").html(pad(++sec%60));
                             $("#minutes").html(pad(parseInt(sec/60,10)));
                         }, 1000);
-                    })
-                    .fail(function (data) {
-
-                    });
             }
 
             function updateSession() {
-                $.post("@Url.Action("HbUpdateSession", "Session")", { id: connection.mysessionid })
-                    .done(function (data) {
-                    })
-                    .fail(function (data) {
-                        handleError("update-failed");
-                    });
+                
             }
 
             function endSession() {
-                endModeration();
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("EndSession", "Session")',
-                    async: false,
-                    data: { id: connection.mysessionid }
-                });
+                
             }
 
             var recorder;
@@ -377,19 +389,7 @@
                 var form = new FormData();
                 form.append("blob", window.blobs[0]); // ensure we dont miss any scenes
                 window.blobs.shift();
-                $.ajax({
-                    url: '@Url.Action("Moderation","Video")',
-                    data: form,
-                    processData: false,
-                    contentType: false,
-                    type: 'POST',
-                    success: function (data) {
-                        data = JSON.parse(data);
-                        if (data.adult > 0.5 && data.wad > 0.5 && data.scam > 0.2) {
-                            endSession();
-                        }
-                    }
-                });
+                
             }
 
             function addModeration() {
