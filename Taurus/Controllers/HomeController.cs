@@ -55,7 +55,7 @@ namespace Taurus.Controllers
         [Route("/Roomcustomertest")]
         public IActionResult RoomCustomer()
         {
-            return View("../Test/Room2");
+            return View("../Test/RoomCustomer");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
