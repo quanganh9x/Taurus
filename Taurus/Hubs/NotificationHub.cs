@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Models;
 using Taurus.Models.Enums;
@@ -13,13 +15,19 @@ namespace Taurus.Hubs
     public class NotificationHub : Hub
     {
         private readonly ApplicationContext _context;
-        public NotificationHub(ApplicationContext context)
+        private readonly UserManager<User> _userManager;
+        public NotificationHub(ApplicationContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public override Task OnConnectedAsync()
         {
+            if (Context.User.Identity.Name == null)
+            {
+                return null;
+            }
             Task.Run(async () => await GetPendingNotifications()).Wait();
             Task.Run(async () => await GetPendingSessions()).Wait();
             return base.OnConnectedAsync();
@@ -49,7 +57,7 @@ namespace Taurus.Hubs
         public async Task GetPendingSessions()
         {
             var sessions = await _context.Sessions.Where(s => s.Room.Status != RoomStatus.DONE && s.Customer.UserId == int.Parse(Context.UserIdentifier)).ToListAsync();            
-            var ts = new List<dynamic>();
+            List <dynamic> ts = new List<dynamic>();
             foreach (Session s in sessions)
             {                
                 if (s.Status == SessionStatus.PENDING)
@@ -60,7 +68,7 @@ namespace Taurus.Hubs
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {
-                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Url = "/Video/" + s.RoomId, Title = s.Room.Title});
+                    ts.Add(new { Message = "Room \"" + s.Room.Title + "\" is ready for you to join!", Title = s.Room.Title, Url = "/Video/" + s.RoomId });
                 }
             }
             await Clients.User(Context.UserIdentifier).SendAsync("ReceiveSessions", Newtonsoft.Json.JsonConvert.SerializeObject(ts));

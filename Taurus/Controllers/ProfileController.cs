@@ -38,7 +38,7 @@ namespace Taurus.Controllers
             }
             else
             {
-                ViewData["Sessions"] = await _context.Sessions.Where(m => m.CustomerId == int.Parse(_userManager.GetUserId(User))).ToListAsync();
+                ViewData["Sessions"] = await _context.Sessions.Where(m => m.Customer.UserId == int.Parse(_userManager.GetUserId(User))).ToListAsync();
                 return View("../Profile/ProfileCustomer", await _context.Customers.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
             }
         }

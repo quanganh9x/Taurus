@@ -136,8 +136,14 @@ namespace Taurus.Controllers
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "Session is not exist or already DONE" });
             }
-            _context.Remove(s);
+            _context.Sessions.Remove(s);
             await _context.SaveChangesAsync();
+
+            var sessions = s.Room.Sessions.Where(m => m.Status == SessionStatus.PENDING || m.Status == SessionStatus.WAITING).ToList();
+            foreach (Session sess in sessions)
+            {
+                await _notiService.NotifyCustomerTurnUpdate(sess);
+            }
 
             return Ok(new APIResponse { Status = APIStatus.Success, Data = "Your have canceled queue in room \"" + roomTitle +  "\"" });
         }
@@ -155,7 +161,11 @@ namespace Taurus.Controllers
             _context.Sessions.Update(s);
             await _context.SaveChangesAsync();
 
-            //await _notiService.NotifyCustomerTurnIsReady(s.Room.Sessions.FirstOrDefault(m => m.Status == SessionStatus.PENDING));
+            var sessions = s.Room.Sessions.Where(m => m.Status == SessionStatus.PENDING || m.Status == SessionStatus.WAITING).ToList();
+            foreach (Session sess in sessions)
+            {
+                await _notiService.NotifyCustomerTurnUpdate(sess);
+            }
 
             try
             {

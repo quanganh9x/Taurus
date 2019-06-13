@@ -18,7 +18,7 @@ namespace Taurus.Service
     {
         Task NotifyBookedRoomStartSoon(Room room);
         Task NotifyCustomerEnterRoom(Session s);
-        Task NotifyCustomerTurnIsReady(Session s);
+        Task NotifyCustomerTurnUpdate(Session s);
         Task NotifyDoctorEarned(Room r);
         Task NotifyCustomerConsume(Session s);
         Task NotifyPendingNotifications(int userId);
@@ -55,7 +55,7 @@ namespace Taurus.Service
             //await fireNotification(s.Room.Doctor.UserId, "NotificationMessage", noti);
         }
 
-        public async Task NotifyCustomerTurnIsReady(Session s) {
+        public async Task NotifyCustomerTurnUpdate(Session s) {
             await NotifyPendingSessions(s.Customer.UserId);
         }
 
@@ -87,12 +87,19 @@ namespace Taurus.Service
         public async Task NotifyPendingSessions(int userId)
         {
             var sessions = await _context.Sessions.Where(s => s.Room.Status != RoomStatus.DONE && s.Customer.UserId == userId).ToListAsync();
-            List<dynamic> ts = new List<dynamic>();
+            var ts = new List<dynamic>();
             foreach (Session s in sessions)
             {
                 if (s.Status == SessionStatus.PENDING)
                 {
-                    ts.Add(new { Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) + 1) + " / " + s.Room.Quota, Url = "" });
+                    ts.Add(new
+                    {
+                        Message = "You have subscribed to room \"" + s.Room.Title + "\". Your number in the queue is " + (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) - s.Room.Sessions.Count(m => m.Status == SessionStatus.DONE)) + " / " + s.Room.Quota,
+                        NumberLeft = (s.Room.Sessions.OrderBy(m => m.Id).ToList().IndexOf(s) - s.Room.Sessions.Count(m => m.Status == SessionStatus.DONE)),
+                        Title = s.Room.Title,
+                        Id = s.Id,
+                        Url = ""
+                    });
                 }
                 else if (s.Status == SessionStatus.WAITING)
                 {

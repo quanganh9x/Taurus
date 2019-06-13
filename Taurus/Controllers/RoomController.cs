@@ -133,13 +133,15 @@ namespace Taurus.Controllers
                 // chuyển status phòng thành waiting - chờ customer mới
                 r.Status = RoomStatus.WAITING;
                 _context.Rooms.Update(r);
-                await _context.SaveChangesAsync();
                 Session s = remainSessions.First(); 
                 s.Status = SessionStatus.WAITING;
                 _context.Sessions.Update(s);
                 await _context.SaveChangesAsync();
-
-                await _notiService.NotifyCustomerTurnIsReady(s);
+                var sessions = r.Sessions.Where(m => m.Status == SessionStatus.PENDING || m.Status == SessionStatus.WAITING).ToList();
+                foreach (Session sess in sessions)
+                {
+                    await _notiService.NotifyCustomerTurnUpdate(sess);
+                }
             }
 
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
@@ -157,6 +159,7 @@ namespace Taurus.Controllers
             r.Status = RoomStatus.PROCESSING;
             _context.Rooms.Update(r);
             await _context.SaveChangesAsync();
+            
             return Ok(new APIResponse { Status = APIStatus.Success, Data = null });
         }
 

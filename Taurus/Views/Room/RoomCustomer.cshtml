@@ -119,6 +119,12 @@
                 });
             });
 
+            $('#chat-bar').on("click", function () {
+                $('#chat-bar').fadeOut("fast", function () {
+                    $('#chat-box').fadeIn("fast");
+                });
+            })
+
             var ourVideo = document.getElementById("our-video");
             var theirVideo = document.getElementById('their-video');
             var id = $('#id');

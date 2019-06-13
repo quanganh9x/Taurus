@@ -239,9 +239,12 @@
                         }
                     });
 
-                    window.connection.on("receiveSessions", (data) => {
+                    window.connection.on("Test", function (message) {
+                        console.log("fuck: " +message);
+                    });
+
+                    window.connection.on("ReceiveSessions", (data) => {
                         data = JSON.parse(data);
-                        console.log(data);
                         $('#bookmarksContainer').html('');
                         $('#queueing-rooms').html('');
 
@@ -249,11 +252,11 @@
                             $('#bookmarkCount').text(`(${data.length})`)
                             $('#bookmark-icon').addClass('text-danger')
                         } else {
-                            window.connection.invoke("GetPendingSessions");
-                            $('#queueing-rooms').html("Join a room now.")
                             $('#bookmark-icon').removeClass('text-danger')
                         }
 
+                        $('#bookmarksContainer').html('');
+                        $('#queueing-rooms').html('');
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].Url == "") {
                                 $('#queueing-rooms').append(
@@ -281,7 +284,6 @@
                                 $('#queueing-rooms').append(
                                     `<a href="${data[i].Url}" class="list-group-item list-group-item-action bg-light" id="headingE">
                                                     <button type="button" class="btn btn-primary btn-sm my-2">
-                                                        <span class="badge badge-success">0</span>
                                                         <span>Click here to enter your room</span>
                                                     </button>
                                                     <h6>${data[i].Title}</h6>
