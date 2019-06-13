@@ -237,7 +237,7 @@
 
             connection.onleave = function (event) {
                 clearInterval(updateHeartbeat);
-                requestSession();
+                $("#modalAddNotes").modal('show');
             };
 
             connection.onmessage = function (event) {
@@ -659,7 +659,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                    <button id="join-btn" type="button" class="btn btn-primary">Okay</button>
+                    <button id="join-btn" type="button" data-dismiss="modal" class="btn btn-primary">Okay</button>
                 </div>
             </div>
         </div>
@@ -785,20 +785,20 @@
     });
 
         $("#add-notes-btn").click(function (e) {
-                e.preventDefault();
-                $.post($("#add-notes-form").attr('action'), $("#add-notes-form").serialize())
+            e.preventDefault();
+            $.post($("#add-notes-form").attr('action'), $("#add-notes-form").serialize())
                 .done(function (data) {
                     window.toast.info("Save success");
                 })
                 .fail(function (data) {
                     window.toast.error("api-error");
                 });
-                $("#add-notes-form").trigger("reset");
-                $("#modalAddNotes").modal('hide');
-            });
+            $("#add-notes-form").trigger("reset");
+            $("#modalAddNotes").modal('hide');
+        });
         $('#modalAddNotes').on('hidden.bs.modal', function () {
             requestSession();
-        }
+        });
     </script>
 
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
