@@ -20,6 +20,7 @@
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css'>
     <link rel="stylesheet" href="~/lib/jqueryui/themes/ui-lightness/jquery-ui.min.css" />
     <link rel="stylesheet" href="~/css/room.css">
+    <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css" />
 
 
     <script src='~/lib/jquery/dist/jquery.min.js'></script>
@@ -109,13 +110,19 @@
 
             $('#fade-button').click(function (e) {
                 e.preventDefault();
-                $('.avenue-messenger').fadeOut(300);
+                $('#chat-box').fadeOut("fast", function () {
+                    $('#chat-bar').fadeIn("fast");
+                });
             });
 
-            var ourVideo = document.getElementById("our-video");
-            var theirVideo = document.getElementById('their-video');
-            var id = $('#id');
-            var status = $('#status');
+            $('#chat-bar').on("click", function () {
+                $('#chat-bar').fadeOut("fast", function () {
+                    $('#chat-box').fadeIn("fast");
+                });
+            })
+
+            var ourVideo = document.getElementById("our-video-mb");
+            var theirVideo = document.getElementById('their-video-mb');
 
             // shim
             window.adapter = true;
@@ -155,7 +162,6 @@
                             return;
                         }
                         else {
-                            activeSession();
 
                         }
                     });
@@ -368,10 +374,6 @@
 
             function activeSession() {
                 
-                        setInterval( function(){
-                            $("#seconds").html(pad(++sec%60));
-                            $("#minutes").html(pad(parseInt(sec/60,10)));
-                        }, 1000);
             }
 
             function updateSession() {
@@ -432,10 +434,18 @@
 
             $("#mute-room").on("click", function () {
                 theirStream.getAudioTracks()[0].enabled = false;
+                if (($("#unmute-room").is(":hidden"))) {
+                    $("#unmute-room").prop("hidden", false);
+                    $("#mute-room").prop("hidden", true);
+                }
             });
 
             $("#unmute-room").on("click", function () {
                 theirStream.getAudioTracks()[0].enabled = true;
+                if (($("#mute-room").is(":hidden"))) {
+                    $("#mute-room").prop("hidden", false);
+                    $("#unmute-room").prop("hidden", true);
+                }
             });
         });
 
@@ -443,41 +453,13 @@
 
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row video-container">
-            <div class="col-md-9 col-12">
-                <video autoplay playsinline id="their-video"></video>
+    <div class="container-fluid" style="height: auto; padding: 0;">
+                <video autoplay playsinline id="their-video-mb" style="height: 100vh;"></video>
+            </div>
+            <div style=" border:1px solid white; max-width:50%;min-width:50%;min-height:36%;max-height:36%; position:absolute; right:0; bottom:0; z-index:1;">
+                <video autoplay playsinline id="our-video-mb" muted></video>
+            </div>
 
-            </div>
-            <div class="col-md-3 col-12">
-                <video autoplay playsinline id="our-video" muted></video>
-                <style>
-                    .control-box::-webkit-scrollbar {
-                        display: none;
-                    }
-                </style>
-                <div class="card card-body control-box" style="height:75%; overflow:scroll">
-                    <h5>Room</h5>
-                    <p>
-                        <label>ID: </label>
-                        <span>wtf</span>
-                    </p>
-                    <p>
-                        <label>Price: </label>
-                        <span>XYZ</span>
-                    </p>
-                    <h5>Timer</h5>
-                    <h3>
-                        <span id="minutes"></span>:<span id="seconds"></span>
-                    </h3>
-                    <h5 class="mt-2">Controls</h5>
-                    <div class="d-flex justify-content-between">
-                        <button class="btn btn-warning" id="mute-room">Mute Doctor</button>
-                        <button class="btn btn-warning" id="unmute-room">Unmute Doctor</button>
-                    </div>
-                    <button class="btn btn-danger" id="end-room">End Room</button>
-                </div>
-            </div>
             <section id="chat-box" class="avenue-messenger">
                 <div class="menu">
 
@@ -499,15 +481,10 @@
 
             </section>
 
-            <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.5;">
-                <div class="chat">
-                    <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
-                        <h1 class="chat-username">Chat Box</h1>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
+            <div id="chat-bar" class="avenue-messenger-widget-mb d-flex justify-content-center align-items-center" style="display: none;">
+                
+                <i class="fa fa-2x fa-comment-o"></i>
+            </div>
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>

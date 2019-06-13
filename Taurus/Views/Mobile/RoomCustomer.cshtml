@@ -42,14 +42,12 @@
     <script>
         $(document).ready(function () {
             window.toast = new Toasty();
+
             var $messages = $('.messages-content'),
                 d, h, m,
                 i = 0;
 
-            $(window).on("load", function () {
-                $messages.mCustomScrollbar();
-            });
-
+            $messages.mCustomScrollbar();
 
             function updateScrollbar() {
                 $messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
@@ -65,7 +63,7 @@
             }
 
             function insertMessage() {
-                msg = $('.message-input').val();
+                var msg = $('.message-input').val();
                 if ($.trim(msg) == '') {
                     return false;
                 }
@@ -77,9 +75,13 @@
                 connection.send({
                     chatMessage: msg
                 });
-                connection.send({
-                    typing: false
-                });
+            }
+
+            function insertFile(msg) {
+                $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
+                setDate();
+                $('.message-input').val(null);
+                updateScrollbar();
             }
 
             function appendMessage(msg) {
@@ -96,17 +98,6 @@
             })
 
 
-            function showIndicator() {
-                $('<div class="message loading new"><span></span></div>').appendTo($('.mCSB_container'));
-                updateScrollbar();
-            }
-
-            function hideIndicator() {
-                $('.message.loading').remove();
-                updateScrollbar();
-            }
-
-
             $('#show-menu').click(function () {
                 $('.menu .items span').toggleClass('active');
                 $('.menu #fuck').toggleClass('active');
@@ -114,13 +105,19 @@
 
             $('#fade-button').click(function (e) {
                 e.preventDefault();
-                $('.avenue-messenger').fadeOut(300);
+                $('#chat-box').fadeOut("fast", function () {
+                    $('#chat-bar').fadeIn("fast");
+                });
             });
+
+            $('#chat-bar').on("click", function () {
+                $('#chat-bar').fadeOut("fast", function () {
+                    $('#chat-box').fadeIn("fast");
+                });
+            })
 
             var ourVideo = document.getElementById("our-video-mb");
             var theirVideo = document.getElementById('their-video-mb');
-            var id = $('#id');
-            var status = $('#status');
 
             // shim
             window.adapter = true;
@@ -142,11 +139,25 @@
             connection.socketMessageEvent = "event-" + connection.roomid;
 
             connection.DetectRTC.load(function () {
-                //if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
-                //     alert('You dont fulfill requirements or your browser doesnt support WebRTC');
-                //    handleError("not-supported");
-                //    return;
-                //}
+                if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
+                    alert('You dont fulfill requirements or your browser doesnt support WebRTC');
+                    handleError("unsupported");
+                    return;
+                }
+
+                if (navigator.connection &&
+                    navigator.connection.type === 'cellular' &&
+                    navigator.connection.downlinkMax <= 0.115) {
+                    alert('Your connection is too slow for WebRTC to operate');
+                    handleError("low-bandwidth");
+                    return;
+                }
+
+                if (connection.DetectRTC.browser.name == "Safari") {
+                    alert('You are using an unsupported browser. Please switch to Chrome or Firefox for the best performance');
+                    handleError("unsupported");
+                    return;
+                }
 
                 connection.checkPresence(connection.roomid, function (isRoomExist, roomid, error) {
                     if (!isRoomExist) {
@@ -189,13 +200,7 @@
                     },
                     optional: []
                 },
-                video: {
-                    mandatory: {
-                        minFrameRate: 15,
-                        maxFrameRate: 60
-                    },
-                    optional: []
-                }
+                video: true
             };
 
             if (connection.DetectRTC.browser.name == "Firefox") {
@@ -210,32 +215,21 @@
                 OfferToReceiveVideo: true
             };
 
-            connection.onUserStatusChanged = function (event) {
+            connection.onEvent = function (event) {
                 console.log(event);
-                console.log(connection.getAllParticipants());
             };
 
             connection.onopen = function (event) {
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onclose = connection.onleave = connection.onerror = function (event) {
-                connection.onUserStatusChanged(event);
-                handleError("an-error-occurred");
+                connection.onEvent(event);
+                handleError("not-accepted");
             };
 
 
             connection.onmessage = function (event) {
-                if (event.data.typing === true) {
-                    showIndicator();
-                    return;
-                }
-
-                if (event.data.typing === false) {
-                    hideIndicator();
-                    return;
-                }
-
                 if (event.data.chatMessage) {
                     appendMessage(event.data.chatMessage);
                     return;
@@ -264,43 +258,21 @@
                 element.setAttribute("streamid", event.streamid);
                 element.play();
 
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onstreamended = function (event) {
-                console.log(event);
                 var element = $(`video[streamid='${event.streamid}']`);
+                element.removeAttribute('src');
                 element.removeAttribute('srcObject');
                 element.removeAttribute('streamid');
+                theirStream = null;
+                handleError("doctor-left");
 
-                connection.onUserStatusChanged(event);
-                return;
+                connection.onEvent(event);
             };
 
-            var keyPressTimer;
-            var numberOfKeys = 0;
-            $('.message-input').on("keyup", function (e) {
-                var chatMessage = $('.message-input').val();
-                if (!chatMessage || !chatMessage.replace(/ /g, '').length) {
-                    connection.send({
-                        typing: false
-                    });
-                }
-                clearTimeout(keyPressTimer);
-                numberOfKeys++;
 
-                if (numberOfKeys % 3 === 0) {
-                    connection.send({
-                        typing: true
-                    });
-                }
-
-                keyPressTimer = setTimeout(function () {
-                    connection.send({
-                        typing: false
-                    });
-                }, 1200);
-            })
 
             $(".message-submit").on("click", function () {
                 insertMessage();
@@ -313,17 +285,11 @@
                 return _userFullName;
             }
 
-
-            var recentFile;
             $('.message-upload').on("click", function () {
                 var file = new FileSelector();
                 file.selectSingleFile(function (file) {
-                    recentFile = file;
-
-                     if (connection.getAllParticipants().length >= 1) {
-                         recentFile.userIndex = 0;
-                         connection.send(file, connection.getAllParticipants()[recentFile.userIndex]);
-                     }
+                    connection.send(file);
+                    insertFile(getFileHTML(file));
                 });
             });
 
@@ -342,21 +308,8 @@
             }
 
             connection.onFileEnd = function (file) {
-                if (file.userid === connection.userid) {
-                    insertMessage(getFileHTML(file));
-                    // if (recentFile) {
-                    //     recentFile.userIndex++;
-                    //     var nextUserId = connection.getAllParticipants()[recentFile.userIndex];
-                    //     if (nextUserId) {
-                    //         connection.send(recentFile, nextUserId);
-                    //     }
-                    //     else {
-                    //         recentFile = null;
-                    //     }
-                    // }
-                    // else {
-                    //     recentFile = null;
-                    // }
+                if (file.userid != connection.userid) {
+                    appendMessage(getFileHTML(file));
                 }
             };
 
@@ -371,9 +324,9 @@
                 clearInterval(updateHeartbeat);
                 endSession();
                 window.toast.error(error);
-                //setTimeout(function () {
-                //    location.href = "/";
-                //}, 3000);
+                setTimeout(function () {
+                    location.href = "/";
+                }, 3000);
             }
 
             var updateHeartbeat;
@@ -389,7 +342,7 @@
                         }, 1000);
                     })
                     .fail(function (data) {
-
+                        handleError("api-error");
                     });
             }
 
@@ -403,6 +356,9 @@
             }
 
             function endSession() {
+                if (recorder != null) {
+                    endModeration();
+                }
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("EndSession", "Session")',
@@ -473,10 +429,18 @@
 
             $("#mute-room").on("click", function () {
                 theirStream.getAudioTracks()[0].enabled = false;
+                if (($("#unmute-room").is(":hidden"))) {
+                    $("#unmute-room").prop("hidden", false);
+                    $("#mute-room").prop("hidden", true);
+                }
             });
 
             $("#unmute-room").on("click", function () {
                 theirStream.getAudioTracks()[0].enabled = true;
+                if (($("#mute-room").is(":hidden"))) {
+                    $("#mute-room").prop("hidden", false);
+                    $("#unmute-room").prop("hidden", true);
+                }
             });
         });
 
@@ -484,43 +448,38 @@
 
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row video-container" style="height:100%;">
-            <div class="col-12 p-2" style="height: 50%; width: 100%;">
-                <video autoplay id="their-video-mb"></video>
+    <div class="container-fluid" style="height: auto; padding: 0;">
+        <video autoplay playsinline id="their-video-mb" style="height: 100vh;"></video>
+    </div>
+    <div style=" border:1px solid white; max-width:50%;min-width:50%;min-height:36%;max-height:36%; position:absolute; right:0; bottom:0; z-index:1;">
+        <video autoplay playsinline id="our-video-mb" muted></video>
+    </div>
+
+    <section id="chat-box" class="avenue-messenger">
+        <div class="menu">
+
+            <div class="button" id="fade-button">&mdash;</div>
+        </div>
+        <div class="chat">
+            <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
+                <h1 class="chat-username">Chat Box</h1>
             </div>
-            <div class="col-12 p-2" style="height: 50%; width: 100%;">
-                <video autoplay id="our-video-mb"></video>
+            <div class="messages">
+                <div class="messages-content"></div>
+            </div>
+            <div class="message-box">
+                <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
+                <button type="submit" class="message-submit">Send</button>
+                <button class="message-submit message-upload"><i class="fa fa-upload"></i></button>
             </div>
         </div>
-        <section id="chat-box" class="avenue-messenger">
-            <div class="menu">
 
-                <div class="button" id="fade-button">&mdash;</div>
-            </div>
-            <div class="chat">
-                <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
-                    <h1 class="chat-username">Chat Box</h1>
-                </div>
-                <div class="messages">
-                    <div class="messages-content"></div>
-                </div>
-                <div class="message-box">
-                    <textarea type="text" class="message-input" placeholder="Type message..."></textarea>
-                    <button type="submit" class="message-submit">Send</button>
-                    <button class="message-submit message-upload"><i class="fa fa-upload"></i></button>
-                </div>
-            </div>
-        </section>
+    </section>
 
-        <section id="chat-bar" class="avenue-messenger-widget-mb" style="display: none;">
-            <div class="chat">
-                <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
-                    <h1 class="chat-username">Chat Box</h1>
-                </div>
-            </div>
-        </section>
-    </div>    
+    <div id="chat-bar" class="avenue-messenger-widget-mb d-flex justify-content-center align-items-center" style="display: none;">
+
+        <i class="fa fa-2x fa-comment-o"></i>
+    </div>
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
 </html>
