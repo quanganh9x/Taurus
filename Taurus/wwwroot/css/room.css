@@ -638,9 +638,7 @@ Bounce
 }
 
 .close {
-    display: block;
-    width: 100px;
-    height: 100px;
+    display: block; 
     margin: 1em auto;
     background-size: cover;
     background-repeat: no-repeat;
