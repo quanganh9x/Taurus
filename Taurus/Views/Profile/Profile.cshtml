@@ -1,7 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Profile";
+    List<Session> sessions = ViewData["Sessions"] as List<Session>;
+    var totalIncome = 0;
 }
-
+@using Taurus.Models.Enums
 @model Doctor
 <div class="the-profile">
     <div class="container" style="min-height: 550px;">
@@ -13,17 +15,17 @@
                         <h5 class="card-title">@Model.User.FullName</h5>
                         <p>
                             <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i></b> @Model.User.Coins
-                        <br />
+                            <br />
                             <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal2">
                                 Withdraw
                             </button>
                         </p>
                     </div>
-                    
+
                     <ul class="list-group list-group-flush">
                         @if (Model.IsDoctorOfTheMonth)
                         {
-                        <li class="list-group-item"><img src="https://futhead.cursecdn.com/static/img/fm/17/resources/program_17_MOTM.png" width="64" height="64" /></li>
+                            <li class="list-group-item"><img src="https://futhead.cursecdn.com/static/img/fm/17/resources/program_17_MOTM.png" width="64" height="64" /></li>
                         }
                         <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
@@ -53,12 +55,33 @@
                         </div>
                     </div>
                 </div>
+
+
                 <button type="button" class="btn btn-primary mt-1 mb-4" data-toggle="modal" data-target="#exampleModal">
                     Update Profile
                 </button>
                 <button style="display: none;" id="launchBook" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBookRoom">
                     Book Room
                 </button>
+
+                <div class="card" style="width: auto;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Statistics</h5>
+
+                        @foreach (Session s in sessions)
+                        {
+                            totalIncome += (int) s.Consume;
+                        }  
+                        <p>
+                            <span><b>Total income: </b></span>
+                            <span style="color: green">+ @totalIncome <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"></i></b></span>
+                        </p>
+                        <p>
+                            <span><b>Total customer served: </b></span> 
+                            <span style="color: green">@sessions.Count <i class="fa fa-user" aria-hidden="true"></i></span>
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">

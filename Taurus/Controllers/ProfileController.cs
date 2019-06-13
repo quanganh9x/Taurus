@@ -34,6 +34,7 @@ namespace Taurus.Controllers
         {
             if (User.IsInRole("Doctor"))
             {
+                ViewData["Sessions"] = await _context.Sessions.Where(m => m.Room.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && m.Status == SessionStatus.DONE && m.StartTime.HasValue).ToListAsync();
                 return View("../Profile/Profile", await _context.Doctors.FirstOrDefaultAsync(p => p.UserId == int.Parse(_userManager.GetUserId(User))));
             }
             else
