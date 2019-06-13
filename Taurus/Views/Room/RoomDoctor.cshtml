@@ -1,10 +1,4 @@
 ﻿@{
-    ViewData["Title"] = "Room Doctor";
-}
-
-
-
-@{
     Layout = null;
     Doctor u = ViewData["User"] as Doctor;
     Room r = ViewData["Room"] as Room;
@@ -35,8 +29,6 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js'></script>
 
 
-
-
     <script src="~/lib/webrtc-adapter/adapter.min.js"></script>
     <script src="~/lib/rtcmulticonnection/dist/RTCMultiConnection.min.js"></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
@@ -51,10 +43,8 @@
             var $messages = $('.messages-content'),
                 d, h, m,
                 i = 0;
-
-            $(window).on("load", function () {
-                $messages.mCustomScrollbar();
-            });
+            
+            $messages.mCustomScrollbar();
 
 
             function updateScrollbar() {
@@ -70,7 +60,7 @@
                 $('<div class="timestamp">' + d.getHours() + ':' + m + '</div>').appendTo($('.message:last'));
             }
 
-            function insertMessage(file) {
+            function insertMessage() {
                 var msg = $('.message-input').val();
                 if ($.trim(msg) == '') {
                     return false;
@@ -85,6 +75,13 @@
                 });
             }
 
+            function insertFile(msg) {
+                $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
+                setDate();
+                $('.message-input').val(null);
+                updateScrollbar();
+            }
+
             function appendMessage(msg) {
                 $('<div class="message new">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
                 setDate();
@@ -97,23 +94,7 @@
                     return false;
                 }
             })
-
-
-            function showIndicator() {
-                $('<div class="message loading new"><span></span></div>').appendTo($('.mCSB_container'));
-                updateScrollbar();
-            }
-
-            function hideIndicator() {
-                $('.message.loading').remove();
-                updateScrollbar();
-            }
-
-
-            $('#show-menu').click(function () {
-                $('.menu .items span').toggleClass('active');
-                $('.menu #fuck').toggleClass('active');
-            });
+            
 
             $('#fade-button').click(function (e) {
                 e.preventDefault();
@@ -150,11 +131,11 @@
             connection.socketMessageEvent = "event-" + connection.roomid;
 
             connection.DetectRTC.load(function () {
-                // if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
-                //    alert('You dont fulfill requirements or your browser doesnt support WebRTC');
-                //    handleError("not-supported");
-                //    return;
-                // }
+                 if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
+                    alert('You dont fulfill requirements or your browser doesnt support WebRTC');
+                    handleError("not-supported");
+                    return;
+                 }
 
                 connection.checkPresence(connection.roomid, function (isRoomExist, roomid, error) {
                     if (isRoomExist) {
@@ -217,9 +198,8 @@
                 OfferToReceiveVideo: true
             };
 
-            connection.onUserStatusChanged = function (event) {
+            connection.onEvent = function (event) {
                 console.log(event);
-                console.log(connection.getAllParticipants());
             };
 
             connection.onNewParticipant = function (participantId, userPreferences) {
@@ -233,11 +213,11 @@
             };
 
             connection.onopen = function (event) {
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onclose = function (event) {
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onerror = function (event) {
@@ -250,16 +230,6 @@
             };
 
             connection.onmessage = function (event) {
-                if (event.data.typing === true) {
-                    showIndicator();
-                    return;
-                }
-
-                if (event.data.typing === false) {
-                    hideIndicator();
-                    return;
-                }
-
                 if (event.data.chatMessage) {
                     appendMessage(event.data.chatMessage);
                     return;
@@ -287,7 +257,7 @@
                 element.setAttribute("streamid", event.streamid);
                 element.play();
 
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onstreamended = function (event) {
@@ -295,8 +265,8 @@
                 element.removeAttr('src');
                 element.removeAttr('srcObject');
                 element.removeAttr('streamid');
-
-                connection.onUserStatusChanged(event);
+                theirStream = null;
+                connection.onEvent(event);
                 window.toast.info("User left the room");
                 return;
             };
@@ -308,24 +278,15 @@
             });
 
             function getFullName() {
-                if (connection.peers[0].extra.userFullName) {
-                    _userFullName = connection.peers[0].extra.userFullName;
-                }
-        console.log(connection.peers[0]);
-        console.log(connection.peers[0].extra.userFullName);
+                _userFullName = connection.peers[0].extra.userFullName;
                 return _userFullName;
             }
-
-            var recentFile;
+            
             $('.message-upload').on("click", function () {
                 var file = new FileSelector();
                 file.selectSingleFile(function (file) {
-                    recentFile = file;
-
-                     if (connection.getAllParticipants().length >= 1) {
-                         recentFile.userIndex = 0;
-                         connection.send(file, connection.getAllParticipants()[recentFile.userIndex]);
-                     }
+                    connection.send(file);
+                    insertFile(getFileHTML(file));
                 });
             });
 
@@ -337,28 +298,15 @@
 
             connection.onFileStart = function (file) {
 
-            }
+            };
 
             connection.onFileProgress = function (file) {
 
             }
 
             connection.onFileEnd = function (file) {
-                if (file.userid === connection.userid) {
-                    insertMessage(getFileHTML(file));
-                    // if (recentFile) {
-                    //     recentFile.userIndex++;
-                    //     var nextUserId = connection.getAllParticipants()[recentFile.userIndex];
-                    //     if (nextUserId) {
-                    //         connection.send(recentFile, nextUserId);
-                    //     }
-                    //     else {
-                    //         recentFile = null;
-                    //     }
-                    // }
-                    // else {
-                    //     recentFile = null;
-                    // }
+                if (file.userid != connection.userid) {
+                    appendMessage(getFileHTML(file));
                 }
             };
 
@@ -601,7 +549,7 @@
 
         </section>
 
-        <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.5;">
+        <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.7;">
             <div class="chat">
                 <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
                     <h1 class="chat-username">Chat Box</h1>

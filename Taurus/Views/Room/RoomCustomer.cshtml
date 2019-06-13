@@ -42,14 +42,12 @@
     <script>
         $(document).ready(function () {
             window.toast = new Toasty();
+
             var $messages = $('.messages-content'),
                 d, h, m,
                 i = 0;
-
-            $(window).on("load", function () {
-                $messages.mCustomScrollbar();
-            });
-
+            
+            $messages.mCustomScrollbar();
 
             function updateScrollbar() {
                 $messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
@@ -93,17 +91,6 @@
             })
 
 
-            function showIndicator() {
-                $('<div class="message loading new"><span></span></div>').appendTo($('.mCSB_container'));
-                updateScrollbar();
-            }
-
-            function hideIndicator() {
-                $('.message.loading').remove();
-                updateScrollbar();
-            }
-
-
             $('#show-menu').click(function () {
                 $('.menu .items span').toggleClass('active');
                 $('.menu #fuck').toggleClass('active');
@@ -124,8 +111,6 @@
 
             var ourVideo = document.getElementById("our-video");
             var theirVideo = document.getElementById('their-video');
-            var id = $('#id');
-            var status = $('#status');
 
             // shim
             window.adapter = true;
@@ -147,11 +132,11 @@
             connection.socketMessageEvent = "event-" + connection.roomid;
 
             connection.DetectRTC.load(function () {
-                //if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
-                //    // alert('You dont fulfill requirements or your browser doesnt support WebRTC');
-                //    handleError("not-supported");
-                //    return;
-                //}
+                if (connection.DetectRTC.isWebRTCSupported === false || connection.DetectRTC.hasMicrophone === false || connection.DetectRTC.hasWebcam === false || connection.DetectRTC.hasSpeakers === false) {
+                    // alert('You dont fulfill requirements or your browser doesnt support WebRTC');
+                    handleError("not-supported");
+                    return;
+                }
 
                 connection.checkPresence(connection.roomid, function (isRoomExist, roomid, error) {
                     if (!isRoomExist) {
@@ -215,32 +200,21 @@
                 OfferToReceiveVideo: true
             };
 
-            connection.onUserStatusChanged = function (event) {
+            connection.onEvent = function (event) {
                 console.log(event);
-                console.log(connection.getAllParticipants());
             };
 
             connection.onopen = function (event) {
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onclose = connection.onleave = connection.onerror = function (event) {
-                connection.onUserStatusChanged(event);
-                handleError("an-error-occurred");
+                connection.onEvent(event);
+                handleError("not-accepted");
             };
 
 
             connection.onmessage = function (event) {
-                if (event.data.typing === true) {
-                    showIndicator();
-                    return;
-                }
-
-                if (event.data.typing === false) {
-                    hideIndicator();
-                    return;
-                }
-
                 if (event.data.chatMessage) {
                     appendMessage(event.data.chatMessage);
                     return;
@@ -269,17 +243,18 @@
                 element.setAttribute("streamid", event.streamid);
                 element.play();
 
-                connection.onUserStatusChanged(event);
+                connection.onEvent(event);
             };
 
             connection.onstreamended = function (event) {
-                console.log(event);
                 var element = $(`video[streamid='${event.streamid}']`);
+                element.removeAttribute('src');
                 element.removeAttribute('srcObject');
                 element.removeAttribute('streamid');
+                theirStream = null;
+                window.toast.info("User left the room");
 
-                connection.onUserStatusChanged(event);
-                return;
+                connection.onEvent(event);
             };
 
 
@@ -365,7 +340,9 @@
             }
 
             function endSession() {
-                endModeration();
+                if (recorder != null) {
+                    endModeration();
+                }
                 $.ajax({
                     type: 'POST',
                     url: '@Url.Action("EndSession", "Session")',
@@ -503,7 +480,7 @@
 
             </section>
 
-            <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.5;">
+            <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.7;">
                 <div class="chat">
                     <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
                         <h1 class="chat-username">Chat Box</h1>

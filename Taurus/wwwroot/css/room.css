@@ -559,19 +559,18 @@ Bounce
 
 .avenue-messenger {
     opacity: 1;
-    border-radius: 20px;
     height: calc(100% - 60px) !important;
     max-height: 460px !important;
     min-height: 220px !important;
-    width: 320px;
+    width: 25%;
     /*  transform: translateY(0);
     -webkit-transform: translateY(0);
     -moz-transform: translateY(0);
   */
     background: rgba(255, 255, 255, 0.9);
     position: fixed;
-    right: 20px;
-    bottom: 20px;
+    right: 0;
+    bottom: 0;
     margin: auto;
     z-index: 10;
     box-shadow: 2px 10px 40px rgba(22, 20, 19, 0.4);
@@ -599,19 +598,16 @@ Bounce
 
 .avenue-messenger-widget {
     opacity: 1;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
     /*height: calc(100% - 60px) !important;*/
-    width: 320px;
+    width: 20%;
     /*  transform: translateY(0);
     -webkit-transform: translateY(0);
     -moz-transform: translateY(0);
   */
     background: rgba(255, 255, 255, 0.9);
     position: fixed;
-    right: 20px;
-    bottom: 20px;
+    right: 0;
+    bottom: 0;
     margin: auto;
     z-index: 10;
     box-shadow: 2px 10px 40px rgba(22,20,19,0.4);
@@ -622,9 +618,6 @@ Bounce
 
 .avenue-messenger-widget-mb {
     opacity: 0.7;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
     /*height: calc(100% - 60px) !important;*/
     width: 100%;
     /*  transform: translateY(0);
@@ -803,7 +796,7 @@ box-shadow: 0px 0px 10px rgba(0,0,0,.8);*/
 
 @media only screen and (max-device-width: 667px), screen and (max-width: 450px) {
     .avenue-messenger {
-        z-index: 2147483001 !important;
+        z-index: 2147 !important;
         width: 100% !important;
         height: 100% !important;
         max-height: none !important;
@@ -858,7 +851,7 @@ box-shadow: 0px 0px 10px rgba(0,0,0,.8);*/
 
 #their-video {
     max-width: 100%;
-    min-width: 50%;
+    min-width: 100%;
     min-height: 75%;
     max-height: 75%;
     background-color: #ccc;
@@ -868,7 +861,7 @@ box-shadow: 0px 0px 10px rgba(0,0,0,.8);*/
     min-width: 100%;
     max-width: 100%;
     min-height: 25%;
-    max-height: 50%;
+    max-height: 25%;
     background-color: #ccc;
 }
 
