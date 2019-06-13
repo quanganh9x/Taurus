@@ -2,12 +2,8 @@
     ViewData["Title"] = "Room Doctor";
 }
 
-
-
-@{
+@{ 
     Layout = null;
-    Doctor u = ViewData["User"] as Doctor;
-    Room r = ViewData["Room"] as Room;
 }
 
 <!DOCTYPE html>
@@ -26,6 +22,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css'>
+    <link rel="stylesheet" href="~/lib/jqueryui/themes/ui-lightness/jquery-ui.min.css">
     <link rel="stylesheet" href="~/css/room.css">
     <link rel="stylesheet" href="~/lib/toasty.js/dist/toasty.min.css" />
 
@@ -133,8 +130,8 @@
                 });
             })
 
-            var ourVideo = document.getElementById("our-video-mb");
-            var theirVideo = document.getElementById('their-video-mb');
+            var ourVideo = document.getElementById("our-video");
+            var theirVideo = document.getElementById('their-video');
             var listSession = $('#listsession');
 
             // shim
@@ -144,22 +141,22 @@
             //connection.socketURL = 'http://35.247.52.75:9000/';
             connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
 
-            connection.userid = @u.UserId;
-            connection.roomid = @r.Id;
+            connection.userid = "somethinginhere";
+            connection.roomid = "room0";
             connection.extra = {
                 userId: connection.userid,
                 roomId: connection.roomid,
-                userFullName: "@u.User.FullName",
+                userFullName: "novak djokovik",
                 isRoomMaster: true
             };
             connection.socketMessageEvent = "event-" + connection.roomid;
 
             connection.DetectRTC.load(function () {
-                //if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
+                // if (!connection.DetectRTC.isWebRTCSupported || !connection.DetectRTC.hasMicrophone || !connection.DetectRTC.hasWebcam || !connection.DetectRTC.hasSpeakers) {
                 //    alert('You dont fulfill requirements or your browser doesnt support WebRTC');
                 //    handleError("not-supported");
                 //    return;
-                //}
+                // }
 
                 connection.checkPresence(connection.roomid, function (isRoomExist, roomid, error) {
                     if (isRoomExist) {
@@ -410,71 +407,27 @@
             var updateHeartbeat;
             function activeRoom() {
                 // active room then request session
-                $.post('@Url.Action("ActiveRoom", "Room")', { id: connection.roomid })
-                    .done(function (data) {
-                        requestSession();
+                
                         setInterval( function(){
                             $("#seconds").html(pad(++sec%60));
                             $("#minutes").html(pad(parseInt(sec/60,10)));
                         }, 1000);
-                    })
-                    .fail(function (data) {
-
-                    });
             }
 
             function requestSession() {
-                $.post('@Url.Action("RequestSession", "Room")', { id: connection.roomid })
-                    .done(function (data) {
-                        requestTimeout = setTimeout(requestSession, 60000);
-                    })
-                    .fail(function (data) {
-
-                    });
+                
             }
 
             function endRoom() {
                 endModeration();
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("EndRoom", "Room")',
-                    async: false,
-                    data: { id: connection.roomid }
-                });
             }
 
             function getSessions () {
-                $.get('@Url.Action("GetSessions", "Room")', { id: connection.roomid })
-                    .done(function (data) {
-
-                        data = JSON.parse(data.data);
-                        listSession.html("");
-                        for (var i = 0; i < data.length; i++) {
-                            var clazz;
-                            switch (data[i].Status) {
-                                case "DONE": clazz = "badge-success";
-                                    break;
-                                case "PENDING": clazz = "badge-primary";
-                                    break;
-                                case "PROCESSING": clazz = "badge-warning";
-                                    break;
-                                default: clazz = "badge-info"
-                                    break;
-                            }
-                            listSession.append(`<li class="list-group-item"><span class="float-left">${data[i].UserName}</span>
-                            <span class="float-right badge ` + clazz + `">${data[i].Status}</span></li>`);
-                        }
-                    });
+                
             }
 
             function updateRoom() {
-                $.post("@Url.Action("HbUpdateRoom", "Room")", { id: connection.roomid })
-                    .done(function (data) {
-                        getSessions();
-                    })
-                    .fail(function (data) {
-                        handleError("update-room-failed");
-                    });
+                
             }
 
             var recorder;
@@ -484,16 +437,7 @@
                 var form = new FormData();
                 form.append("blob", window.blobs[0]); // ensure we dont miss any scenes
                 window.blobs.shift();
-                $.ajax({
-                    url: '@Url.Action("Moderation","Video")',
-                    data: form,
-                    processData: false,
-                    contentType: false,
-                    type: 'POST',
-                    success: function (data) {
-                        console.log(data);
-                    }
-                });
+                
             }
 
             function addModeration() {
@@ -560,12 +504,53 @@
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row video-container" style="height:100%;">
-            <div class="col-12 p-2" style="height: 50%; width: 100%;">
-                <video autoplay playsinline id="their-video-mb"></video>                
+        <div class="row video-container">
+            <div class="col-md-9 col-12" style="max-height:75%;">
+                <video autoplay playsinline id="their-video"></video>
+                <div class="col-4">
+                    <div class="card card-body" style="height:20%; padding: 10px;">
+                        <h5 class="mt-2">Controls</h5>
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-warning" id="mute-room">Mute Customer</button>
+                            <button class="btn btn-warning" id="unmute-room">Unmute Customer</button>
+                        </div>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddQuota">
+                            Add Quota
+                        </button>
+                        <button class="btn btn-danger" id="end-button">End Room</button>
+                    </div>
+                </div>
             </div>
-            <div class="col-12 p-2" style="height: 50%; width: 100%;">
-                <video autoplay playsinline id="our-video-mb"></video>                
+            <div class="col-md-3 col-12">
+                <video autoplay playsinline id="our-video"></video>
+                <style>
+                    .control-box::-webkit-scrollbar {
+                        display: none;
+                    }
+                </style>
+                <div class="card card-body control-box" style="height:75%; overflow:scroll">
+                    <h5>Room</h5>
+                    <p>
+                        <label>Title: </label>
+                        <span>abc</span>
+                    </p>
+                    <p>
+                        <label>Quota: </label>
+                        <span>0</span>
+                    </p>
+                    <h5>Timer</h5>
+                    <h3>
+                        <span id="minutes"></span>:<span id="seconds"></span>
+                    </h3>
+                    <h5 class="mt-2">Sessions</h5>
+                    <style>
+                        .list-group::-webkit-scrollbar {
+                            display: none;
+                        }
+                    </style>
+                    <ul class="list-group" style="overflow: scroll; max-height: 200px;" id="listsession"></ul>
+
+                </div>
             </div>
         </div>
         <section id="chat-box" class="avenue-messenger">
@@ -588,7 +573,7 @@
 
         </section>
 
-        <section id="chat-bar" class="avenue-messenger-widget-mb" style="display: none;">
+        <section id="chat-bar" class="avenue-messenger-widget" style="display: none; opacity: 0.5;">
             <div class="chat">
                 <div class="chat-title" style="padding-top:20px; padding-bottom: 20px;">
                     <h1 class="chat-username">Chat Box</h1>
@@ -606,8 +591,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="add-quota-form" action="@Url.Action(" AddRoomQuota", "Room" )" method="post">
-                        <input type="hidden" name="id" value="@r.Id" />
+                    <form id="add-quota-form" action="#" method="post">
+                        <input type="hidden" name="id" value="room0" />
                         <div class="form-group">
                             <label for="quota" class="col-form-label">Quota</label>
                             <input class="form-control" type="number" name="Quota" id="quota" />
