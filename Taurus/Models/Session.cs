@@ -15,6 +15,9 @@ namespace Taurus.Models
         public int RoomId { get; set; }
         [ForeignKey("RoomId")]
         public virtual Room Room { get; set; }
+        public int NoteId { get; set; }
+        [ForeignKey("NoteId")]
+        public virtual Note Note { get; set; }
         public int CustomerId { get; set; }
         [ForeignKey("CustomerId")]
         public virtual Customer Customer { get; set; }

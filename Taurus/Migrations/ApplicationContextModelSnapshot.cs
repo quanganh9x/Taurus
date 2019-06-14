@@ -403,6 +403,32 @@ namespace Taurus.Migrations
                     b.ToTable("Facilities");
                 });
 
+            modelBuilder.Entity("Taurus.Models.Note", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Addition");
+
+                    b.Property<string>("Diagnosis");
+
+                    b.Property<string>("Medicines");
+
+                    b.Property<int>("SessionId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Symptoms");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SessionId")
+                        .IsUnique();
+
+                    b.ToTable("Notes");
+                });
+
             modelBuilder.Entity("Taurus.Models.Notification", b =>
                 {
                     b.Property<int>("Id")
@@ -515,6 +541,8 @@ namespace Taurus.Migrations
                     b.Property<int>("CustomerId");
 
                     b.Property<DateTime?>("EndTime");
+
+                    b.Property<int>("NoteId");
 
                     b.Property<int>("RoomId");
 
@@ -687,6 +715,14 @@ namespace Taurus.Migrations
                     b.HasOne("Taurus.Areas.Identity.Models.User", "Origin")
                         .WithMany("DoctorVotes")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Taurus.Models.Note", b =>
+                {
+                    b.HasOne("Taurus.Models.Session", "Session")
+                        .WithOne("Note")
+                        .HasForeignKey("Taurus.Models.Note", "SessionId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

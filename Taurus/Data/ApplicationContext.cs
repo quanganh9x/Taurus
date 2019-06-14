@@ -34,6 +34,7 @@ namespace Taurus.Data
         public DbSet<DoctorFlag> DoctorFlags { get; set; }
         public DbSet<CustomerVote> CustomerVotes { get; set; }
         public DbSet<CustomerFlag> CustomerFlags { get; set; }
+        public DbSet<Note> Notes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

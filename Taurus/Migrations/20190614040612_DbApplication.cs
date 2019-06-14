@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Taurus.Migrations
 {
-    public partial class DbApp : Migration
+    public partial class DbApplication : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -487,6 +487,7 @@ namespace Taurus.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoomId = table.Column<int>(nullable: false),
+                    NoteId = table.Column<int>(nullable: false),
                     CustomerId = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
                     StartTime = table.Column<DateTime>(nullable: true),
@@ -508,6 +509,30 @@ namespace Taurus.Migrations
                         name: "FK_Sessions_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Rooms",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    SessionId = table.Column<int>(nullable: false),
+                    Symptoms = table.Column<string>(nullable: true),
+                    Diagnosis = table.Column<string>(nullable: true),
+                    Medicines = table.Column<string>(nullable: true),
+                    Addition = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notes_Sessions_SessionId",
+                        column: x => x.SessionId,
+                        principalTable: "Sessions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -622,6 +647,12 @@ namespace Taurus.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notes_SessionId",
+                table: "Notes",
+                column: "SessionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
                 table: "Notifications",
                 column: "UserId");
@@ -685,10 +716,10 @@ namespace Taurus.Migrations
                 name: "DoctorVotes");
 
             migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "Notes");
 
             migrationBuilder.DropTable(
-                name: "Sessions");
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Questions");
@@ -697,10 +728,13 @@ namespace Taurus.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Rooms");
+                name: "Sessions");
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
 
             migrationBuilder.DropTable(
                 name: "Doctors");

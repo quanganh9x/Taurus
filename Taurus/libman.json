@@ -86,6 +86,11 @@
         "themes/ui-lightness/jquery-ui.min.css",
         "themes/base/jquery-ui.min.css"
       ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "Chart.js@2.6.0",
+      "destination": "wwwroot/lib/Chart.js/"
     }
   ]
 }

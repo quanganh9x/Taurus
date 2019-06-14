@@ -79,6 +79,10 @@ namespace Taurus.Data
             .HasMany(p => p.DoctorFlags)
             .WithOne(p => p.Origin)
             .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Session>()
+            .HasOne(p => p.Note)
+            .WithOne(p => p.Session)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

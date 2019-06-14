@@ -77,6 +77,32 @@ namespace Taurus.Controllers
             return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(notifications) });
         }
 
+        [HttpGet("statistics/income")]
+        public async Task<IActionResult> GetDoctorIncome()
+        {
+            if (!User.IsInRole("Doctor"))
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });                
+            }
+            List<Room> rooms = await _context.Rooms.Where(r => r.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && r.Status == RoomStatus.DONE && r.EndTime.Value > DateTime.Now.AddDays(-7)).ToListAsync();
+            var data = rooms.Select(m => new { revenue = m.Revenue, time = m.EndTime.Value }).ToList();
+
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = data });
+        }
+
+        [HttpGet("statistics/served")]
+        public async Task<IActionResult> GetServedPeople()
+        {
+            if (!User.IsInRole("Doctor"))
+            {
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+            }
+            List<Room> rooms = await _context.Rooms.Where(r => r.Doctor.UserId == int.Parse(_userManager.GetUserId(User)) && r.Status == RoomStatus.DONE).ToListAsync();
+            var data = rooms.Select(m => new { people = m.Sessions.Where(s => s.StartTime.HasValue && s.EndTime.HasValue && s.Status == SessionStatus.DONE).Count(), time = m.EndTime.Value }).ToList();
+
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = data });
+        }
+
         [HttpPost("edit")]
         public async Task<IActionResult> UpdateProfile([FromForm] string FullName, [FromForm] string Address, [FromForm] string City, [FromForm] string Country, [FromForm] Gender Gender)
         {

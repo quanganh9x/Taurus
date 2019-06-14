@@ -14,7 +14,7 @@ namespace Taurus.Models
         public int Id { get; set; }
         public int SessionId { get; set; }
         [ForeignKey("SessionId")]
-        public Session Session { get; set; }
+        public virtual Session Session { get; set; }
         public string Symptoms { get; set; }
         public string Diagnosis { get; set; }
         public string Medicines { get; set; }

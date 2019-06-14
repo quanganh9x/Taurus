@@ -1,10 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Profile";
     List<Room> rooms = ViewData["Rooms"] as List<Room>;
-    foreach (Room r in rooms)
-    {
-        ViewData["totalSessions"] = r.Sessions.Where(m => m.Status == SessionStatus.DONE && m.StartTime.HasValue && m.EndTime.HasValue).Count() | 0;
-    }
 }
 @using Taurus.Models.Enums
 @model Doctor
@@ -79,7 +75,7 @@
                     <h3>Statistics</h3>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" style="border-top: unset;">
-                            <span><b>Revenue: </b></span>
+                            <span><b>Total Revenue: </b></span>
                             <span style="color: green">@rooms.Sum(m => m.Revenue) <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"></i></b></span>
                         </li>
                         <li class="list-group-item">
@@ -88,7 +84,7 @@
                         </li>
                         <li class="list-group-item">
                             <span><b>Sessions served: </b></span>
-                            <span>@ViewData["totalSessions"] <i class="fa fa-user" aria-hidden="true"></i></span>
+                            <span>@rooms.SelectMany(m => m.Sessions).Count() <i class="fa fa-user" aria-hidden="true"></i></span>
                         </li>
                     </ul>
                 </div>
@@ -162,6 +158,11 @@
                     <h3 class="d-flex align-items-center">Reserve a Room</h3>
                     <div id="calendar" class="p-3"></div>
                 </div>
+
+                <div class="mt-4">
+                    <h2>Revenue Chart</h2>
+                    <canvas class="mt-2" id="revenue"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -229,6 +230,50 @@
                 });
             $("#modalExample").modal('hide');
         });
+
+        $.get('@Url.Action("GetDoctorIncome", "Profile")')
+            .done(function (response) {
+                drawGraph(response);
+            })
+            .fail(function (data) {
+                console.log(data);
+            });       
+
+        function drawGraph(response) {
+
+            var listRevenue = [];
+            var listTime = [];
+            // .format('ha MMM-DD')
+            for (var i = 0; i < response.data.length; i++) {
+                listRevenue.push(response.data[i].revenue);
+                listTime.push(moment(response.data[i].time));
+            }
+
+            console.log(listTime)
+
+            var config = {
+                type: 'line',
+                data: {
+                    labels: listTime,
+                    datasets: [{
+                        label: "Revenue (coin)",
+                        data: listRevenue,
+                        borderColor: "#3e95cd",
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: 'time'
+                        }],
+                    },
+                }
+            };
+
+            var ctx = document.getElementById("revenue").getContext('2d');
+            new Chart(ctx, config);
+        }
     });
 
 </script>

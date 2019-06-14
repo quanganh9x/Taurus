@@ -155,20 +155,28 @@
                         <div class="card">
                             <div class="card-header" style="padding: 0;" id="heading_@s.Id">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapse_@s.Id" aria-expanded="true" aria-controls="collapse_@s.Id">
-                                        @s.Id
-                                    </button>
+                                    <div class="row" data-toggle="collapse" data-target="#collapse_@s.Id" aria-expanded="true" aria-controls="collapse_@s.Id">
+                                        <div class="col-1">@s.Id</div>
+                                        <div class="col-7">@s.Room.Title</div>
+                                        <div class="col-3">@s.StartTime.Value.ToString("hh:mm dd/MM/yyyy")</div>
+                                    </div>
                                 </h5>
                             </div>
 
                             <div id="collapse_@s.Id" class="collapse" aria-labelledby="heading_@s.Id" data-parent="#accordion">
                                 <div class="card-body">
-                                    <p><b>Name:</b> @s.Room.Doctor.User.FullName</p>
+                                    <p>
+                                        <b>Doctor:</b> @s.Room.Doctor.User.FullName
+                                        <button id="note-info-btn" onclick="openNote(@s.Id)" data-toggle="modal" style="float:right;" value="note">note</button>
+                                    </p>
                                     @if (s.Status == Taurus.Models.Enums.SessionStatus.DONE)
                                     {
                                         <p><b>Charged:</b> @s.GetTotalPrice() Coins</p>
 
-                                        @*<p><b>At:</b> @s.StartTime.Value.ToLocalTime()</p>*@
+                                        if (s.StartTime.HasValue && s.EndTime.HasValue)
+                                        {
+                                            <p><b>Session Time:</b> @((s.EndTime.Value - s.StartTime.Value).ToString(@"hh\:mm\:ss")) </p>
+                                        }
                                     }
                                     else
                                     {
@@ -183,3 +191,84 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="noteInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Note Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">                
+                <input type="hidden" name="sessionId" value="" />
+                <label>Symptoms</label>
+                    <ul id="note-symptoms">
+                        <li>Symptom 1</li>
+                        <li>Symptom 2</li>
+                    </ul>
+                <label>Diagnosis</label>
+                    <ul id="note-diagnosis">
+                        <li>Diagnosis 1</li>
+                        <li>Diagnosis 2</li>
+                    </ul>
+                <label>Medicines</label>
+                    <ul id="note-medicines">
+                        <li>Medicines 1</li>
+                        <li>Medicines 2</li>
+                    </ul>
+                <label>Addition Note</label>
+                    <i id="note-addition">This is addition note!</i>
+                <label>Status</label>
+                <div class="entry input-group">
+                    <select name="status" id="note-status">
+                        <option value="2">Severe. Should go to nearest hospital</option>
+                        <option value="1">Moderate. Need keeping track</option>
+                        <option value="0">Unharmed. Follow the instructions</option>
+                        <option value="-1">Need more diagnosis</option>
+                    </select>
+                </div>                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openNote(sessionId) {        
+        $.get('@Url.Action("GetNote", "Note")', { sessionId: sessionId })
+            .done(function (data) {
+                resetNoteModal();
+                $('#noteInfoModal').modal('show');                
+                data = data.data
+                var symptoms = JSON.parse(data.symptoms);
+                var diagnosis = JSON.parse(data.diagnosis);
+                var medicines = JSON.parse(data.medicines);                                
+                for (var i = 0; i < symptoms.length; i++) {
+                    $('#note-symptoms').append(`<li>${symptoms[i]}</li>`)
+                }                
+                for (var i = 0; i < diagnosis.length; i++) {
+                    $('#note-diagnosis').append(`<li>${diagnosis[i]}</li>`)
+                }                
+                for (var i = 0; i < medicines.length; i++) {
+                    $('#note-medicines').append(`<li>${medicines[i]}</li>`)
+                }
+                $('#note-addition').html(data.addition);
+                $('#note-status').val(data.status);
+                $('#note-status>option:not(:selected)').hide();                                       
+            })
+            .fail(function (data) {
+                window.toast.error(data.responseJSON.data);                
+            });
+    }
+    function resetNoteModal() {
+        $('#note-symptoms').html('')
+        $('#note-medicines').html('')
+        $('#note-diagnosis').html('')
+        $('#note-status>option').show();
+    }
+</script>

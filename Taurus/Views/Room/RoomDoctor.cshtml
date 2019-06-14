@@ -3,7 +3,7 @@
     Doctor u = ViewData["User"] as Doctor;
     Room r = ViewData["Room"] as Room;
 }
-
+@using Taurus.Models.Enums
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
@@ -263,6 +263,7 @@
                     theirStream = event.stream;
                     element = theirVideo;
                     element.controls = false;
+                    $("input[name='sessionId']").val(event.extra.sessionId);
                 }
                 element.srcObject = event.stream;
                 element.setAttribute("streamid", event.streamid);
@@ -493,6 +494,77 @@
                     $("#unmute-room").prop("hidden", true);
                 }
             });
+
+            $(".controls-symptom").on('click', '.btn-add', function (e) {
+                e.preventDefault();
+
+                var controlForm = $('.controls-symptom'),
+                    currentEntry = $(this).parents('.entry:first'),
+                    newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+                newEntry.find('input').val('');
+                controlForm.find('.entry:not(:last) .btn-add')
+                    .removeClass('btn-add').addClass('btn-remove')
+                    .removeClass('btn-success').addClass('btn-danger')
+                    .html('<i class="fa fa-minus"></i>');
+            }).on('click', '.btn-remove', function (e) {
+                $(this).parents('.entry:first').remove();
+
+                e.preventDefault();
+                return false;
+            });
+            $(".controls-diagnose").on('click', '.btn-add', function (e) {
+                e.preventDefault();
+
+                var controlForm = $('.controls-diagnose'),
+                    currentEntry = $(this).parents('.entry:first'),
+                    newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+                newEntry.find('input').val('');
+                controlForm.find('.entry:not(:last) .btn-add')
+                    .removeClass('btn-add').addClass('btn-remove')
+                    .removeClass('btn-success').addClass('btn-danger')
+                    .html('<i class="fa fa-minus"></i>');
+            }).on('click', '.btn-remove', function (e) {
+                $(this).parents('.entry:first').remove();
+
+                e.preventDefault();
+                return false;
+            });
+            $(".controls-medicine").on('click', '.btn-add', function (e) {
+                e.preventDefault();
+
+                var controlForm = $(".controls-medicine"),
+                    currentEntry = $(this).parents('.entry:first'),
+                    newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+                newEntry.find('input').val('');
+                controlForm.find('.entry:not(:last) .btn-add')
+                    .removeClass('btn-add').addClass('btn-remove')
+                    .removeClass('btn-success').addClass('btn-danger')
+                    .html('<i class="fa fa-minus"></i>');
+            }).on('click', '.btn-remove', function (e) {
+                $(this).parents('.entry:first').remove();
+
+                e.preventDefault();
+                return false;
+            });
+
+            $("#add-notes-btn").click(function (e) {
+                e.preventDefault();
+                $.post($("#add-notes-form").attr('action'), $("#add-notes-form").serialize())
+                    .done(function (data) {
+                        window.toast.info("Save success");
+                    })
+                    .fail(function (data) {
+                        window.toast.error("api-error");
+                    });
+                $("#add-notes-form").trigger("reset");
+                $("#modalAddNotes").modal('hide');
+            });
+            $('#modalAddNotes').on('hidden.bs.modal', function () {
+                requestSession();
+            });
         });
     </script>
 
@@ -674,12 +746,12 @@
                     </button>
                 </div>
                 <div class="modal-body notes-container">
-                    <form id="add-notes-form" action="@Url.Action("AddNotes","Note")" method="post">
-                        <input type="hidden" name="id" value="@r.Id" />
-                        <label>Zed</label>
+                    <form id="add-notes-form" action="@Url.Action("CreateNote","Note")" method="post">
+                        <input type="hidden" name="sessionId" value="" />
+                        <label>Symptoms</label>
                         <div class=" controls-symptom">
                             <div class="entry input-group">
-                                <input class="form-control" name="symptom[]" type="text" placeholder="Type something" />
+                                <input class="form-control" name="symptoms[]" type="text" placeholder="" />
                                 <span class="input-group-btn">
                                     <button class="btn btn-success btn-add" type="button">
                                         <i class="fa fa-plus"></i>
@@ -687,10 +759,10 @@
                                 </span>
                             </div>
                         </div>
-                        <label>Qiyana</label>
+                        <label>Diagnosis</label>
                         <div class="controls-diagnose">
                             <div class="entry input-group">
-                                <input class="form-control" name="diagnose[]" type="text" placeholder="Type something" />
+                                <input class="form-control" name="diagnosis[]" type="text" placeholder="" />
                                 <span class="input-group-btn">
                                     <button class="btn btn-success btn-add" type="button">
                                         <i class="fa fa-plus"></i>
@@ -698,10 +770,10 @@
                                 </span>
                             </div>
                         </div>
-                        <label>Yasuo</label>
+                        <label>Medicines</label>
                         <div class=" controls-medicine">
                             <div class="entry input-group">
-                                <input class="form-control" name="medicine[]" type="text" placeholder="Type medicine" />
+                                <input class="form-control" name="medicines[]" type="text" placeholder="" />
                                 <span class="input-group-btn">
                                     <button class="btn btn-success btn-add" type="button">
                                         <i class="fa fa-plus"></i>
@@ -709,9 +781,18 @@
                                 </span>
                             </div>
                         </div>
-                        <label>Aatrox</label>
+                        <label>Addition Note</label>
                         <div class="entry input-group">
-                            <input class="form-control" name="note" type="text" placeholder="Note" />
+                            <input class="form-control" name="addition" type="text" placeholder="Note" />
+                        </div>
+                        <label>Status</label>
+                        <div class="entry input-group">
+                            <select name="status">
+                                <option value="2">Severe. Should go to nearest hospital</option>
+                                <option value="1">Moderate. Need keeping track</option>
+                                <option value="0">Unharmed. Follow the instructions</option>
+                                <option value="-1">Need more diagnosis</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -721,85 +802,6 @@
             </div>
         </div>
     </div>
-    
-    <script>
-    $(".controls-symptom").on('click', '.btn-add', function(e)
-    {
-        e.preventDefault();
-
-        var controlForm = $('.controls-symptom'),
-            currentEntry = $(this).parents('.entry:first'),
-            newEntry = $(currentEntry.clone()).appendTo(controlForm);
-
-        newEntry.find('input').val('');
-        controlForm.find('.entry:not(:last) .btn-add')
-            .removeClass('btn-add').addClass('btn-remove')
-            .removeClass('btn-success').addClass('btn-danger')
-            .html('<i class="fa fa-minus"></i>');
-    }).on('click', '.btn-remove', function(e)
-    {
-        $(this).parents('.entry:first').remove();
-
-        e.preventDefault();
-        return false;
-    });
-        $(".controls-diagnose").on('click', '.btn-add', function(e)
-    {
-        e.preventDefault();
-
-        var controlForm = $('.controls-diagnose'),
-            currentEntry = $(this).parents('.entry:first'),
-            newEntry = $(currentEntry.clone()).appendTo(controlForm);
-
-        newEntry.find('input').val('');
-        controlForm.find('.entry:not(:last) .btn-add')
-            .removeClass('btn-add').addClass('btn-remove')
-            .removeClass('btn-success').addClass('btn-danger')
-            .html('<i class="fa fa-minus"></i>');
-    }).on('click', '.btn-remove', function(e)
-    {
-        $(this).parents('.entry:first').remove();
-
-        e.preventDefault();
-        return false;
-    });
-        $(".controls-medicine").on('click', '.btn-add', function(e)
-    {
-        e.preventDefault();
-
-        var controlForm = $(".controls-medicine"),
-            currentEntry = $(this).parents('.entry:first'),
-            newEntry = $(currentEntry.clone()).appendTo(controlForm);
-
-        newEntry.find('input').val('');
-        controlForm.find('.entry:not(:last) .btn-add')
-            .removeClass('btn-add').addClass('btn-remove')
-            .removeClass('btn-success').addClass('btn-danger')
-            .html('<i class="fa fa-minus"></i>');
-    }).on('click', '.btn-remove', function(e)
-    {
-        $(this).parents('.entry:first').remove();
-
-        e.preventDefault();
-        return false;
-    });
-
-        $("#add-notes-btn").click(function (e) {
-            e.preventDefault();
-            $.post($("#add-notes-form").attr('action'), $("#add-notes-form").serialize())
-                .done(function (data) {
-                    window.toast.info("Save success");
-                })
-                .fail(function (data) {
-                    window.toast.error("api-error");
-                });
-            $("#add-notes-form").trigger("reset");
-            $("#modalAddNotes").modal('hide');
-        });
-        $('#modalAddNotes').on('hidden.bs.modal', function () {
-            requestSession();
-        });
-    </script>
 
     <script src="~/lib/toasty.js/dist/toasty.min.js"></script>
 </body>
