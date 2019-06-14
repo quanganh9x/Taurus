@@ -168,7 +168,7 @@
                                 <div class="card-body" style="line-height:10px;">
                                     <p>
                                         <b>Doctor:</b> @s.Room.Doctor.User.FullName
-                                        <button class="btn btn-primary btn-sm my-1" id="note-info-btn" onclick="openNote(@s.Id)" data-toggle="modal" style="float:right;" value="note"><i class="fa fa-sticky-note" aria-hidden="true"></i></button>
+                                        <button class="btn btn-primary btn-sm my-1" id="note-info-btn" onclick="openNote(@s.Id)" data-toggle="modal" data-placement="top" title="Note" style="float:right;" value="note"><i class="fa fa-sticky-note" aria-hidden="true"></i></button>
                                     </p>
                                     @if (s.Status == Taurus.Models.Enums.SessionStatus.DONE)
                                     {
