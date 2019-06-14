@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Taurus.Models
 {
-    public enum Status
+    public enum QuestionStatus
     {
         ACTIVE = 1,
         INACTIVE = -1

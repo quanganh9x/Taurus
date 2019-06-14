@@ -10,8 +10,8 @@ using Taurus.Data;
 namespace Taurus.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20190610084301_InitializeDB")]
-    partial class InitializeDB
+    [Migration("20190613235027_DbApp")]
+    partial class DbApp
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -157,8 +157,12 @@ namespace Taurus.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("FbId");
+
                     b.Property<string>("FullName")
                         .IsRequired();
+
+                    b.Property<string>("GId");
 
                     b.Property<int>("Gender");
 

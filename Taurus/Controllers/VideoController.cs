@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Taurus.Areas.Identity.Models;
 using Taurus.Data;
 using Taurus.Helper;
@@ -28,14 +31,12 @@ namespace Taurus.Controllers
     {
         private readonly ApplicationContext _context;
         private readonly UserManager<User> _userManager;
-        private readonly HostingEnvironment _hostingEnvironment;
         private readonly IConfiguration _configuration;
 
-        public VideoController(ApplicationContext context, UserManager<User> userManager, HostingEnvironment hostingEnvironment, IConfiguration configuration)
+        public VideoController(ApplicationContext context, UserManager<User> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
-            _hostingEnvironment = hostingEnvironment;
             _configuration = configuration;
         }
 
@@ -82,22 +83,22 @@ namespace Taurus.Controllers
         }
 
         [HttpPost("moderation")]
-        public async Task<IActionResult> Moderation(IFormFile blob)
+        public async Task<IActionResult> Moderation([FromForm] IFormFile blob)
         {
             if (blob == null || blob.Length == 0) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
-            var name = Guid.NewGuid().ToString().Replace("-", "").ToLower() + ".webm";
-            var path = Path.Combine(_hostingEnvironment.WebRootPath, "upload", name);
-
-            using (var stream = new FileStream(path, FileMode.OpenOrCreate))
+            var name = Guid.NewGuid().ToString().Replace("-", "").ToLower();
+            var stream = blob.OpenReadStream();
+            CloudBlockBlob cb = await UploadToBlobStorage(name, stream);
+            if (!await cb.ExistsAsync())
             {
-                await blob.CopyToAsync(stream);
+                return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb on storage :/" });
             }
 
             using (HttpClient client = new HttpClient())
             {
                 try
                 {
-                    HttpResponseMessage response = await client.GetAsync("https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad&stream_url=" + "https://taurus-quanganh9x.azurewebsites.net/upload/" + name + "&api_user=" + _configuration["SightEngine:Key"] + "&api_secret=" + _configuration["SightEngine:Secret"]);
+                    HttpResponseMessage response = await client.GetAsync("https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad&stream_url=" + cb.Uri.AbsoluteUri + "&api_user=" + _configuration["SightEngine:Key"] + "&api_secret=" + _configuration["SightEngine:Secret"]);
                     response.EnsureSuccessStatusCode();
                     string responseBody = await response.Content.ReadAsStringAsync();
                     dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
@@ -114,14 +115,36 @@ namespace Taurus.Controllers
                         scam += frame.scam.prob.ToObject<float>();
                         wad += (frame.weapon.ToObject<float>() + frame.alcohol.ToObject<float>() + frame.drugs.ToObject<float>()) / 3;
                     }
-
+                    
                     return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(new { adult = adult / c, wad = wad / c, scam = scam / c }) });
                 }
-                catch (HttpRequestException e)
+                catch (HttpRequestException)
                 {
                     return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
                 }
             }
+        }
+
+        private readonly string FuckIsABlob = "DefaultEndpointsProtocol=https;AccountName=taurusuploads;AccountKey=4c0vjmYVXaMquDRr3yGBcbOXAcvt8YEYRIHsiph5u6yvkaP0AxNMyBZp4fyRSxXT7w0g1ocC5RAlc7I7ddiU+g==;EndpointSuffix=core.windows.net";
+        private async Task<CloudBlockBlob> UploadToBlobStorage(string Name, Stream stream)
+        {
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(FuckIsABlob);
+            // Create a blob client.
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+            // Get a reference to a container named "streams"
+            CloudBlobContainer container = blobClient.GetContainerReference("streams");
+            await container.CreateIfNotExistsAsync();
+            await container.SetPermissionsAsync(new BlobContainerPermissions
+            {
+                PublicAccess = BlobContainerPublicAccessType.Blob
+            });
+            // Get a reference to a blob named "myblob".
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(Name);
+
+            // Create or overwrite the "myblob" blob with the contents of a local file
+            // named "myfile".
+            await blockBlob.UploadFromStreamAsync(stream);
+            return blockBlob;
         }
     }
 }

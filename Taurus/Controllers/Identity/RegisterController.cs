@@ -48,6 +48,9 @@ namespace Taurus.Controllers.Identity
             public string PhoneNumber { get; set; }
 
             [Required]
+            public string UserName { get; set; }
+
+            [Required]
             public string FullName { get; set; }
 
             [Required]
@@ -65,8 +68,13 @@ namespace Taurus.Controllers.Identity
             [Required]
             public Gender Gender { get; set; }
 
-            
-            public string Avatar { get; set; }
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
+
+            [Required]
+            [Compare("Password")]
+            public string ConfirmPassword { get; set; }
         }
 
         [HttpGet]
@@ -83,8 +91,8 @@ namespace Taurus.Controllers.Identity
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = Input.Email, Email = Input.Email, PhoneNumber = Input.PhoneNumber, FullName = Input.FullName, DateOfBirth = DateTime.Parse(Input.DateOfBirth), Address = Input.Address, City = Input.City, Country = Input.Country, Gender = Input.Gender, Avatar = Input.Avatar };
-                var result = await _userManager.CreateAsync(user, "Abc/123456");
+                var user = new User { UserName = Input.UserName, Email = Input.Email, PhoneNumber = Input.PhoneNumber, FullName = Input.FullName, DateOfBirth = DateTime.Parse(Input.DateOfBirth), Address = Input.Address, City = Input.City, Country = Input.Country, Gender = Input.Gender };
+                var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

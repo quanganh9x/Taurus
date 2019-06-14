@@ -90,7 +90,7 @@
 
                                 <div class="posted pull-left"><i class="fa fa-clock-o"></i> @q.CreatedAt.ToString("f") &nbsp;&nbsp;<i class="fa fa-user"></i> @q.Doctor.User.FullName</div>
 
-                                @if (Model.Customer.UserId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) && q.Question.Status == Status.ACTIVE)
+                                @if (Model.Customer.UserId == int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) && q.Question.Status == QuestionStatus.ACTIVE)
                                 {
                                     <div class="next pull-right">                                        
                                         <a onclick="voteDoctor(this, @q.DoctorId, @q.QuestionId)" class="vote-btn"><i class="fa fa-thumbs-o-up"></i></a>

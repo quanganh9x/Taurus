@@ -155,8 +155,12 @@ namespace Taurus.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("FbId");
+
                     b.Property<string>("FullName")
                         .IsRequired();
+
+                    b.Property<string>("GId");
 
                     b.Property<int>("Gender");
 

@@ -10,7 +10,7 @@ using Taurus.Models.Enums;
 
 namespace Taurus.Areas.Identity.Models
 {
-    public class User: IdentityUser<int>
+    public class User : IdentityUser<int>
     {
         /* general information */
         [PersonalData, Required]
@@ -31,6 +31,8 @@ namespace Taurus.Areas.Identity.Models
         public float Coins { get; set; } = 0;
         // unique
         public string UniqueId { get; set; } = Guid.NewGuid().ToString();
+        public string FbId { get; set; } = null;
+        public string GId { get; set; } = null;
 
         public int GetAge()
         {

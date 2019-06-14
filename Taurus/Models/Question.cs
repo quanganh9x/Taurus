@@ -24,7 +24,7 @@ namespace Taurus.Models
         /* lists */
         public virtual List<Answer> Answers { get; set; }
         /* status */
-        public Status Status { get; set; } = Status.ACTIVE;
+        public QuestionStatus Status { get; set; } = QuestionStatus.ACTIVE;
         /* datetime */
         
         public DateTime CreatedAt { get; set; } = DateTime.Now;

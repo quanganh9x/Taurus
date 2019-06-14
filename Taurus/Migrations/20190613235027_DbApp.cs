@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Taurus.Migrations
 {
-    public partial class InitializeDB : Migration
+    public partial class DbApp : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -51,7 +51,9 @@ namespace Taurus.Migrations
                     Avatar = table.Column<string>(nullable: true),
                     Gender = table.Column<int>(nullable: false),
                     Coins = table.Column<float>(nullable: false),
-                    UniqueId = table.Column<string>(nullable: true)
+                    UniqueId = table.Column<string>(nullable: true),
+                    FbId = table.Column<string>(nullable: true),
+                    GId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

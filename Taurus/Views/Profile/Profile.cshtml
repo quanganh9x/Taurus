@@ -1,7 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Profile";
-    List<Session> sessions = ViewData["Sessions"] as List<Session>;
-    var totalIncome = 0;
+    List<Room> rooms = ViewData["Rooms"] as List<Room>;
+    foreach (Room r in rooms)
+    {
+        ViewData["totalSessions"] = r.Sessions.Where(m => m.Status == SessionStatus.DONE && m.StartTime.HasValue && m.EndTime.HasValue).Count() | 0;
+    }
 }
 @using Taurus.Models.Enums
 @model Doctor
@@ -9,7 +12,7 @@
     <div class="container" style="min-height: 550px;">
         <div class="row">
             <div class="col-md-3 col-12 text-center">
-                <div class="card" style="width: auto;">
+                <div class="card mb-4" style="width: auto;">
                     <img src="@Model.User.Avatar" class="card-img-top" alt="avatar">
                     <div class="card-body text-center">
                         <h5 class="card-title">@Model.User.FullName</h5>
@@ -25,10 +28,21 @@
                     <ul class="list-group list-group-flush">
                         @if (Model.IsDoctorOfTheMonth)
                         {
-                            <li class="list-group-item"><img src="https://futhead.cursecdn.com/static/img/fm/17/resources/program_17_MOTM.png" width="64" height="64" /></li>
+                            <li class="list-group-item">
+                                <img src="https://futhead.cursecdn.com/static/img/fm/17/resources/program_17_MOTM.png" width="100" height="100" />
+                            </li>
                         }
                         <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
+                        @if (Model.User.FbId != null)
+                        {
+                            <li class="list-group-item"><a href="https://www.facebook.com/@Model.User.FbId" class="fa fa-facebook"></a></li>
+                        }
+                        <li class="list-group-item">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                Update Profile
+                            </button>
+                        </li>
                     </ul>
                     <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -57,30 +71,26 @@
                 </div>
 
 
-                <button type="button" class="btn btn-primary mt-1 mb-4" data-toggle="modal" data-target="#exampleModal">
-                    Update Profile
-                </button>
                 <button style="display: none;" id="launchBook" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBookRoom">
                     Book Room
                 </button>
 
-                <div class="card" style="width: auto;">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Statistics</h5>
-
-                        @foreach (Session s in sessions)
-                        {
-                            totalIncome += (int) s.Consume;
-                        }  
-                        <p>
-                            <span><b>Total income: </b></span>
-                            <span style="color: green">+ @totalIncome <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"></i></b></span>
-                        </p>
-                        <p>
-                            <span><b>Total customer served: </b></span> 
-                            <span style="color: green">@sessions.Count <i class="fa fa-user" aria-hidden="true"></i></span>
-                        </p>
-                    </div>
+                <div class="calendar-border mt-5">
+                    <h3>Statistics</h3>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" style="border-top: unset;">
+                            <span><b>Revenue: </b></span>
+                            <span style="color: green">@rooms.Sum(m => m.Revenue) <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"></i></b></span>
+                        </li>
+                        <li class="list-group-item">
+                            <span><b>Rooms started: </b></span>
+                            <span>@rooms.Count() <i class="fa fa-user" aria-hidden="true"></i></span>
+                        </li>
+                        <li class="list-group-item">
+                            <span><b>Sessions served: </b></span>
+                            <span>@ViewData["totalSessions"] <i class="fa fa-user" aria-hidden="true"></i></span>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

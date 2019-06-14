@@ -72,10 +72,10 @@ namespace Taurus.Controllers
             if (!User.IsInRole("Doctor"))
             {
                 Question q = await _context.Questions.FirstOrDefaultAsync(m => m.Id == questionId);
-                if(q.Status == Status.INACTIVE) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+                if(q.Status == QuestionStatus.INACTIVE) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
                 dv.UserId = int.Parse(_userManager.GetUserId(User));
                 _context.DoctorVotes.Add(dv);
-                q.Status = Status.INACTIVE;
+                q.Status = QuestionStatus.INACTIVE;
                 _context.Questions.Update(q);
                 await _context.SaveChangesAsync();
                 return Ok(new APIResponse { Status = APIStatus.Success, Data = null });               
@@ -89,10 +89,10 @@ namespace Taurus.Controllers
             if (!User.IsInRole("Doctor"))
             {
                 Question q = await _context.Questions.FirstOrDefaultAsync(m => m.Id == questionId);
-                if (q.Status == Status.INACTIVE) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
+                if (q.Status == QuestionStatus.INACTIVE) return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = null });
                 dv.UserId = int.Parse(_userManager.GetUserId(User));
                 _context.DoctorFlags.Add(dv);
-                q.Status = Status.INACTIVE;
+                q.Status = QuestionStatus.INACTIVE;
                 _context.Questions.Update(q);
                 
                 await _context.SaveChangesAsync();

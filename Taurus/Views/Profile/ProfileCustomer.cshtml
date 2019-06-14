@@ -9,12 +9,12 @@
     <div class="container" style="min-height: 550px;">
         <div class="row">
             <div class="col-md-3 col-12" style="text-align:center">
-                <div class="card" style="width: auto;">
+                <div class="card mb-4" style="width: auto;">
                     <img src="@Model.User.Avatar" class="card-img-top" alt="avatar">
                     <div class="card-body text-center">
                         <h5 class="card-title">@Model.User.FullName</h5>
                         <b><i class="fa fa-money" aria-hidden="true" style="color:darkgreen"> : </i></b> @Model.User.Coins
-<br />
+                        <br />
                         <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal2">
                             Deposit
                         </button>
@@ -23,6 +23,15 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item"><b>Upvotes:</b> @Model.Votes.Count</li>
                         <li class="list-group-item"><b>Downvotes:</b> @Model.Flags.Count</li>
+                        @if (Model.User.FbId != null)
+                        {
+                            <li class="list-group-item"><a href="https://www.facebook.com/@Model.User.FbId" class="fa fa-facebook"></a></li>
+                        }
+                        <li class="list-group-item">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                Update Profile
+                            </button>
+                        </li>
                     </ul>
                     <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
@@ -63,7 +72,7 @@
                                                 <p>Transfer with the following details. Coins will be deposited in few minutes</p>
                                                 <dl class="param">
                                                     <dt>Account Number</dt>
-                                                    <dd><input type="text" class="form-control" value="Về bờ trong ngày #000" readonly /></dd>
+                                                    <dd><input type="text" class="form-control" value="VBTN #dev20" readonly /></dd>
                                                 </dl>
                                                 <dl class="param">
                                                     <dt>Message</dt>
@@ -80,9 +89,6 @@
                     </div>
 
                 </div>
-                <button type="button" class="btn btn-primary mt-1 mb-4" data-toggle="modal" data-target="#exampleModal">
-                    Update Profile
-                </button>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -137,10 +143,10 @@
 
             <div class="col-md-9 col-12">
                 <div class="appointment-box the-profile-wrap p-3" id="accordion">
-                    <h2 class="d-flex  fix-magin align-items-center">Analytics</h2>
+                    <h2 class="d-flex align-items-center">Analytics</h2>
                     @if (sessions.Count() == 0)
                     {
-                        <div>
+                        <div class="text-center">
                             <p>No analytics :( Seems this user hasnt created any sessions</p>
                         </div>
                     }

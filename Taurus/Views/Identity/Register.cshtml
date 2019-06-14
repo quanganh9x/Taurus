@@ -32,17 +32,31 @@
     <div class="container d-flex align-items-center justify-content-center">
         <div class="register p-3 gradient-bg">
             <div class="row">
-                <div class="col-3 register-left">
+                <div class="col-3 register-left d-md-block d-none">
                     <img src="images/logo.png" alt="" />
                     <h5>If you already have an account, redirect back to <a style="color: #fff;" href="/Login">Login</a></h5>
                 </div>
-                <div class="col-md-9 register-right">
+                <div class="col-md-9 col-12 register-right">
                     <div class="tab-content">
                         <div class="tab-pane fade show active ">
                             <h3 class="register-heading">Register</h3>
                             <form class="row register-form" method="post" action="/Register">
                                 <div class="col-md-6">
-
+                                    <div class="form-group">
+                                        <label for="username">Username (will be use for login)</label>
+                                        <input type="text" id="username" class="form-control" placeholder="Username"
+                                               name="UserName" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" id="password" class="form-control" placeholder="Password"
+                                               name="Password" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmpassword">Confirm Password</label>
+                                        <input type="password" id="confirmpassword" class="form-control" placeholder="Confirm Password"
+                                               name="ConfirmPassword" />
+                                    </div>
                                     <div class="form-group">
                                         <label for="fullname">Name</label>
                                         <input type="text" id="fullname" class="form-control" placeholder="Full Name"
@@ -52,6 +66,29 @@
                                         <label for="email">Email</label>
                                         <input type="email" id="email" class="form-control" placeholder="Email"
                                                name="Email" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Phone</label>
+                                        <input type="tel" id="phone" class="form-control" placeholder="Phone number"
+                                               name="PhoneNumber" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <input type="text" id="address" class="form-control" placeholder="Address"
+                                               name="Address" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="city">City</label>
+                                        <input type="text" id="city" class="form-control" placeholder="City"
+                                               name="City" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="country">Country</label>
+                                        <input type="text" id="country" class="form-control" placeholder="Country"
+                                               name="Address" />
                                     </div>
                                     <div class="form-group">
                                         <label for="gender">Gender</label>
@@ -66,35 +103,17 @@
                                         <input type="date" id="dob" class="form-control"
                                                name="DateOfBirth" />
                                     </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="phone">Phone</label>
-                                        <input type="tel" id="phone" class="form-control" placeholder="Phone number"
-                                               name="PhoneNumber" />
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            <input type="reset" class="btn btn-secondary" style="margin-top: 35px;" value="Reset" />
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <input type="submit" class="btnRegister gradient-bg" style="margin-top: 35px; width: 100%; padding: 12px 0; border-radius: .25rem; border-bottom: 0;" value="Register" />
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="address">Address</label>
-                                        <input type="text" id="address" class="form-control" placeholder="Address"
-                                               name="Address" />
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="city">City</label>
-                                        <select class="form-control" id="city" name="City">
-                                            <option value="0">I prefer not to specify</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="country">Country</label>
-                                        <select class="form-control" id="country" name="Country">
-                                            <option value="0">I prefer not to specify</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <input type="submit" class="btnRegister gradient-bg float-right mt-3" value="Register" />
-                                </div>
+                            <div class="col-12">
+                                
+                            </div>
                             </form>
                         </div>
                     </div>
