@@ -413,8 +413,73 @@
             var videoOnlyStream;
             window.blobs = [];
             function moderationProcess() {
+                convertStreams(window.blobs[0]);
+            }
+
+            /*
+             * moderation helpers
+             */
+
+            var workerPath = 'https://archive.org/download/ffmpeg_asm/ffmpeg_asm.js';
+            if (document.domain == 'localhost') {
+                workerPath = 'https://localhost:44375/js/ffmpeg_asm.js';
+            }
+            function processInWebWorker() {
+                var blob = URL.createObjectURL(new Blob(['importScripts("' + workerPath + '");var now = Date.now;function print(text) {postMessage({"type" : "stdout","data" : text});};onmessage = function(event) {var message = event.data;if (message.type === "command") {var Module = {print: print,printErr: print,files: message.files || [],arguments: message.arguments || [],TOTAL_MEMORY: message.TOTAL_MEMORY || false};postMessage({"type" : "start","data" : Module.arguments.join(" ")});postMessage({"type" : "stdout","data" : "Received command: " +Module.arguments.join(" ") +((Module.TOTAL_MEMORY) ? ".  Processing with " + Module.TOTAL_MEMORY + " bits." : "")});var time = now();var result = ffmpeg_run(Module);var totalTime = now() - time;postMessage({"type" : "stdout","data" : "Finished processing (took " + totalTime + "ms)"});postMessage({"type" : "done","data" : result,"time" : totalTime});}};postMessage({"type" : "ready"});'], {
+                    type: 'application/javascript'
+                }));
+                var worker = new Worker(blob);
+                URL.revokeObjectURL(blob);
+                return worker;
+            }
+            var worker;
+            function convertStreams(videoBlob) {
+                var aab;
+                var buffersReady;
+                var workerReady;
+                var posted;
+                var fileReader = new FileReader();
+                fileReader.onload = function () {
+                    aab = this.result;
+                    postMessage();
+                };
+                fileReader.readAsArrayBuffer(videoBlob);
+                if (!worker) {
+                    worker = processInWebWorker();
+                }
+                worker.onmessage = function (event) {
+                    var message = event.data;
+                    if (message.type == "ready") {
+                        workerReady = true;
+                        if (buffersReady)
+                            postMessage();
+                    } else if (message.type == "start") {
+                    } else if (message.type == "done") {
+                        var result = message.data[0];
+                        var blob = new File([result.data], 'test.mp4', {
+                            type: 'video/mp4'
+                        });
+                        PostBlob(blob);
+                    }
+                };
+                var postMessage = function () {
+                    posted = true;
+                    worker.postMessage({
+                        type: 'command',
+                        arguments: '-i video.webm -c:v mpeg4 -b:v 6400k -strict experimental output.mp4'.split(' '),
+                        files: [
+                            {
+                                data: new Uint8Array(aab),
+                                name: 'video.webm'
+                            }
+                        ]
+                    });
+                };
+            }
+            var flagged = 0;
+            function PostBlob(blob) {
                 var form = new FormData();
-                form.append("blob", window.blobs[0]); // ensure we dont miss any scenes
+                form.append("blob", blob); // fuck is a blob
                 window.blobs.shift();
                 $.ajax({
                     url: '@Url.Action("Moderation","Video")',
@@ -423,7 +488,26 @@
                     contentType: false,
                     type: 'POST',
                     success: function (data) {
-                        console.log(data);
+                        $.get('https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad,scam&stream_url=' + data.data + '&api_user=1506744312&api_secret=zhQ3spXPJJHvgcMnMSXT')
+                            .done(function (res) {
+                                console.log(res);
+                                res = res.data.frames;
+                                var a = 0, b = 0, c = 0;
+                                for (var i = 0; i < res.length; i++) {
+                                    a += res[i].nudity.raw;
+                                    b += (res[i].weapon + res[i].alcohol + res[i].drugs) / 3;
+                                    c += res[i].scam.prob;
+                                }
+                                a = a / res.length; b = b / res.length; a = c / res.length;
+                                console.log(`${a}, ${b}, ${c}`);
+                                if (a > 0.5 || b > 0.5 || c > 0.2) {
+                                    window.toast.warning(`Possible restricted content detected. ${flagged} / 3`);
+                                    if (flagged >= 3) {
+                                        window.toast.error("You are forced to end room! Your data has been recorded");
+                                        endRoom();
+                                    }
+                                }
+                            })
                     }
                 });
             }
@@ -436,7 +520,6 @@
                 recorder = RecordRTC(videoOnlyStream, {
                     type: 'video',
                     recorderType: MediaStreamRecorder,
-                    mimeType: 'video/webm',
                     timeSlice: 30000, // slice the blob
                     ondataavailable: function (blob) {
                         window.blobs.push(blob);

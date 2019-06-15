@@ -93,42 +93,45 @@ namespace Taurus.Controllers
             {
                 return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb on storage :/" });
             }
+            return Ok(new APIResponse { Status = APIStatus.Success, Data = cb.Uri.AbsoluteUri });
+            //var client = _clientFactory.CreateClient();
+            //try
+            //{
+            //    HttpResponseMessage response = await client.GetAsync("https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad,scam&stream_url=" + cb.Uri.AbsoluteUri + "&api_user=" + _configuration["SightEngine:Key"] + "&api_secret=" + _configuration["SightEngine:Secret"]);
+            //    string responseBody = await response.Content.ReadAsStringAsync();
+            //    try
+            //    {
+            //        dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+            //        List<dynamic> frames = obj.data.frames.ToObject<List<dynamic>>();
+            //        int c = frames.Count();
+            //        if (c == 0)
+            //        {
+            //            return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "cant fetch data" });
+            //        }
+            //        float adult = 0, wad = 0, scam = 0;
+            //        foreach (dynamic frame in frames)
+            //        {
+            //            adult += frame.nudity.raw.ToObject<float>();
+            //            scam += frame.scam.prob.ToObject<float>();
+            //            wad += (frame.weapon.ToObject<float>() + frame.alcohol.ToObject<float>() + frame.drugs.ToObject<float>()) / 3;
+            //        }
 
-            using (HttpClient client = new HttpClient())
-            {
-                try
-                {
-                    HttpResponseMessage response = await client.GetAsync("https://api.sightengine.com/1.0/video/check-sync.json?models=nudity,wad&stream_url=" + cb.Uri.AbsoluteUri + "&api_user=" + _configuration["SightEngine:Key"] + "&api_secret=" + _configuration["SightEngine:Secret"]);
-                    response.EnsureSuccessStatusCode();
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
-                    List<dynamic> frames = obj.data.frames.ToObject<List<dynamic>>();
-                    int c = frames.Count();
-                    if (c == 0)
-                    {
-                        return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "cant fetch data" });
-                    }
-                    float adult = 0, wad = 0, scam = 0;
-                    foreach (dynamic frame in frames)
-                    {
-                        adult += frame.nudity.raw.ToObject<float>();
-                        scam += frame.scam.prob.ToObject<float>();
-                        wad += (frame.weapon.ToObject<float>() + frame.alcohol.ToObject<float>() + frame.drugs.ToObject<float>()) / 3;
-                    }
-                    
-                    return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(new { adult = adult / c, wad = wad / c, scam = scam / c }) });
-                }
-                catch (HttpRequestException)
-                {
-                    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
-                }
-            }
+            //        return Ok(new APIResponse { Status = APIStatus.Success, Data = Newtonsoft.Json.JsonConvert.SerializeObject(new { adult = adult / c, wad = wad / c, scam = scam / c }) });
+            //    }
+            //    catch (Exception)
+            //    {
+            //        return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "api error" });
+            //    }
+            //}
+            //catch (HttpRequestException)
+            //{
+            //    return BadRequest(new APIResponse { Status = APIStatus.Failed, Data = "null bleb" });
+            //}
         }
 
-        private readonly string FuckIsABlob = "DefaultEndpointsProtocol=https;AccountName=taurusuploads;AccountKey=4c0vjmYVXaMquDRr3yGBcbOXAcvt8YEYRIHsiph5u6yvkaP0AxNMyBZp4fyRSxXT7w0g1ocC5RAlc7I7ddiU+g==;EndpointSuffix=core.windows.net";
         private async Task<CloudBlockBlob> UploadToBlobStorage(string Name, Stream stream)
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(FuckIsABlob);
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_configuration["StorageAccount"]);
             // Create a blob client.
             CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
             // Get a reference to a container named "streams"

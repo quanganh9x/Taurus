@@ -71,8 +71,8 @@ namespace Taurus.Controllers
                 {
                     //CancelUrl = Url.Action("CheckoutFailed", "Payment"),
                     //ReturnUrl = Url.Action("CheckoutSuccess", "Payment")
-                    CancelUrl = "https://taurus-quanganh9x.azurewebsites.net/payment/checkoutfailed",
-                    ReturnUrl = "https://taurus-quanganh9x.azurewebsites.net/payment/checkoutsuccess/" + amount
+                    CancelUrl = "https://taurus-infra.azurewebsites.net/payment/checkoutfailed",
+                    ReturnUrl = "https://taurus-infra.azurewebsites.net/payment/checkoutsuccess/" + amount
                 },
                 Payer = new Payer()
                 {
